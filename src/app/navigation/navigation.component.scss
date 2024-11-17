@@ -1,0 +1,56 @@
+// Common variables
+$navbar-bg-color: #f8f9fa;
+$brand-color: #118ab2;
+$link-color: #118ab2;
+$link-hover-color: #ffd166;
+$border-color: #ffd166;
+
+// Navigation Styles
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $navbar-bg-color;
+  padding: 10px;
+
+  .navbar-brand {
+    color: $brand-color;
+    font-size: 3rem;
+    font-weight: bold;
+    text-decoration: underline 0.25rem $border-color;
+
+    &:hover {
+      color: $border-color;
+    }
+  }
+
+  .spacer {
+    flex-grow: 1; // Ensures buttons are pushed to the right
+  }
+
+  .nav-link {
+    color: $link-color;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0 10px;
+    text-decoration: none;
+
+    &:hover {
+      color: $link-hover-color;
+      text-decoration: underline $border-color;
+    }
+
+    &.warn {
+      color: red;
+    }
+  }
+}
+
+// Responsive styles
+@media (min-width: 992px) {
+  .navbar {
+    .nav-link {
+      margin: 0 15px;
+    }
+  }
+}

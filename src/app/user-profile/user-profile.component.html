@@ -1,0 +1,32 @@
+<div class="user-profile">
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="!loading">
+      <!-- User Profile -->
+      <mat-card>
+        <h2>User Profile</h2>
+        <p><strong>Username:</strong> {{ userData.username || 'No Username' }}</p>
+        <p><strong>Email:</strong> {{ userData.email || 'No Email' }}</p>
+        <p><strong>Birthdate:</strong> {{ userData.birthdate | date:'longDate' || 'No Birthdate' }}</p>
+      </mat-card>
+  
+      <!-- Favorite Movies Section -->
+      <mat-card>
+        <h3>Favorite Movies</h3>
+        <div *ngIf="favoriteMovies.length > 0; else noFavorites">
+          <div *ngFor="let movie of favoriteMovies" class="movie-card">
+            <mat-card>
+              <mat-card-title>{{ movie.title }}</mat-card-title>
+              <mat-card-content>
+                <p>{{ movie.synopsis }}</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+  
+        <ng-template #noFavorites>
+          <p>No favorite movies found.</p>
+        </ng-template>
+      </mat-card>
+    </div>
+  </div>
+  

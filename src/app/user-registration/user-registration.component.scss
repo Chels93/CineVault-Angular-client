@@ -1,0 +1,107 @@
+/* Style the entire form container */
+form {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  /* Style for the mat-card container */
+  mat-card {
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+  }
+  
+  /* Style each mat-form-field */
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 20px;  /* Increased margin for better spacing */
+    display: block;  /* Ensure each field is on a new line */
+  }
+  
+  /* General styling for input fields */
+  input[matInput] {
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    font-size: 16px;  /* Ensuring readability */
+  }
+  
+  /* Specific styles for each input field */
+  
+  /* Username Input */
+  .username-input {
+    height: 35px;  /* Make the username input shorter */
+    padding: 8px 12px;  /* Adjust padding for better fit */
+  }
+  
+  /* Password Input */
+  .password-input {
+    height: 35px;  /* Make the password input shorter */
+    padding: 8px 12px;
+  }
+  
+  /* Email Input */
+  .email-input {
+    height: 35px;  /* Make the email input shorter */
+    padding: 8px 12px;
+  }
+  
+  /* Birthdate Input */
+  .birthdate-input {
+    height: 35px;  /* Make the birthdate input shorter */
+    padding: 8px 12px;
+  }
+  
+  /* Style for the mat-label */
+  mat-label {
+    font-size: 1.1em;  /* Increase font size */
+    font-weight: 600;  /* Make font weight bolder */
+    color: #333;  /* Darker color for better contrast */
+  }
+  
+  /* Style the submit button */
+  button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    height: 45px;  /* Increased height for the button */
+  }
+  
+  /* Primary color for the button */
+  button[type="submit"].mat-raised-button {
+    background-color: #3f51b5; /* Material primary color */
+  }
+  
+  /* Darker shade on hover */
+  button[type="submit"].mat-raised-button:hover {
+    background-color: #303f9f;
+  }
+  
+  /* Responsive design for smaller screens */
+  @media (max-width: 600px) {
+    form {
+      padding: 10px;
+    }
+  
+    mat-card {
+      padding: 10px;
+    }
+  
+    button[type="submit"] {
+      font-size: 14px;
+    }
+  
+    /* Adjust input field height and padding for smaller screens */
+    input[matInput] {
+      height: 40px;
+      padding: 10px;
+    }
+  
+    /* Ensure label size is appropriate for mobile view */
+    mat-label {
+      font-size: 1em;
+    }
+  }
+  

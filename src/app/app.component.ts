@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { NavigationComponent } from './navigation/navigation.component'
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [
+    RouterModule, 
+    NavigationComponent
+  ]
 })
 export class AppComponent {
-  title = 'CineVault-Angular-client';
+  title = 'myFlix-Angular-client';
 }

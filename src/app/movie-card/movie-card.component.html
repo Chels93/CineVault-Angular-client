@@ -1,0 +1,62 @@
+<div *ngIf="loading">Loading movies...</div>
+<div *ngIf="error">{{ error }}</div>
+
+<div *ngIf="!loading && !error">
+  <div class="movie-cards-container">
+    <mat-card *ngFor="let movie of movies" class="movie-card">
+      <!-- Card Header -->
+      <mat-card-header>
+        <mat-card-title>{{ movie.title }}</mat-card-title>
+      </mat-card-header>
+
+      <!-- Movie Image -->
+      <img
+        mat-card-image
+        [src]="movie.imagePath"
+        [alt]="movie.title"
+      />
+
+      <!-- Card Content -->
+      <mat-card-content>
+        <div class="movie-card-details">
+          <!-- Button to toggle Synopsis visibility -->
+          <button mat-button color="primary" (click)="toggleSynopsis(movie)">
+            {{ movie.isSynopsisVisible ? 'Hide Synopsis' : 'Show Synopsis' }}
+          </button>
+          <p *ngIf="movie.isSynopsisVisible">{{ movie.synopsis || 'No synopsis available.' }}</p>
+
+          <!-- Button to toggle Genre visibility -->
+          <button mat-button color="primary" (click)="toggleGenre(movie)">
+            {{ movie.isGenreVisible ? 'Hide Genre' : 'Show Genre' }}
+          </button>
+          <div *ngIf="movie.isGenreVisible">
+            <p>Genre: {{ movie.genre.name }}</p>
+            <p>Description: {{ movie.genre.description || 'No description available.' }}</p>
+          </div>
+
+          <!-- Button to toggle Director visibility -->
+          <button mat-button color="primary" (click)="toggleDirector(movie)">
+            {{ movie.isDirectorVisible ? 'Hide Director' : 'Show Director' }}
+          </button>
+          <div *ngIf="movie.isDirectorVisible">
+            <p>Director: {{ movie.director.name }}</p>
+            <p>Bio: {{ movie.director.bio }}</p>
+            <p>Birth Year: {{ movie.director.birthYear || 'N/A' }}</p>
+            <p>Death Year: {{ movie.director.deathYear || 'N/A' }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <!-- Card Actions -->
+      <div class="movie-card-buttons">
+        <!-- Button for adding/removing from favorites -->
+        <mat-icon
+          (click)="toggleFavorite(movie)"
+          [class.favorite]="movie.isFavorite"
+          [class.not-favorite]="!movie.isFavorite">
+          {{ movie.isFavorite ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+      </div>
+    </mat-card>
+  </div>
+</div>
