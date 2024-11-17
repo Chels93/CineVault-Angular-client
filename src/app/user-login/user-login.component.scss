@@ -1,0 +1,101 @@
+// Common variables
+$primary-color: #118ab2;
+$input-border-color: #ffd166;
+$input-focus-border-color: #007bff;
+$form-background-color: #f8f9fa;
+$form-padding: 20px;
+$form-border-radius: 8px;
+$form-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+$form-outline-color: #ffd166;
+$brand-color: #118ab2;
+$brand-font-size: 3rem;
+$brand-font-weight: bold;
+$brand-underline-color: #ffd166;
+
+// Login container
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+
+  .form-container {
+    background-color: $form-background-color;
+    padding: $form-padding;
+    border-radius: $form-border-radius;
+    box-shadow: $form-box-shadow;
+    border: 2px solid $form-outline-color; // Outline the form container
+    max-width: 400px; // Maximum width for the form container
+    width: 100%; // Ensure it takes up full width of its container
+
+    .navbar-brand {
+      color: $brand-color;
+      font-size: $brand-font-size;
+      font-weight: $brand-font-weight;
+      text-decoration: underline $brand-underline-color;
+      margin-bottom: 1rem; // Space between brand text and form
+    }
+  }
+}
+
+// Form styles
+form {
+  display: flex;
+  flex-direction: column;
+
+  .form-group {
+    margin-bottom: 1rem;
+
+    .form-label {
+      font-weight: bold;
+      color: #333;
+      padding: 1rem;
+    }
+
+    .form-control {
+      border: 1px solid $input-border-color;
+      border-radius: 4px;
+      padding: 0.5rem;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: $input-focus-border-color;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+    }
+  }
+
+  .password-group {
+    margin-top: 1rem;
+  }
+
+  .submit-button {
+    margin-top: 1rem;
+    background-color: $primary-color;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+
+  .toggle-button {
+    margin-top: 1rem;
+  }
+}
+
+// Responsive styles
+@media (min-width: 576px) {
+  .form-container {
+    padding: 30px;
+  }
+
+  .submit-button {
+    padding: 0.75rem 1.5rem;
+  }
+}

@@ -1,113 +1,138 @@
 import { Injectable } from '@angular/core';
-import { catchError } from 'rxjs/operators';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
-const apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com/';
+export interface Movie {
+  _id: string;
+  title: string;
+  genre: { name: string; description: string };
+  director: { name: string; bio: string; birthYear: number; deathYear: number };
+  synopsis: string;
+  imagePath: string;
+  releaseDate: Date;
+  isSynopsisVisible?: boolean;
+  isGenreVisible?: boolean;
+  isDirectorVisible?: boolean;
+  isFavorite?: boolean;
+}
+
+export interface User {
+  username: string;
+  password: string;
+  email: string;
+  birthdate?: Date;
+  favoriteMovies: Movie[];
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class FetchApiDataService {
-  constructor(private http: HttpClient) {}
+  private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com';
 
-  // User Registration
-  public userRegistration(userDetails: any): Observable<any> {
-    return this.http
-      .post(apiUrl + 'users', userDetails)
-      .pipe(catchError(this.handleError));
+  constructor(private httpClient: HttpClient) {}
+
+  private getToken(): string | null {
+    return localStorage.getItem('authToken');
   }
 
-  // User Login
-  public userLogin(userCredentials: any): Observable<any> {
-    return this.http
-      .post(apiUrl + 'login', userCredentials)
-      .pipe(catchError(this.handleError));
+  private getUsername(): string | null {
+    return localStorage.getItem('username');
   }
 
-  // Get All Movies
-  public getAllMovies(): Observable<any> {
-    return this.http
-      .get(apiUrl + 'movies')
-      .pipe(catchError(this.handleError));
-  }
-
-  // Get One Movie
-  public getMovie(movieId: string): Observable<any> {
-    return this.http
-      .get(apiUrl + 'movies/' + movieId)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Get Director
-  public getDirector(directorName: string): Observable<any> {
-    return this.http
-      .get(apiUrl + 'directors/' + directorName)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Get Genre
-  public getGenre(genreName: string): Observable<any> {
-    return this.http
-      .get(apiUrl + 'genres/' + genreName)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Get User
-  public getUser(username: string): Observable<any> {
-    return this.http
-      .get(apiUrl + 'users/' + username)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Get Favorite Movies for a User
-  public getFavoriteMovies(username: string): Observable<any> {
-    return this.http
-      .get(apiUrl + 'users/' + username + '/movies')
-      .pipe(catchError(this.handleError));
-  }
-
-  // Add a Movie to Favorite Movies
-  public addFavoriteMovie(username: string, movieId: string): Observable<any> {
-    return this.http
-      .post(apiUrl + 'users/' + username + '/movies/' + movieId, {})
-      .pipe(catchError(this.handleError));
-  }
-
-  // Edit User
-  public editUser(username: string, userDetails: any): Observable<any> {
-    return this.http
-      .put(apiUrl + 'users/' + username, userDetails)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Delete User
-  public deleteUser(username: string): Observable<any> {
-    return this.http
-      .delete(apiUrl + 'users/' + username)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Delete a Movie from Favorite Movies
-  public deleteFavoriteMovie(username: string, movieId: string): Observable<any> {
-    return this.http
-      .delete(apiUrl + 'users/' + username + '/movies/' + movieId)
-      .pipe(catchError(this.handleError));
-  }
-
-  // Error Handling
-  private handleError(error: HttpErrorResponse): any {
-    if (error.error instanceof ErrorEvent) {
-      console.error('Some error occurred:', error.error.message);
-    } else {
-      console.error(
-        `Error Status code ${error.status}, ` + `Error body is: ${error.error}`
-      );
+  private createAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('No token found. Please log in.');
     }
-    return throwError('Something bad happened; please try again later.');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('Error occurred:', error);
+    return throwError(() => new Error(error.message || 'An unknown error occurred.'));
+  }
+
+  // Fetch all movies
+  public getAllMovies(): Observable<Movie[]> {
+    return this.httpClient
+      .get<Movie[]>(`${this.apiUrl}/movies`, { headers: this.createAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Fetch user information
+  public getUser(): Observable<User> {
+    const username = this.getUsername();
+    if (!username) {
+      return throwError(() => new Error('No username found. Please log in.'));
+    }
+    return this.httpClient
+      .get<User>(`${this.apiUrl}/users/${username}`, { headers: this.createAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Fetch favorite movies of a user
+  public getfavoriteMovies(): Observable<Movie[]> {
+    const username = this.getUsername();
+    if (!username) {
+      return throwError(() => new Error('No username found. Please log in.'));
+    }
+    return this.httpClient
+      .get<Movie[]>(`${this.apiUrl}/users/${username}/favoriteMovies`, { headers: this.createAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Add a movie to favorites
+  public addToFavorites(movieId: string): Observable<any> {
+    const username = this.getUsername();
+    if (!username) {
+      throw new Error('No username found. Please log in.');
+    }
+    return this.httpClient
+      .post<any>(
+        `${this.apiUrl}/users/${username}/movies/${movieId}`,
+        {},
+        { headers: this.createAuthHeaders() }
+      )
+      .pipe(catchError(this.handleError));
+  }
+
+  // Remove a movie from favorites
+  public removeFromFavorites(movieId: string): Observable<any> {
+    const username = this.getUsername();
+    if (!username) {
+      throw new Error('No username found. Please log in.');
+    }
+    return this.httpClient
+      .delete<any>(`${this.apiUrl}/users/${username}/movies/${movieId}`, { headers: this.createAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
+  // User login
+  public userLogin(credentials: { username: string; password: string }): Observable<any> {
+    return this.httpClient
+      .post(`${this.apiUrl}/login`, credentials)
+      .pipe(catchError(this.handleError));
+  }
+
+  // User registration
+  public userRegistration(user: User): Observable<any> {
+    return this.httpClient
+      .post(`${this.apiUrl}/register`, user)
+      .pipe(catchError(this.handleError));
+  }
+
+  // Update user information
+  public updateUser(updatedUserData: Partial<User>): Observable<User> {
+    const username = this.getUsername();
+    if (!username) {
+      throw new Error('No username found. Please log in.');
+    }
+    return this.httpClient
+      .put<User>(`${this.apiUrl}/users/${username}`, updatedUserData, { headers: this.createAuthHeaders() })
+      .pipe(catchError(this.handleError));
   }
 }

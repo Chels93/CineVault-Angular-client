@@ -1,9 +1,11 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr';
+import { ngExpressEngine } from '@nguniversal/express-engine'; // Corrected import
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
-import bootstrap from './src/main.server';
+
+// Corrected import for AppServerModule
+import AppServerModule from './src/main.server'; // Assuming the main Angular server module is here
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -12,13 +14,14 @@ export function app(): express.Express {
   const browserDistFolder = resolve(serverDistFolder, '../browser');
   const indexHtml = join(serverDistFolder, 'index.server.html');
 
-  const commonEngine = new CommonEngine();
+  // Set up ngExpressEngine
+  server.engine('html', ngExpressEngine({
+    bootstrap: AppServerModule, // Specify the Angular module for the server-side rendering
+  }));
 
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get('**', express.static(browserDistFolder, {
     maxAge: '1y',
@@ -29,16 +32,18 @@ export function app(): express.Express {
   server.get('**', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
 
-    commonEngine
-      .render({
-        bootstrap,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: browserDistFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-      })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+    // Use ngExpressEngine to render the Angular app
+    ngExpressEngine({
+      bootstrap: AppServerModule, // Same bootstrap module as above
+    })(indexHtml, {
+      url: `${protocol}://${headers.host}${originalUrl}`,
+      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+    }, (err, html) => {
+      if (err) {
+        return next(err);
+      }
+      res.send(html);
+    });
   });
 
   return server;

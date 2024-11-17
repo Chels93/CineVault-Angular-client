@@ -1,0 +1,40 @@
+<form [formGroup]="registrationForm" (ngSubmit)="registerUser()">
+    <mat-card>
+      <!-- Username Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" required />
+        <mat-error *ngIf="registrationForm.get('username')?.invalid && registrationForm.get('username')?.touched">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Password Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" required />
+        <mat-error *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched">
+          Password is required and must be at least 6 characters long
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Email Field -->
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" required />
+        <mat-error *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched">
+          A valid email is required
+        </mat-error>
+      </mat-form-field>
+  
+      <!-- Birthdate Field (Optional) -->
+      <mat-form-field appearance="fill">
+        <mat-label>Birthdate</mat-label>
+        <input matInput type="date" formControlName="birthdate" />
+      </mat-form-field>
+  
+      <!-- Submit Button -->
+      <button mat-raised-button color="primary" type="submit">Register</button>
+    </mat-card>
+  </form>
+  

@@ -1,20 +1,60 @@
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { AppRoutingModule } from './app-routing.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+
 import { AppComponent } from './app.component';
+import { UserRegistrationComponent } from './user-registration/user-registration.component';
+import { UserLoginComponent } from './user-login/user-login.component';
+import { MovieCardComponent } from './movie-card/movie-card.component';
+import { WelcomePageComponent } from './welcome-page/welcome-page.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { AppRoutingModule } from './app-routing.module'; // Ensure this is imported
+import { RouterModule, Routes } from '@angular/router';
+import { NavigationComponent } from './navigation/navigation.component';
+
+const routes: Routes = [
+    { path: 'welcome', component: WelcomePageComponent },
+    { path: 'movies', component: MovieCardComponent },
+    { path: 'profile', component: UserProfileComponent },
+    { path: 'login', component: UserLoginComponent },
+    { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+  ];
 
 @NgModule({
-    declarations: [
-        AppComponent
-    ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        AppRoutingModule
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    UserRegistrationComponent,
+    UserLoginComponent,
+    MovieCardComponent,
+    WelcomePageComponent,
+    UserProfileComponent,
+    NavigationComponent,
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    AppRoutingModule,
+    RouterModule.forChild(routes)
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
