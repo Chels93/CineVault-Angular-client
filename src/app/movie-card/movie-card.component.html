@@ -1,3 +1,4 @@
+<!-- Loading Spinner -->
 <div *ngIf="loading">Loading movies...</div>
 <div *ngIf="error">{{ error }}</div>
 
@@ -14,6 +15,7 @@
         mat-card-image
         [src]="movie.imagePath"
         [alt]="movie.title"
+        (error)="onImageError($event)"
       />
 
       <!-- Card Content -->
@@ -21,28 +23,33 @@
         <div class="movie-card-details">
           <!-- Button to toggle Synopsis visibility -->
           <button mat-button color="primary" (click)="toggleSynopsis(movie)">
-            {{ movie.isSynopsisVisible ? 'Hide Synopsis' : 'Show Synopsis' }}
+            {{ movie.isSynopsisVisible ? "Hide Synopsis" : "Show Synopsis" }}
           </button>
-          <p *ngIf="movie.isSynopsisVisible">{{ movie.synopsis || 'No synopsis available.' }}</p>
+          <p *ngIf="movie.isSynopsisVisible">
+            {{ movie.synopsis || "No synopsis available." }}
+          </p>
 
           <!-- Button to toggle Genre visibility -->
           <button mat-button color="primary" (click)="toggleGenre(movie)">
-            {{ movie.isGenreVisible ? 'Hide Genre' : 'Show Genre' }}
+            {{ movie.isGenreVisible ? "Hide Genre" : "Show Genre" }}
           </button>
           <div *ngIf="movie.isGenreVisible">
             <p>Genre: {{ movie.genre.name }}</p>
-            <p>Description: {{ movie.genre.description || 'No description available.' }}</p>
+            <p>
+              Description:
+              {{ movie.genre.description || "No description available." }}
+            </p>
           </div>
 
           <!-- Button to toggle Director visibility -->
           <button mat-button color="primary" (click)="toggleDirector(movie)">
-            {{ movie.isDirectorVisible ? 'Hide Director' : 'Show Director' }}
+            {{ movie.isDirectorVisible ? "Hide Director" : "Show Director" }}
           </button>
           <div *ngIf="movie.isDirectorVisible">
             <p>Director: {{ movie.director.name }}</p>
             <p>Bio: {{ movie.director.bio }}</p>
-            <p>Birth Year: {{ movie.director.birthYear || 'N/A' }}</p>
-            <p>Death Year: {{ movie.director.deathYear || 'N/A' }}</p>
+            <p>Birth Year: {{ movie.director.birthYear || "N/A" }}</p>
+            <p>Death Year: {{ movie.director.deathYear || "N/A" }}</p>
           </div>
         </div>
       </mat-card-content>
@@ -53,8 +60,9 @@
         <mat-icon
           (click)="toggleFavorite(movie)"
           [class.favorite]="movie.isFavorite"
-          [class.not-favorite]="!movie.isFavorite">
-          {{ movie.isFavorite ? 'favorite' : 'favorite_border' }}
+          [class.not-favorite]="!movie.isFavorite"
+        >
+          {{ movie.isFavorite ? "favorite" : "favorite_border" }}
         </mat-icon>
       </div>
     </mat-card>

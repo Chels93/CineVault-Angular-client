@@ -13,7 +13,7 @@ export const routes: Routes = [
   { path: 'profile', component: UserProfileComponent }, // Corrected route for profile
   { path: 'login', component: UserLoginComponent },
   { path: 'logout', component: UserLoginComponent },
-  { path: '', redirectTo: '/profile', pathMatch: 'full' }, // Corrected redirection
+  { path: '', redirectTo: '/welcome', pathMatch: 'full' }, // Corrected redirection
 ];
 
 // NgModule configuration
