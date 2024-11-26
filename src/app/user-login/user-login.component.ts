@@ -62,13 +62,16 @@ export class UserLoginComponent implements OnInit {
 
   public logInUser(): void {
     const credentials = this.loginForm.value;
-
+  
     this.fetchApiData.userLogin(credentials).subscribe({
       next: (response) => {
         localStorage.setItem('authToken', response.token);
         localStorage.setItem('username', credentials.username);
-
-        // Redirect to the profile page after successful login
+  
+        // Close dialog after successful login
+        this.dialogRef?.close();
+  
+        // Redirect to profile page
         this.router.navigate(['/profile']);
       },
       error: (err) => {
@@ -78,6 +81,7 @@ export class UserLoginComponent implements OnInit {
       },
     });
   }
+  
 
   private handleError(error: any): void {
     console.error('Login error:', error);
@@ -111,6 +115,7 @@ export class UserLoginComponent implements OnInit {
     localStorage.removeItem('authToken');
     this.isLoggedIn = false;
     this.snackBar.open('Logged out successfully', 'OK', { duration: 2000 });
-    this.router.navigate(['/login']); // Redirect to login page after logout
+    this.router.navigate(['/welcome']); // Redirect to the welcome page after logout
   }
+  
 }

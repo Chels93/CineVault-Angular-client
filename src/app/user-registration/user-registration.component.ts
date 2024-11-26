@@ -46,6 +46,11 @@ export class UserRegistrationComponent implements OnInit {
   }
 
   registerUser(): void {
+    // Log the form status and errors for debugging purposes
+    console.log('Form Valid:', this.registrationForm.valid);
+    console.log('Form Errors:', this.registrationForm.errors);
+    console.log('Form Controls:', this.registrationForm.controls);
+  
     if (this.registrationForm.valid) {
       this.fetchApiData.userRegistration(this.registrationForm.value).subscribe(
         (result: any) => {
@@ -62,7 +67,7 @@ export class UserRegistrationComponent implements OnInit {
       this.snackBar.open('Please fill in all required fields correctly', 'OK', { duration: 3000 });
     }
   }
-
+  
   private extractErrorMessage(error: any): string {
     if (error.error && error.error.errors) {
       return error.error.errors

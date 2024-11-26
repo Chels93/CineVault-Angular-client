@@ -77,9 +77,7 @@ export class MovieCardComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error fetching user data:', error);
-        this.snackBar.open('Error fetching user data.', 'Close', {
-          duration: 3000,
-        });
+        this.snackBar.open('Error fetching user data.', 'Close', { duration: 3000 });
         this.error = 'Error fetching user data'; // Set error message
         this.loading = false;
       },
@@ -101,36 +99,32 @@ export class MovieCardComponent implements OnInit {
   }
 
   toggleFavorite(movie: Movie): void {
-    const movieIndex = this.favoriteMovies.findIndex((favMovie) => favMovie._id === movie._id);
-
+    const movieIndex = this.favoriteMovies.findIndex((m) => m._id === movie._id);
+  
     if (movieIndex !== -1) {
       // If the movie is in favorites, remove it
       this.fetchApiData.removeFromFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies = this.favoriteMovies.filter((favMovie) => favMovie._id !== movie._id);
-        movie.isFavorite = false; // Update movie object to reflect change
-        this.favoriteToggled.emit();
-        this.snackBar.open('Removed from favorites!', 'Close', {
-          duration: 2000,
-        });
-
-        // Optionally, refresh the user data after removing
+        this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+        movie.isFavorite = false;
+        this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+  
+        // Re-fetch updated user data after removing the movie
         this.getUser(); // Re-fetch the updated user data
       });
     } else {
       // If the movie is not in favorites, add it
       this.fetchApiData.addToFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies.push(movie); // Add entire Movie object, not just ID
-        movie.isFavorite = true; // Update movie object to reflect change
-        this.favoriteToggled.emit();
-        this.snackBar.open('Added to favorites!', 'Close', {
-          duration: 2000,
-        });
-
-        // Optionally, refresh the user data after adding
+        this.favoriteMovies.push(movie); // Add the entire movie object to favorites
+        movie.isFavorite = true;
+        this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+  
+        // Re-fetch updated user data after adding the movie
         this.getUser(); // Re-fetch the updated user data
       });
     }
   }
+  
+  
 
   addToFavorites(movieId: string): void {
     if (!movieId) {
@@ -160,6 +154,11 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/placeholder-image.jpg';
+  }
+  
   toggleSynopsis(movie: Movie): void {
     movie.isSynopsisVisible = !movie.isSynopsisVisible;
   }
