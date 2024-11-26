@@ -10,6 +10,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatNativeDateModule } from '@angular/material/core';
+
 
 import { AppComponent } from './app.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
@@ -51,6 +53,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
+    MatNativeDateModule,
     AppRoutingModule,
     RouterModule.forChild(routes)
   ],

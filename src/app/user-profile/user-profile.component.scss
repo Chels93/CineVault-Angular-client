@@ -24,73 +24,132 @@ $breakpoint-lg: 992px;
 $breakpoint-md: 768px;
 $breakpoint-sm: 576px;
 
-/* Movie cards container styling */
-.movie-cards-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns by default */
-    gap: 20px; /* Spacing between the cards */
-    padding: 20px;
-    margin: 0 auto; /* Center the grid container */
-    width: 100%;
-    box-sizing: border-box;
-    grid-auto-rows: minmax(200px, auto); /* Ensure the rows have a minimum height */
+/* Styling for User Profile and Update Profile */
+.user-profile-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
-/* Individual movie card styling */
-.mat-card {
-  background-color: $card-background-color;
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 1rem; /* Adjust padding to make cards smaller */
+.user-profile,
+.update-profile-container {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* Header Styling */
+.primary-header {
+  font-size: 2rem;
+  font-family: 'Arial', sans-serif;
+  color: $primary-color;
+  margin-bottom: $title-spacing;
+}
+
+/* Form Styling */
+input[type="text"], input[type="email"] {
+  border: 1px solid $input-border-color;
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+input[type="text"]:focus, input[type="email"]:focus {
+  border-color: $input-focus-border-color;
+}
+
+button {
+  background-color: $button-background-color;
+  color: $button-text-color;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+button:hover {
+  background-color: darken($button-background-color, 10%);
+}
+
+/* Movie Cards Container */
+.movie-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Individual Movie Card */
+.movie-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: auto;
   width: 100%;
-  max-width: 18rem; /* Set max width to ensure cards are not too wide */
+  max-width: 20rem;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: $card-background-color;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  padding: $card-padding-large;
 
-  /* Movie Image Styling */
-  .movie-card-image {
-    max-height: 12rem; /* Limit the image height */
-    object-fit: contain; /* Ensure the entire image is visible */
-    width: 100%;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   }
-  
 
-  .movie-card-details {
-    flex-grow: 1; /* Allow details to grow and fill remaining space */
+  @media (max-width: $breakpoint-lg) {
+    max-width: 18rem;
   }
 
-  .movie-card-buttons {
-    margin-top: 1rem;
+  @media (max-width: $breakpoint-md) {
+    max-width: 15rem;
+    padding: $card-padding-small;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    max-width: 12rem;
+    margin: 0.5rem;
+    padding: $card-padding-small;
   }
 }
 
-/* Ensure movies are laid out properly on different screen sizes */
-@media (max-width: $breakpoint-lg) {
-    .movie-cards-container {
-      grid-template-columns: repeat(3, 1fr); /* 3 columns for medium screens */
-    }
-    .mat-card {
-      max-width: 16rem; /* Adjust max width for medium screens */
-    }
+/* Mat Icon Buttons (Add to Favorites) */
+.mat-icon {
+  cursor: pointer;
 }
 
-@media (max-width: $breakpoint-md) {
-    .movie-cards-container {
-      grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
-    }
-    .mat-card {
-      max-width: 14rem; /* Adjust max width for smaller screens */
-    }
+.favorite {
+  color: #ff6347;
 }
 
-@media (max-width: $breakpoint-sm) {
-    .movie-cards-container {
-      grid-template-columns: 1fr; /* 1 column for very small screens */
-    }
-    .mat-card {
-      max-width: 12rem; /* Adjust max width for very small screens */
-    }
+.not-favorite {
+  color: #ccc;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  text-align: center;
+  margin: 2rem;
+}
+
+/* Error and Loading States */
+.error, .loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: $primary-color;
+}
+
+/* Optional: Add padding to mat-cards and adjust button positioning */
+.mat-card {
+  padding: 1rem;
+}
+
+button.mat-button {
+  margin-top: 1rem;
 }

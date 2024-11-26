@@ -1,110 +1,151 @@
- <!-- Loading Spinner -->
-<div *ngIf="loading"></div>
-
-<!-- User Profile Section -->
-<div *ngIf="!loading">
-  <mat-card class="user-profile">
-    <div class="user-profile-header">
-      <h2>User Profile</h2>
+<!-- Loading Spinner -->
+<div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+  
+  <!-- User Profile and Update Profile Sections -->
+  <div *ngIf="!loading">
+    <div class="user-profile-container">
+      <!-- User Profile Section -->
+      <mat-card class="user-profile">
+        <div class="user-profile-header">
+          <h2 class="primary-header">User Profile</h2>
+        </div>
+  
+        <!-- User Profile Information -->
+        <div class="user-profile-details">
+          <p><strong>Username:</strong> {{ userData.username || "No Username" }}</p>
+          <p><strong>Email:</strong> {{ userData.email || "No Email" }}</p>
+          <p>
+            <strong>Birthdate:</strong>
+            {{ userData.birthdate | date: "longDate" || "No Birthdate" }}
+          </p>
+        </div>
+      </mat-card>
+  
+      <!-- Update Profile Section -->
+      <div class="update-profile-container">
+        <h2 class="primary-header">Update Profile</h2>
+        <form (submit)="updateUser()" #updateProfileForm="ngForm">
+          <!-- Username Input -->
+          <input
+            type="text"
+            [(ngModel)]="userData.username"
+            name="username"
+            placeholder="Update Username"
+            required
+            #username="ngModel"
+          />
+          <div *ngIf="username.invalid && username.touched" class="error-message">
+            Username is required.
+          </div>
+  
+          <!-- Email Input -->
+          <input
+            type="email"
+            [(ngModel)]="userData.email"
+            name="email"
+            placeholder="Update Email"
+            required
+            #email="ngModel"
+          />
+          <div *ngIf="email.invalid && email.touched" class="error-message">
+            Please enter a valid email.
+          </div>
+  
+          <!-- Birthdate Input -->
+          <mat-form-field appearance="fill">
+            <mat-label>Birthdate</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              [(ngModel)]="userData.birthdate"
+              name="birthdate"
+              required
+              #birthdate="ngModel"
+            />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <div *ngIf="birthdate.invalid && birthdate.touched" class="error-message">
+            Birthdate is required.
+          </div>
+  
+          <!-- Update Button -->
+          <button type="submit" [disabled]="updateProfileForm.invalid || loading">
+            Update Profile
+          </button>
+        </form>
+      </div>
     </div>
-
-    <!-- User Profile Information -->
-    <div class="user-profile-details">
-      <p><strong>Username:</strong> {{ userData.username || "No Username" }}</p>
-      <p><strong>Email:</strong> {{ userData.email || "No Email" }}</p>
-      <p>
-        <strong>Birthdate:</strong>
-        {{ userData.birthdate | date : "longDate" || "No Birthdate" }}
-      </p>
-    </div>
-  </mat-card>
-
+  </div>
+  
   <!-- Favorite Movies Section -->
   <mat-card class="favorite-movies">
     <h3>Favorite Movies</h3>
     <div *ngIf="!loading && !error">
-        <div class="movie-cards-container">
-          <div *ngIf="favoriteMovies.length > 0; else noFavorites">
-            <mat-card *ngFor="let movie of favoriteMovies" class="mat-card">
-              <!-- Card Header -->
-              <mat-card-header>
-                <mat-card-title>{{ movie.title }}</mat-card-title>
-              </mat-card-header>
-
-              <!-- Movie Image -->
-              <img
-                mat-card-image
-                [src]="movie.imagePath || 'assets/placeholder-image.jpg'"
-                [alt]="movie.title"
-                (error)="onImageError($event)"
-                class="movie-card-image"
-              />
-
-              <!-- Card Content -->
-              <mat-card-content>
-                <div class="movie-card-details">
-                  <!-- Button to toggle Synopsis visibility -->
-                  <button
-                    mat-button
-                    color="primary"
-                    (click)="toggleSynopsis(movie)"
-                  >
-                    {{
-                      movie.isSynopsisVisible ? "Hide Synopsis" : "Show Synopsis"
-                    }}
-                  </button>
-                  <p *ngIf="movie.isSynopsisVisible">
-                    {{ movie.synopsis || "No synopsis available." }}
-                  </p>
-
-                  <!-- Button to toggle Genre visibility -->
-                  <button mat-button color="primary" (click)="toggleGenre(movie)">
-                    {{ movie.isGenreVisible ? "Hide Genre" : "Show Genre" }}
-                  </button>
-                  <div *ngIf="movie.isGenreVisible">
-                    <p>Genre: {{ movie.genre.name }}</p>
-                    <p>
-                      Description:
-                      {{ movie.genre.description || "No description available." }}
-                    </p>
+      <div class="movie-cards-container">
+        <div *ngIf="favoriteMovies.length > 0; else noFavorites">
+          <mat-card *ngFor="let movie of favoriteMovies" class="movie-card">
+            <!-- Card Header -->
+            <mat-card-header>
+              <mat-card-title>{{ movie.title }}</mat-card-title>
+            </mat-card-header>
+  
+            <!-- Movie Image -->
+            <img
+              mat-card-image
+              [src]="movie.imagePath || 'assets/placeholder-image.jpg'"
+              [alt]="movie.title"
+              (error)="onImageError($event)"
+            />
+  
+            <mat-card-content>
+              <div class="movie-card-details">
+                <!-- Single Button to toggle all details visibility -->
+                <button mat-button color="primary" (click)="toggleAllDetails(movie)">
+                  {{ movie.areDetailsVisible ? "Hide Details" : "Show Details" }}
+                </button>
+  
+                <!-- Display all details if areDetailsVisible is true -->
+                <div *ngIf="movie.areDetailsVisible">
+                  <!-- Synopsis -->
+                  <p>{{ movie.synopsis || "No synopsis available." }}</p>
+  
+                  <!-- Genre -->
+                  <div>
+                    <p><strong>Genre:</strong> {{ movie.genre.name }}</p>
+                    <p><strong>Description:</strong> {{ movie.genre.description || "No description available." }}</p>
                   </div>
-
-                  <!-- Button to toggle Director visibility -->
-                  <button
-                    mat-button
-                    color="primary"
-                    (click)="toggleDirector(movie)"
-                  >
-                    {{
-                      movie.isDirectorVisible ? "Hide Director" : "Show Director"
-                    }}
-                  </button>
-                  <div *ngIf="movie.isDirectorVisible">
-                    <p>Director: {{ movie.director.name }}</p>
-                    <p>Bio: {{ movie.director.bio }}</p>
-                    <p>Birth Year: {{ movie.director.birthYear || "N/A" }}</p>
-                    <p>Death Year: {{ movie.director.deathYear || "N/A" }}</p>
+  
+                  <!-- Director -->
+                  <div>
+                    <p><strong>Director:</strong> {{ movie.director.name }}</p>
+                    <p><strong>Bio:</strong> {{ movie.director.bio }}</p>
+                    <p><strong>Birth Year:</strong> {{ movie.director.birthYear || "N/A" }}</p>
+                    <p><strong>Death Year:</strong> {{ movie.director.deathYear || "N/A" }}</p>
                   </div>
                 </div>
-              </mat-card-content>
-
-              <!-- Card Actions -->
-              <div class="movie-card-buttons">
-                <!-- Button for adding/removing from favorites -->
-                <mat-icon
-                  (click)="toggleFavorite(movie)"
-                  [class.favorite]="movie.isFavorite"
-                  [class.not-favorite]="!movie.isFavorite"
-                >
-                  {{ movie.isFavorite ? "favorite" : "favorite_border" }}
-                </mat-icon>
               </div>
-            </mat-card>
-          </div>
+            </mat-card-content>
+  
+            <!-- Card Actions -->
+            <div class="movie-card-buttons">
+              <!-- Button for adding/removing from favorites -->
+              <mat-icon
+                (click)="toggleFavorite(movie)"
+                [class.favorite]="movie.isFavorite"
+                [class.not-favorite]="!movie.isFavorite"
+              >
+                {{ movie.isFavorite ? "favorite" : "favorite_border" }}
+              </mat-icon>
+            </div>
+          </mat-card>
         </div>
-        <ng-template #noFavorites>
-          <p>No favorite movies found.</p>
-        </ng-template>
+      </div>
     </div>
+    <ng-template #noFavorites>
+      <p>No favorite movies yet.</p>
+    </ng-template>
   </mat-card>
-</div>
+  
