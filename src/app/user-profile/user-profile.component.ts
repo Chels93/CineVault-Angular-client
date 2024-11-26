@@ -9,6 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';  
+import { MatNativeDateModule } from '@angular/material/core';        
+import { FormsModule } from '@angular/forms'; 
+import { MatInputModule } from '@angular/material/input';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-profile',
@@ -21,7 +27,12 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    FormsModule 
   ],
 })
 export class UserProfileComponent implements OnInit {
@@ -32,6 +43,10 @@ export class UserProfileComponent implements OnInit {
     favoriteMovies: [],
     password: '',
   };
+
+  updatedUsername: string = '';
+  updatedEmail: string = '';
+  updatedBirthdate: string = '';
 
   favoriteMovies: Movie[] = [];
   loading: boolean = true;
@@ -44,13 +59,17 @@ export class UserProfileComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getUser(); // Fetch user data on component initialization
-    this.getFavoriteMovies(); // Fetch favorite movies on component initialization
+    this.getUser();
+    this.getFavoriteMovies();
   }
 
   private handleError(error: HttpErrorResponse): void {
     console.error('Error occurred:', error);
-    this.snackBar.open('An error occurred. Please try again later.', 'Close', { duration: 3000 });
+    if (error.status === 404) {
+      this.snackBar.open('User or favorite movies not found.', 'Close', { duration: 3000 });
+    } else {
+      this.snackBar.open('An error occurred. Please try again later.', 'Close', { duration: 3000 });
+    }
     this.error = error.message;
     this.loading = false;
   }
@@ -60,6 +79,17 @@ export class UserProfileComponent implements OnInit {
     this.fetchApiData.getUser().subscribe({
       next: (userData: User) => {
         this.userData = userData;
+        this.updatedUsername = userData.username;
+        this.updatedEmail = userData.email;
+
+        if (typeof userData.birthdate === 'string') {
+          userData.birthdate = new Date(userData.birthdate); 
+        }
+
+        this.updatedBirthdate = userData.birthdate instanceof Date 
+          ? userData.birthdate.toISOString().split('T')[0] 
+          : ''; 
+
         this.loading = false;
       },
       error: (err) => this.handleError(err),
@@ -70,12 +100,10 @@ export class UserProfileComponent implements OnInit {
     this.loading = true;
     this.fetchApiData.getfavoriteMovies().subscribe({
       next: (movies: Movie[]) => {
-        console.log('Movies data:', movies);
         this.favoriteMovies = movies;
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error fetching favorite movies:', error);
         this.snackBar.open('Error fetching favorite movies.', 'Close', { duration: 3000 });
         this.loading = false;
       },
@@ -86,29 +114,41 @@ export class UserProfileComponent implements OnInit {
     const movieIndex = this.favoriteMovies.findIndex((m) => m._id === movie._id);
 
     if (movieIndex !== -1) {
-      this.fetchApiData.removeFromFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
-        movie.isFavorite = false;
-        this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
-        this.getFavoriteMovies();
+      this.fetchApiData.removeFromFavorites(movie._id).subscribe({
+        next: () => {
+          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+          movie.isFavorite = false;
+          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+        },
+        error: (error) => this.handleError(error),
       });
     } else {
-      this.fetchApiData.addToFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies.push(movie);
-        movie.isFavorite = true;
-        this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
-        this.getFavoriteMovies();
+      this.fetchApiData.addToFavorites(movie._id).subscribe({
+        next: () => {
+          this.favoriteMovies.push(movie);
+          movie.isFavorite = true;
+          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+        },
+        error: (error) => this.handleError(error),
       });
     }
   }
 
-  onImageError(event: Event): void {
-    const target = event.target as HTMLImageElement;
-    target.src = 'assets/placeholder-image.jpg';
-  }
+  public updateUser(): void {
+    if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
+      this.snackBar.open('All fields are required.', 'Close', { duration: 3000 });
+      this.loading = false;
+      return;
+    }
 
-  public updateUser(updatedUserData: User): void {
     this.loading = true;
+
+    const updatedUserData: User = {
+      ...this.userData,
+      username: this.updatedUsername,
+      email: this.updatedEmail,
+      birthdate: new Date(this.updatedBirthdate),
+    };
 
     this.fetchApiData.updateUser(updatedUserData).subscribe({
       next: (updatedData: User) => {
@@ -117,40 +157,10 @@ export class UserProfileComponent implements OnInit {
         this.snackBar.open('Profile updated successfully!', 'Close', { duration: 3000 });
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error updating user data:', error);
         this.snackBar.open('Error updating user data.', 'Close', { duration: 3000 });
         this.loading = false;
       },
     });
-  }
-
-  public removeFromFavorites(movieId: string): void {
-    this.loading = true;
-
-    this.fetchApiData.removeFromFavorites(movieId).subscribe({
-      next: () => {
-        this.favoriteMovies = this.favoriteMovies.filter((movie) => movie._id !== movieId);
-        this.snackBar.open('Removed from favorites!', 'Close', { duration: 3000 });
-        this.loading = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error removing movie from favorites:', error);
-        this.snackBar.open('Error removing from favorites.', 'Close', { duration: 3000 });
-        this.loading = false;
-      },
-    });
-  }
-
-  toggleSynopsis(movie: Movie): void {
-    movie.isSynopsisVisible = !movie.isSynopsisVisible;
-  }
-
-  toggleDirector(movie: Movie): void {
-    movie.isDirectorVisible = !movie.isDirectorVisible;
-  }
-
-  toggleGenre(movie: Movie): void {
-    movie.isGenreVisible = !movie.isGenreVisible;
   }
 
   public logout(): void {
@@ -159,7 +169,15 @@ export class UserProfileComponent implements OnInit {
     this.snackBar.open('Logged out successfully!', 'Close', { duration: 3000 });
   }
 
-  private isAuthenticated(): boolean {
-    return !!localStorage.getItem('token');
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/placeholder-image.jpg';
+  }
+
+  toggleAllDetails(movie: any): void {
+    if (movie.areDetailsVisible === undefined) {
+      movie.areDetailsVisible = false;
+    }
+    movie.areDetailsVisible = !movie.areDetailsVisible;
   }
 }

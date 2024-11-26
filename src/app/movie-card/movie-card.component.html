@@ -18,41 +18,35 @@
         (error)="onImageError($event)"
       />
 
-      <!-- Card Content -->
       <mat-card-content>
         <div class="movie-card-details">
-          <!-- Button to toggle Synopsis visibility -->
-          <button mat-button color="primary" (click)="toggleSynopsis(movie)">
-            {{ movie.isSynopsisVisible ? "Hide Synopsis" : "Show Synopsis" }}
-          </button>
-          <p *ngIf="movie.isSynopsisVisible">
-            {{ movie.synopsis || "No synopsis available." }}
-          </p>
-
-          <!-- Button to toggle Genre visibility -->
-          <button mat-button color="primary" (click)="toggleGenre(movie)">
-            {{ movie.isGenreVisible ? "Hide Genre" : "Show Genre" }}
-          </button>
-          <div *ngIf="movie.isGenreVisible">
-            <p>Genre: {{ movie.genre.name }}</p>
-            <p>
-              Description:
-              {{ movie.genre.description || "No description available." }}
-            </p>
-          </div>
-
-          <!-- Button to toggle Director visibility -->
-          <button mat-button color="primary" (click)="toggleDirector(movie)">
-            {{ movie.isDirectorVisible ? "Hide Director" : "Show Director" }}
-          </button>
-          <div *ngIf="movie.isDirectorVisible">
-            <p>Director: {{ movie.director.name }}</p>
-            <p>Bio: {{ movie.director.bio }}</p>
-            <p>Birth Year: {{ movie.director.birthYear || "N/A" }}</p>
-            <p>Death Year: {{ movie.director.deathYear || "N/A" }}</p>
-          </div>
+            <!-- Single Button to toggle all details visibility -->
+            <button mat-button color="primary" (click)="toggleAllDetails(movie)">
+                {{ movie.areDetailsVisible ? "Hide Details" : "Show Details" }}
+            </button>
+    
+            <!-- Display all details if areDetailsVisible is true -->
+            <div *ngIf="movie.areDetailsVisible">
+                <!-- Synopsis -->
+                <p>{{ movie.synopsis || "No synopsis available." }}</p>
+    
+                <!-- Genre -->
+                <div>
+                    <p><strong>Genre:</strong> {{ movie.genre.name }}</p>
+                    <p><strong>Description:</strong> {{ movie.genre.description || "No description available." }}</p>
+                </div>
+    
+                <!-- Director -->
+                <div>
+                    <p><strong>Director:</strong> {{ movie.director.name }}</p>
+                    <p><strong>Bio:</strong> {{ movie.director.bio }}</p>
+                    <p><strong>Birth Year:</strong> {{ movie.director.birthYear || "N/A" }}</p>
+                    <p><strong>Death Year:</strong> {{ movie.director.deathYear || "N/A" }}</p>
+                </div>
+            </div>
         </div>
-      </mat-card-content>
+    </mat-card-content>
+    
 
       <!-- Card Actions -->
       <div class="movie-card-buttons">

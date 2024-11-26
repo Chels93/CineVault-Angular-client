@@ -98,6 +98,7 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
+  
   toggleFavorite(movie: Movie): void {
     const movieIndex = this.favoriteMovies.findIndex((m) => m._id === movie._id);
   
@@ -159,15 +160,13 @@ export class MovieCardComponent implements OnInit {
     target.src = 'assets/placeholder-image.jpg';
   }
   
-  toggleSynopsis(movie: Movie): void {
-    movie.isSynopsisVisible = !movie.isSynopsisVisible;
+  toggleAllDetails(movie: any): void {
+    // Assert that `movie` has an `areDetailsVisible` property, and toggle its value
+    if (movie.areDetailsVisible === undefined) {
+      movie.areDetailsVisible = false; // Initialize the property if it's undefined
+    }
+    movie.areDetailsVisible = !movie.areDetailsVisible;
   }
+  
 
-  toggleDirector(movie: Movie): void {
-    movie.isDirectorVisible = !movie.isDirectorVisible;
-  }
-
-  toggleGenre(movie: Movie): void {
-    movie.isGenreVisible = !movie.isGenreVisible;
-  }
 }
