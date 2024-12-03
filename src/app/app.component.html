@@ -1,2 +1,5 @@
-<app-navigation></app-navigation>
+<!-- Conditionally display the navigation bar -->
+<app-navigation *ngIf="!hideNavBar"></app-navigation>
+
+<!-- The rest of your page content -->
 <router-outlet></router-outlet>

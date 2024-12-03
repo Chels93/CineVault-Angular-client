@@ -1,34 +1,44 @@
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ isLoggedIn ? 'Welcome Back!' : 'Log In!' }}</mat-card-title>
-    </mat-card-header>
+<div class="login-form">
+    <div class="welcome-page">
+      <h1>Welcome to <span class="brand">CineVault</span>!</h1>
+    </div>
+    <form [formGroup]="loginForm" (ngSubmit)="logInUser()">
+      <mat-card class="login-card">
+        <h2 class="form-title">
+          {{ isLoggedIn ? "Welcome Back!" : "Log In" }}
+        </h2>
   
-    <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="logInUser()" *ngIf="!isLoggedIn">
-        <mat-form-field appearance="fill">
+        <!-- Username Field -->
+        <mat-form-field class="form-field" appearance="fill">
           <mat-label>Username</mat-label>
-          <input matInput formControlName="username" placeholder="Username" required />
-          <mat-error *ngIf="loginForm.controls['username'].invalid && loginForm.controls['username'].touched">
+          <input matInput formControlName="username" placeholder="Enter your username" required />
+          <mat-error *ngIf="loginForm.get('username')?.hasError('required') && loginForm.get('username')?.touched">
             Username is required
           </mat-error>
         </mat-form-field>
   
-        <mat-form-field appearance="fill">
+        <!-- Password Field -->
+        <mat-form-field class="form-field" appearance="fill">
           <mat-label>Password</mat-label>
-          <input matInput formControlName="password" type="password" placeholder="Password" required />
-          <mat-error *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched">
+          <input matInput formControlName="password" type="password" placeholder="Enter your password" required />
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
             Password is required
           </mat-error>
         </mat-form-field>
   
-        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" aria-label="Log In">
+        <!-- Submit Button -->
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="submit-button">
           Log In
         </button>
-      </form>
   
-      <div *ngIf="isLoggedIn">
-        <button mat-raised-button color="warn" (click)="logOutUser()" aria-label="Log Out">Log Out</button>
-      </div>
-    </mat-card-content>
-  </mat-card>
+        <!-- Route to Registration -->
+        <div class="login-link">
+          <span>Not registered? </span>
+          <a mat-raised-button color="primary" (click)="navigateToRegistration()">
+            Sign up here.
+          </a>
+        </div>
+      </mat-card>
+    </form>
+  </div>
   

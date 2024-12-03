@@ -96,60 +96,57 @@ button:hover {
   background-color: $card-background-color;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  padding: $card-padding-large;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  }
-
-  @media (max-width: $breakpoint-lg) {
-    max-width: 18rem;
-  }
-
-  @media (max-width: $breakpoint-md) {
-    max-width: 15rem;
-    padding: $card-padding-small;
-  }
-
-  @media (max-width: $breakpoint-sm) {
-    max-width: 12rem;
-    margin: 0.5rem;
-    padding: $card-padding-small;
-  }
-}
-
-/* Mat Icon Buttons (Add to Favorites) */
-.mat-icon {
-  cursor: pointer;
-}
-
-.favorite {
-  color: #ff6347;
-}
-
-.not-favorite {
-  color: #ccc;
-}
-
-/* Loading Spinner */
-.loading-spinner {
+  padding: $card-padding-small;
   text-align: center;
-  margin: 2rem;
 }
 
-/* Error and Loading States */
-.error, .loading {
-  text-align: center;
-  font-size: 1.2rem;
+.movie-card mat-card-header {
+  font-size: 1.25rem;
   color: $primary-color;
 }
 
-/* Optional: Add padding to mat-cards and adjust button positioning */
-.mat-card {
-  padding: 1rem;
+.movie-card img {
+  width: 100%;
+  height: $card-image-height;
+  object-fit: cover;
+  margin-bottom: 1rem;
 }
 
-button.mat-button {
+.movie-card-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.favorite-container mat-icon {
+  color: #ffd166;
+  font-size: 2rem;
+}
+
+.movie-card button {
+  background-color: transparent;
+  border: 1px solid $primary-color;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
   margin-top: 1rem;
+}
+
+/* Small Screen Adjustments */
+@media (max-width: $breakpoint-md) {
+  .movie-cards-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .movie-card {
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
 }
