@@ -1,35 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { UserLoginComponent } from '../user-login/user-login.component';
-import { UserRegistrationComponent } from '../user-registration/user-registration.component';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatDialogModule } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-welcome-page',
-  standalone: true,   // Standalone component flag
-  imports: [MatDialogModule],  // Ensure MatDialogModule is imported here
   templateUrl: './welcome-page.component.html',
-  styleUrls: ['./welcome-page.component.scss']
+  styleUrls: ['./welcome-page.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule
+  ],
 })
 export class WelcomePageComponent implements OnInit {
-
-  // Common configuration for dialog boxes
-  private dialogConfig: MatDialogConfig = {
-    width: '280px',
-    disableClose: true // Prevents closing by clicking outside the dialog
-  };
-
-  constructor(public dialog: MatDialog) { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {}
 
-  // Opens the registration dialog
-  openUserRegistrationDialog(): void {
-    this.dialog.open(UserRegistrationComponent, this.dialogConfig);
+  // Navigate directly to the Register page
+  openSignupDialog(): void {
+    this.router.navigate(['/register']);
   }
 
-  // Opens the login dialog
-  openUserLoginDialog(): void {
-    this.dialog.open(UserLoginComponent, this.dialogConfig);
+  // Open the Login dialog (if you still want to keep this feature)
+  openLoginDialog(): void {
+    this.router.navigate(['/login']);
   }
 }

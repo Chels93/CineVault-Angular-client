@@ -30,143 +30,130 @@ import { User } from '../fetch-api-data.service';  // Import the User type
   ],
 })
 export class MovieCardComponent implements OnInit {
-  @Output() favoriteToggled = new EventEmitter<void>();
-
-  userData: User = {
-    username: '',
-    email: '',
-    birthdate: new Date(),
-    favoriteMovies: [],  // This is an array of Movie objects, not IDs
-    password: '',
-  };
-
-  favoriteMovies: Movie[] = [];  // Array of Movie objects, not strings
-  movies: Movie[] = [];  // Array to store all movies (this was missing)
-  loading: boolean = true;
-  error: string | null = null;
-
-  constructor(
-    private fetchApiData: FetchApiDataService,
-    private router: Router,
-    private snackBar: MatSnackBar
-  ) {}
-
-  ngOnInit(): void {
-    this.getAllMovies();
-    this.getUser(); // Call getUser to fetch user data
-  }
-
-  isAuthenticated(): boolean {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      this.router.navigate(['/login']);
-      return false;
+    @Output() favoriteToggled = new EventEmitter<void>();
+  
+    userData: User = {
+      username: '',
+      email: '',
+      birthdate: new Date(),
+      favoriteMovies: [], // This is an array of Movie objects, not IDs
+      password: '',
+    };
+  
+    favoriteMovies: Movie[] = [];  // Array of Movie objects, not strings
+    movies: Movie[] = [];  // Array to store all movies (this was missing)
+    loading: boolean = true;
+    error: string | null = null;
+  
+    constructor(
+      private fetchApiData: FetchApiDataService,
+      private router: Router,
+      private snackBar: MatSnackBar
+    ) {}
+  
+    ngOnInit(): void {
+      this.getAllMovies();
+      this.getUser(); // Call getUser to fetch user data
     }
-    return true;
-  }
-
-  private getUser(): void {
-    this.loading = true;
-    this.error = null; // Reset error state on each attempt to fetch data
-
-    this.fetchApiData.getUser().subscribe({
-      next: (userData: User) => {
-        this.userData = userData;
-        this.favoriteMovies = userData.favoriteMovies; // Update favoriteMovies list
-        this.loading = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error fetching user data:', error);
-        this.snackBar.open('Error fetching user data.', 'Close', { duration: 3000 });
-        this.error = 'Error fetching user data'; // Set error message
-        this.loading = false;
-      },
-    });
-  }
-
-  getAllMovies(): void {
-    this.fetchApiData.getAllMovies().subscribe({
-      next: (movies: Movie[]) => {
-        this.movies = Array.isArray(movies) ? movies : []; // Ensure movies is an array
-        this.loading = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        this.error = 'Failed to load movies. Please try again later.';
-        console.error('Error fetching movies:', err);
-        this.loading = false;
-      },
-    });
-  }
-
   
-  toggleFavorite(movie: Movie): void {
-    const movieIndex = this.favoriteMovies.findIndex((m) => m._id === movie._id);
+    isAuthenticated(): boolean {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        this.router.navigate(['/login']);
+        return false;
+      }
+      return true;
+    }
   
-    if (movieIndex !== -1) {
-      // If the movie is in favorites, remove it
-      this.fetchApiData.removeFromFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
-        movie.isFavorite = false;
-        this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+    private getUser(): void {
+      this.loading = true;
+      this.error = null; // Reset error state on each attempt to fetch data
   
-        // Re-fetch updated user data after removing the movie
-        this.getUser(); // Re-fetch the updated user data
-      });
-    } else {
-      // If the movie is not in favorites, add it
-      this.fetchApiData.addToFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies.push(movie); // Add the entire movie object to favorites
-        movie.isFavorite = true;
-        this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+      this.fetchApiData.getUser().subscribe({
+        next: (userData: User) => {
+          this.userData = userData;
+          this.favoriteMovies = userData.favoriteMovies; // Update favoriteMovies list
   
-        // Re-fetch updated user data after adding the movie
-        this.getUser(); // Re-fetch the updated user data
+          // Mark movies as favorite if they exist in the user's favoriteMovies list
+          this.movies.forEach((movie) => {
+            movie.isFavorite = this.favoriteMovies.some(
+              (favoriteMovie) => favoriteMovie._id === movie._id
+            );
+          });
+  
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error fetching user data:', error);
+          this.snackBar.open('Error fetching user data.', 'Close', { duration: 3000 });
+          this.error = 'Error fetching user data'; // Set error message
+          this.loading = false;
+        },
       });
     }
-  }
   
+    getAllMovies(): void {
+        this.fetchApiData.getAllMovies().subscribe({
+          next: (movies: Movie[]) => {
+            this.movies = Array.isArray(movies) ? movies : []; // Ensure movies is an array
+            
+            // Set the `isFavorite` property for each movie based on the `favoriteMovies` list
+            this.movies.forEach((movie) => {
+              if (this.favoriteMovies.some((favMovie) => favMovie._id === movie._id)) {
+                movie.isFavorite = true;
+              } else {
+                movie.isFavorite = false;
+              }
+            });
+      
+            this.loading = false;
+          },
+          error: (err: HttpErrorResponse) => {
+            this.error = 'Failed to load movies. Please try again later.';
+            console.error('Error fetching movies:', err);
+            this.loading = false;
+          },
+        });
+      }
+      
   
-
-  addToFavorites(movieId: string): void {
-    if (!movieId) {
-      this.snackBar.open('Invalid movie ID.', 'Close', {
-        duration: 2000,
-      });
-      return;
-    }
-
-    this.fetchApiData.addToFavorites(movieId).subscribe({
-      next: () => {
-        const movie = this.movies.find((m) => m._id === movieId);
-        if (movie) {
-          this.favoriteMovies.push(movie); // Add the entire Movie object
+      toggleFavorite(movie: Movie): void {
+        const movieIndex = this.favoriteMovies.findIndex((m) => m._id === movie._id);
+      
+        if (movieIndex !== -1) {
+          // If the movie is in favorites, remove it
+          this.fetchApiData.removeFromFavorites(movie._id).subscribe(() => {
+            this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+            movie.isFavorite = false; // Ensure the heart icon is updated
+            this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+      
+            // Re-fetch updated user data after removing the movie
+            this.getUser(); // Re-fetch the updated user data
+          });
+        } else {
+          // If the movie is not in favorites, add it
+          this.fetchApiData.addToFavorites(movie._id).subscribe(() => {
+            this.favoriteMovies.push(movie); // Add the entire movie object to favorites
+            movie.isFavorite = true; // Update the isFavorite property
+            this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+      
+            // Re-fetch updated user data after adding the movie
+            this.getUser(); // Re-fetch the updated user data
+          });
         }
-        this.favoriteToggled.emit();
-        this.snackBar.open('Movie added to favorites!', 'Close', {
-          duration: 2000,
-        });
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error('Error adding to favorites:', err);
-        this.snackBar.open('Failed to add movie to favorites. Please try again.', 'Close', {
-          duration: 2000,
-        });
-      },
-    });
-  }
-
-  onImageError(event: Event): void {
-    const target = event.target as HTMLImageElement;
-    target.src = 'assets/placeholder-image.jpg';
-  }
+      }
+      
   
-  toggleAllDetails(movie: any): void {
-    // Assert that `movie` has an `areDetailsVisible` property, and toggle its value
-    if (movie.areDetailsVisible === undefined) {
-      movie.areDetailsVisible = false; // Initialize the property if it's undefined
+    onImageError(event: Event): void {
+      const target = event.target as HTMLImageElement;
+      target.src = 'assets/placeholder-image.jpg';
     }
-    movie.areDetailsVisible = !movie.areDetailsVisible;
+  
+    toggleAllDetails(movie: any): void {
+      if (movie.areDetailsVisible === undefined) {
+        movie.areDetailsVisible = false; // Initialize the property if it's undefined
+      }
+      movie.areDetailsVisible = !movie.areDetailsVisible;
+    }
   }
   
-
-}

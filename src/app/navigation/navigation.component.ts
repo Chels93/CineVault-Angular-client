@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FetchApiDataService } from '../fetch-api-data.service';  // Service import is fine
+import { CommonModule } from '@angular/common';
 
 // Ensure that the UserLoginComponent and MovieCardComponent exist and are correctly imported
 import { UserLoginComponent } from '../user-login/user-login.component';  // Adjust path as needed
@@ -15,7 +16,8 @@ import { MovieCardComponent } from '../movie-card/movie-card.component';  // Adj
   imports: [
     MatToolbarModule,
     UserLoginComponent,  // Import the components as needed
-    MovieCardComponent
+    MovieCardComponent, 
+    CommonModule
   ]
 })
 export class NavigationComponent {

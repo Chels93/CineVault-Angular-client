@@ -1,6 +1,6 @@
 import { Component, OnInit, Optional } from '@angular/core';
 import { FetchApiDataService } from '../fetch-api-data.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { RouterModule } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-login',
@@ -23,7 +25,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     CommonModule,
     MatSnackBarModule,
-  ],
+    RouterModule,
+    MatDialogModule
+  ]
 })
 export class UserLoginComponent implements OnInit {
   loginForm: FormGroup;
@@ -34,7 +38,8 @@ export class UserLoginComponent implements OnInit {
     @Optional() private dialogRef: MatDialogRef<UserLoginComponent>,
     private snackBar: MatSnackBar,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -43,79 +48,52 @@ export class UserLoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.isAuthenticated()) {
-      this.router.navigate(['/login']);
-      return;
+    if (this.isAuthenticated()) {
+      this.router.navigate(['/profile']);
     }
-
-    const username = localStorage.getItem('username');
-    if (!username) {
-      this.snackBar.open('No username found. Please log in.', 'Close', {
-        duration: 3000,
-      });
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    this.fetchUserData();
   }
-
-  public logInUser(): void {
-    const credentials = this.loginForm.value;
   
+  logInUser(): void {
+    if (this.loginForm.invalid) {
+      this.snackBar.open('Please fill out all fields correctly.', 'Close', { duration: 2000 });
+      return;
+    }
+
+    const credentials = this.loginForm.value;
     this.fetchApiData.userLogin(credentials).subscribe({
       next: (response) => {
         localStorage.setItem('authToken', response.token);
         localStorage.setItem('username', credentials.username);
-  
-        // Close dialog after successful login
-        this.dialogRef?.close();
-  
-        // Redirect to profile page
+        this.isLoggedIn = true; // Update isLoggedIn after successful login
+        this.snackBar.open('Login successful!', 'Close', { duration: 2000 });
         this.router.navigate(['/profile']);
       },
-      error: (err) => {
-        this.snackBar.open('Login failed. Please try again.', 'Close', {
-          duration: 3000,
-        });
+      error: (error) => {
+        const errorMessage = error.error?.message || 'Login failed. Please try again.';
+        this.snackBar.open(errorMessage, 'Close', { duration: 3000 });
       },
     });
   }
   
-
-  private handleError(error: any): void {
-    console.error('Login error:', error);
-    this.snackBar.open('Login failed, please try again', 'OK', {
-      duration: 2000,
-    });
+  navigateToRegistration(): void {
+    this.router.navigate(['/register']);
   }
 
   private isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
-    return !!token; // Returns true if the token exists, false otherwise
-  }
-
-  private fetchUserData(): void {
-    const username = localStorage.getItem('username');
-    if (username) {
-      this.snackBar.open(`Welcome back, ${username}!`, 'Close', {
-        duration: 3000,
-      });
+    if (!token) {
+      return false;
     }
-  }
-
-  public closeDialog(): void {
-    if (this.dialogRef) {
-      this.dialogRef.close();
+  
+    // Optional: Add token validation logic
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // Decode the JWT
+      const isTokenExpired = payload.exp * 1000 < Date.now();
+      return !isTokenExpired;
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return false;
     }
-  }
-
-  public logOutUser(): void {
-    localStorage.removeItem('user');
-    localStorage.removeItem('authToken');
-    this.isLoggedIn = false;
-    this.snackBar.open('Logged out successfully', 'OK', { duration: 2000 });
-    this.router.navigate(['/welcome']); // Redirect to the welcome page after logout
   }
   
 }

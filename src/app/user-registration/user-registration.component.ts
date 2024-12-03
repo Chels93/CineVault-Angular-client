@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  Optional,
+} from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FetchApiDataService } from '../fetch-api-data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -10,18 +16,24 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { Router, RouterModule } from '@angular/router'; // Added Router import
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-user-registration-form',
   standalone: true,
   imports: [
-    MatCardModule, 
-    MatFormFieldModule, 
-    MatInputModule, 
-    ReactiveFormsModule, 
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
     CommonModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    RouterModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   templateUrl: './user-registration.component.html',
   styleUrls: ['./user-registration.component.scss'],
@@ -29,51 +41,83 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 export class UserRegistrationComponent implements OnInit {
   registrationForm!: FormGroup;
 
+  @Output() openLoginEvent = new EventEmitter<void>();
+
   constructor(
     public fetchApiData: FetchApiDataService,
-    public dialogRef: MatDialogRef<UserRegistrationComponent>,
+    private router: Router,
+    @Optional()
+    public dialogRef: MatDialogRef<UserRegistrationComponent> | null = null,
     public snackBar: MatSnackBar,
     private fb: FormBuilder
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.registrationForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.email]],
-      birthdate: ['']
+      birthdate: [''], // Optional field
     });
   }
 
+  ngOnInit(): void {
+    // Any additional setup can go here
+  }
+
+  // Method to register the user
   registerUser(): void {
-    // Log the form status and errors for debugging purposes
-    console.log('Form Valid:', this.registrationForm.valid);
-    console.log('Form Errors:', this.registrationForm.errors);
-    console.log('Form Controls:', this.registrationForm.controls);
-  
     if (this.registrationForm.valid) {
       this.fetchApiData.userRegistration(this.registrationForm.value).subscribe(
         (result: any) => {
-          this.dialogRef.close();
-          this.snackBar.open('User registration successful', 'OK', { duration: 2000 });
+          console.log('Registration successful:', result);
+          const token = result.token;
+          localStorage.setItem('authToken', token); // Store token
+          this.snackBar.open('User registration successful!', 'OK', { duration: 2000 });
+          
+          // Navigate to Profile
+          this.router.navigate(['/profile']);
         },
         (error: any) => {
           const errorMessage = this.extractErrorMessage(error);
-          this.snackBar.open(`User registration failed: ${errorMessage}`, 'OK', { duration: 3000 });
+          this.snackBar.open(
+            `User registration failed: ${errorMessage}`,
+            'OK',
+            { duration: 3000 }
+          );
         }
       );
-    } else {
-      this.registrationForm.markAllAsTouched();
-      this.snackBar.open('Please fill in all required fields correctly', 'OK', { duration: 3000 });
     }
   }
   
+
+  // Emit the event when the link is clicked
+  openLoginDialog(): void {
+    this.openLoginEvent.emit();
+  }
+
+  closeDialog(): void {
+    this.dialogRef?.close();
+  }
+
+  // Navigate to login
+  navigateToLogin(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+    this.router.navigate(['/login']);
+  }
+  
+  
+  
+  
+  // Method to extract error messages from the backend error response
   private extractErrorMessage(error: any): string {
     if (error.error && error.error.errors) {
       return error.error.errors
         .map((err: { path: string; msg: string }) => `${err.path}: ${err.msg}`)
         .join(', ');
     }
-    return error.message || 'An unknown error occurred. Please try again later.';
+    return (
+      error.message || 'An unknown error occurred. Please try again later.'
+    );
   }
 }

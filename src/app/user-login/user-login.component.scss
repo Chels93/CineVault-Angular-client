@@ -1,101 +1,138 @@
-// Common variables
-$primary-color: #118ab2;
-$input-border-color: #ffd166;
-$input-focus-border-color: #007bff;
-$form-background-color: #f8f9fa;
-$form-padding: 20px;
-$form-border-radius: 8px;
-$form-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-$form-outline-color: #ffd166;
-$brand-color: #118ab2;
-$brand-font-size: 3rem;
-$brand-font-weight: bold;
-$brand-underline-color: #ffd166;
-
-// Login container
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  text-align: center;
-
-  .form-container {
-    background-color: $form-background-color;
-    padding: $form-padding;
-    border-radius: $form-border-radius;
-    box-shadow: $form-box-shadow;
-    border: 2px solid $form-outline-color; // Outline the form container
-    max-width: 400px; // Maximum width for the form container
-    width: 100%; // Ensure it takes up full width of its container
-
-    .navbar-brand {
-      color: $brand-color;
-      font-size: $brand-font-size;
-      font-weight: $brand-font-weight;
-      text-decoration: underline $brand-underline-color;
-      margin-bottom: 1rem; // Space between brand text and form
+/* Login Form Styling */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(120deg, #118ab2, #06d6a0); // Background gradient
+    padding: 2rem;
+    text-align: center;
+  
+    .welcome-page {
+      margin-bottom: 3rem; /* Space between heading and form */
+      
+      h1 {
+        font-size: 3.5rem;
+        margin-bottom: 3rem;
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        padding: 0;
+        margin-top: 0; /* Remove the top margin */
+        position: relative;
+        z-index: 1; /* Ensure it's above the background */
+      }
+  
+      .brand {
+        color: #ffd166; /* Brand color for CineVault */
+        font-weight: bolder;
+        text-transform: uppercase;
+        font-size: 3.7rem;
+        letter-spacing: 2px;
+      }
     }
-  }
-}
-
-// Form styles
-form {
-  display: flex;
-  flex-direction: column;
-
-  .form-group {
-    margin-bottom: 1rem;
-
-    .form-label {
-      font-weight: bold;
-      color: #333;
-      padding: 1rem;
+  
+    .login-card {
+      max-width: 400px;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      animation: fadeIn 0.6s ease;
+  
+      .form-title {
+        font-size: 1.8rem;
+        color: #118ab2;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        text-align: center;
+      }
+  
+      .form-field {
+        margin-bottom: 1rem;
+  
+        mat-label {
+          font-weight: 500;
+          color: #118ab2;
+        }
+  
+        input {
+          border-radius: 8px;
+          &:focus {
+            border-color: #06d6a0;
+          }
+        }
+  
+        mat-error {
+          font-size: 0.85rem;
+          color: #ef476f; /* Error color */
+        }
+      }
+  
+      .submit-button {
+        font-size: 1.3rem;
+        padding: 1rem 2.5rem;
+        border-radius: 40px;
+        background-color: #ffd166;
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      
+        &:hover {
+          background-color: #ff9f00;
+          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+          transform: translateY(-5px);
+        }
+      
+        &:active {
+          transform: translateY(1px);
+        }
+      
+        &:focus {
+          outline: none;
+          border: 2px solid #118ab2;  // Highlight border on focus
+        }
+      
+        &:disabled {
+          background-color: #b0bec5;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+      }
+  
+      .login-link {
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        text-align: center;
+  
+        a {
+          color: #118ab2;
+          font-weight: 500;
+          text-decoration: none;
+  
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
     }
-
-    .form-control {
-      border: 1px solid $input-border-color;
-      border-radius: 4px;
-      padding: 0.5rem;
-      transition: border-color 0.3s ease;
-
-      &:focus {
-        border-color: $input-focus-border-color;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   }
-
-  .password-group {
-    margin-top: 1rem;
-  }
-
-  .submit-button {
-    margin-top: 1rem;
-    background-color: $primary-color;
-    border: none;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: darken($primary-color, 10%);
-    }
-  }
-
-  .toggle-button {
-    margin-top: 1rem;
-  }
-}
-
-// Responsive styles
-@media (min-width: 576px) {
-  .form-container {
-    padding: 30px;
-  }
-
-  .submit-button {
-    padding: 0.75rem 1.5rem;
-  }
-}
+  

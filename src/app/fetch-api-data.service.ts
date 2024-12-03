@@ -47,21 +47,20 @@ export class FetchApiDataService {
 
   private createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
-    console.log('Auth Token:', token); // Debugging
     if (!token) {
       throw new Error('No token found. Please log in.');
     }
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.error('HTTP Status Code:', error.status);
     console.error('Error Details:', error.message);
-    return throwError(
-      () => new Error(error.message || 'An unknown error occurred.')
-    );
+    if (error.status === 401) {
+      // Additional handling for unauthorized errors
+      console.error('Unauthorized access - Invalid or expired token.');
+    }
+    return throwError(() => new Error(error.message || 'An unknown error occurred.'));
   }
 
   // Fetch all movies
@@ -87,9 +86,8 @@ export class FetchApiDataService {
   }
 
   // Fetch favorite movies of a user
-  public getfavoriteMovies(): Observable<Movie[]> {
+  public getFavoriteMovies(): Observable<Movie[]> {
     const username = this.getUsername();
-
     if (!username) {
       return throwError(() => new Error('No username found. Please log in.'));
     }
@@ -101,15 +99,9 @@ export class FetchApiDataService {
       .pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 404) {
-            // Handle 404 Not Found (e.g., no favorite movies for the user)
-            return throwError(
-              () => new Error('No favorite movies found for this user.')
-            );
+            return throwError(() => new Error('No favorite movies found for this user.'));
           } else {
-            // Handle other errors (e.g., server issues)
-            return throwError(
-              () => new Error('Error fetching favorite movies.')
-            );
+            return throwError(() => new Error('Error fetching favorite movies.'));
           }
         })
       );
@@ -160,27 +152,21 @@ export class FetchApiDataService {
       .pipe(catchError(this.handleError));
   }
 
-// Update user information
-public updateUser(updatedUserData: Partial<User>): Observable<User> {
+  // Update user information
+  public updateUser(updatedUserData: Partial<User>): Observable<User> {
     const username = this.getUsername();
     if (!username) {
-        throw new Error('No username found. Please log in.');
+      throw new Error('No username found. Please log in.');
     }
 
-    // Validation to ensure that required fields are provided
     if (!updatedUserData.username || !updatedUserData.email) {
-        throw new Error('Both username and email are required.');
+      throw new Error('Both username and email are required.');
     }
 
     return this.httpClient
-        .put<User>(`${this.apiUrl}/users/${username}`, updatedUserData, { headers: this.createAuthHeaders() })
-        .pipe(
-            catchError((error) => {
-                // Log or handle the error response
-                console.error('Error updating user data:', error);
-                return throwError(error); // Pass the error to the caller
-            })
-        );
-}
-
+      .put<User>(`${this.apiUrl}/users/${username}`, updatedUserData, {
+        headers: this.createAuthHeaders(),
+      })
+      .pipe(catchError(this.handleError));
+  }
 }
