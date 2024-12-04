@@ -1,56 +1,104 @@
-// Common variables
-$navbar-bg-color: #fff;
-$brand-color: #118ab2;
-$link-color: #118ab2;
-$link-hover-color: #ffd166;
-$border-color: #ffd166;
+// Define colors
+$primary-color: #118ab2; // Blue text color
+$accent-color: #ffd166; // Yellow color for borders
+$background-color: #f8f9fa;
+$text-color: #333333; // Darker text for contrast
+$hover-border-color: $accent-color; // Yellow border on hover
+$focus-color: #007bff;
+$button-background-color: transparent; // Transparent button background
 
-// Navigation Styles
+// Mixin for subtle shadow/elevation
+@mixin subtle-shadow {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+// Navbar styling
 .navbar {
+  background-color: $background-color; // White background
+  color: $text-color;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color: $navbar-bg-color;
-  padding: 10px;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  @include subtle-shadow;
+  position: relative;
 
   .navbar-brand {
-    color: $brand-color;
-    font-size: 3rem;
-    font-weight: bold;
-    text-decoration: underline 0.25rem $border-color;
-
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: $primary-color; // Brand color
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    
     &:hover {
-      color: $border-color;
+      color: $accent-color; // Hover effect on brand text
     }
+
+    // Link style
+    text-decoration: none;
   }
 
   .spacer {
-    flex-grow: 1; // Ensures buttons are pushed to the right
+    flex-grow: 1;
   }
 
   .nav-link {
-    color: $link-color;
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin: 0 10px;
-    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: $primary-color; // Blue text color
+    background-color: transparent; // Transparent background by default
+    border: 2px solid transparent; // No border by default
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    box-shadow: none; // No shadow effect for buttons to make them more subtle
 
     &:hover {
-      color: $link-hover-color;
-      text-decoration: underline $border-color;
+      border-color: $accent-color; // Yellow border on hover
+      color: $primary-color; // Text color stays blue on hover
     }
 
-    &.warn {
-      color: red;
+    &:focus {
+      outline: none;
+      border-color: $focus-color;
+      box-shadow: 0 0 5px 1px $focus-color;
+    }
+
+    &.home,
+    &.profile { // Home and Profile buttons
+      &:hover {
+        border: 3px solid $accent-color; // Thicker yellow border on hover for Home/Profile
+      }
+    }
+
+    &.warn { // Logout button
+      &:hover {
+        border: 3px solid $accent-color; // Thicker yellow border on hover for logout button
+      }
     }
   }
 }
 
-// Responsive styles
-@media (min-width: 992px) {
+// Mobile-responsive design
+@media (max-width: 768px) {
   .navbar {
-    .nav-link {
-      margin: 0 15px;
-    }
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.5rem;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 0.75rem;
+  }
+
+  .spacer {
+    display: none;
   }
 }

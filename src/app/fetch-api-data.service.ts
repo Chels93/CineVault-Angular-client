@@ -86,7 +86,7 @@ export class FetchApiDataService {
   }
 
   // Fetch favorite movies of a user
-  public getFavoriteMovies(): Observable<Movie[]> {
+  public getfavoriteMovies(): Observable<Movie[]> {
     const username = this.getUsername();
     if (!username) {
       return throwError(() => new Error('No username found. Please log in.'));

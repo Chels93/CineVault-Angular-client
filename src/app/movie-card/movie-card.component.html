@@ -18,31 +18,33 @@
               <!-- Add to Favorites Button -->
               <div class="favorite-container" (click)="toggleFavorite(movie)">
                 <mat-icon
-                  [class.favorite]="movie.isFavorite"
-                  [class.not-favorite]="!movie.isFavorite"
+                  [ngClass]="{
+                    'favorite': movie.isFavorite,
+                    'not-favorite': !movie.isFavorite
+                  }"
                 >
-                  {{ movie.isFavorite ? "favorite" : "favorite_border" }}
+                  {{ movie.isFavorite ? 'favorite' : 'favorite_border' }}
                 </mat-icon>
-                <span>{{ movie.isFavorite ? "Added to Favorites" : "Add to Favorites" }}</span>
+                <span>{{ movie.isFavorite ? 'Added to Favorites' : 'Add to Favorites' }}</span>
               </div>
   
               <!-- Show/Hide Details Button -->
               <button mat-button color="primary" (click)="toggleAllDetails(movie)">
-                {{ movie.areDetailsVisible ? "Hide Details" : "Show Details" }}
+                {{ movie.areDetailsVisible ? 'Hide Details' : 'Show Details' }}
               </button>
             </div>
   
             <div *ngIf="movie.areDetailsVisible">
-              <p>{{ movie.synopsis || "No synopsis available." }}</p>
+              <p>{{ movie.synopsis || 'No synopsis available.' }}</p>
               <div>
                 <p><strong>Genre:</strong> {{ movie.genre.name }}</p>
-                <p><strong>Description:</strong> {{ movie.genre.description || "No description available." }}</p>
+                <p><strong>Description:</strong> {{ movie.genre.description || 'No description available.' }}</p>
               </div>
               <div>
                 <p><strong>Director:</strong> {{ movie.director.name }}</p>
                 <p><strong>Bio:</strong> {{ movie.director.bio }}</p>
-                <p><strong>Birth Year:</strong> {{ movie.director.birthYear || "N/A" }}</p>
-                <p><strong>Death Year:</strong> {{ movie.director.deathYear || "N/A" }}</p>
+                <p><strong>Birth Year:</strong> {{ movie.director.birthYear || 'N/A' }}</p>
+                <p><strong>Death Year:</strong> {{ movie.director.deathYear || 'N/A' }}</p>
               </div>
             </div>
           </div>
