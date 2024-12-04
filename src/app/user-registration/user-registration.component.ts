@@ -69,12 +69,12 @@ export class UserRegistrationComponent implements OnInit {
       this.fetchApiData.userRegistration(this.registrationForm.value).subscribe(
         (result: any) => {
           console.log('Registration successful:', result);
-          const token = result.token;
-          localStorage.setItem('authToken', token); // Store token
+          // Clear any authToken to ensure it's not considered logged in
+          localStorage.removeItem('authToken');
           this.snackBar.open('User registration successful!', 'OK', { duration: 2000 });
           
-          // Navigate to Profile
-          this.router.navigate(['/profile']);
+          // Redirect to the login page
+          this.router.navigate(['/login']);
         },
         (error: any) => {
           const errorMessage = this.extractErrorMessage(error);
@@ -87,6 +87,7 @@ export class UserRegistrationComponent implements OnInit {
       );
     }
   }
+  
   
 
   // Emit the event when the link is clicked
@@ -105,12 +106,10 @@ export class UserRegistrationComponent implements OnInit {
     }
     this.router.navigate(['/login']);
   }
-  
-  
-  
-  
+
   // Method to extract error messages from the backend error response
   private extractErrorMessage(error: any): string {
+    console.log('Error response from backend:', error);  // Log the full error response
     if (error.error && error.error.errors) {
       return error.error.errors
         .map((err: { path: string; msg: string }) => `${err.path}: ${err.msg}`)
@@ -120,4 +119,5 @@ export class UserRegistrationComponent implements OnInit {
       error.message || 'An unknown error occurred. Please try again later.'
     );
   }
+  
 }

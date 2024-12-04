@@ -65,7 +65,7 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.checkAuthentication();
     this.getUser();
-    this.getFavoriteMovies();
+    this.getfavoriteMovies();
     this.currentRoute = this.router.url.split('/').pop() || ''; // Extract last part of the route
   }
 
@@ -122,7 +122,7 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
-  private getFavoriteMovies(): void {
+  private getfavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
       .getfavoriteMovies()

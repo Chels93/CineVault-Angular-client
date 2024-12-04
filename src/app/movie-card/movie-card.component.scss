@@ -30,10 +30,10 @@ $breakpoint-sm: 576px;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
     padding: 20px;
-  }
-  
-  /* Individual movie card styling */
-  .movie-card {
+}
+
+/* Individual movie card styling */
+.movie-card {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -47,40 +47,42 @@ $breakpoint-sm: 576px;
     background-color: $card-background-color;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
     padding: $card-padding-large;
-    
+
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
-  
+
     @media (max-width: $breakpoint-lg) {
       max-width: 18rem;
       justify-content: center;
     }
-  
+
     @media (max-width: $breakpoint-md) {
       max-width: 15rem;
       padding: $card-padding-small;
       justify-content: center;
     }
-  
+
     @media (max-width: $breakpoint-sm) {
       max-width: 12rem;
       margin: 0.5rem;
       padding: $card-padding-small;
       justify-content: center;
     }
-  }
-  
- /* Heart icon styling */
+}
+
+/* Heart icon styling */
+
 mat-icon.favorite {
     color: black !important; /* Ensure the heart icon turns black when it's a favorite */
-  }
-  
-  mat-icon.not-favorite {
+}
+
+mat-icon.not-favorite {
     color: gray !important; /* Ensure the heart icon remains gray when it's not a favorite */
-  }
-  
+}
+
+
 /* Movie card favorite icon container */
 .favorite-container {
     display: flex;
@@ -93,31 +95,29 @@ mat-icon.favorite {
       margin-right: 8px; /* Space between the icon and the text */
       transition: color 0.3s ease;
     }
-  
+
     span {
       font-size: 14px;
       color: #555;
       font-weight: 500;
     }
-  
+
     /* Apply color change when the movie is in the favorites list */
     .favorite {
       color: black !important; /* Ensure the icon turns black when favorited */
     }
-  
+
     .not-favorite {
       color: gray !important; /* Default color for non-favorite icon */
     }
-  }
-  
-  
-  
-  /* Responsive styles */
-  .buttons-container {
+}
+
+/* Responsive styles */
+.buttons-container {
     display: flex;
     align-items: center;
     gap: 16px;
-  
+
     button {
       font-size: 14px;
       font-weight: 500;
@@ -126,22 +126,22 @@ mat-icon.favorite {
       border: 2px solid transparent;
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.3s ease;
-  
+
       &.mat-button {
         color: #fff;
         background-color: $primary-color;
         border-color: $primary-color;
-  
+
         &:hover {
           background-color: darken($primary-color, 10%);
           transform: translateY(-3px);
         }
-  
+
         &:focus {
           outline: 2px solid $input-focus-border-color;
         }
       }
-  
+
       &.favorite-button {
         display: flex;
         align-items: center;
@@ -153,11 +153,11 @@ mat-icon.favorite {
         color: $primary-color;
         border-radius: 8px;
         transition: background-color 0.3s ease, transform 0.3s ease;
-  
+
         mat-icon {
           transition: color 0.3s ease;
         }
-  
+
         &:hover {
           background-color: $primary-color;
           color: #fff;
@@ -165,25 +165,24 @@ mat-icon.favorite {
             color: #fff;
           }
         }
-  
+
         &:focus {
           outline: 2px solid $input-focus-border-color;
         }
-        
+
         &.added {
           color: #fff;
           background-color: $button-background-color;
           border-color: $button-background-color;
-  
+
           &:hover {
             background-color: darken($button-background-color, 10%);
           }
-  
+
           mat-icon {
             color: #fff;
           }
         }
       }
     }
-  }
-  
+}
