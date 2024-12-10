@@ -1,44 +1,30 @@
-// Define colors
-$primary-color: #118ab2; // Blue text color
-$accent-color: #ffd166; // Yellow color for borders
-$background-color: #f8f9fa;
+/* Common Variables */
+$primary-color: #118ab2; // Blue color for text
+$accent-color: #ffd166; // Yellow color for the underline
+$background-color: #f8f9fa; // Light background color
 $text-color: #333333; // Darker text for contrast
-$hover-border-color: $accent-color; // Yellow border on hover
+$hover-border-color: $primary-color; // Blue border on hover
 $focus-color: #007bff;
 $button-background-color: transparent; // Transparent button background
 
-// Mixin for subtle shadow/elevation
-@mixin subtle-shadow {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 0 4px rgba(0, 0, 0, 0.05);
-}
-
-// Navbar styling
+/* Navbar styling */
 .navbar {
-  background-color: $background-color; // White background
+  background-color: $background-color;
   color: $text-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  @include subtle-shadow;
+  border-bottom: 4px solid $accent-color;
   position: relative;
 
   .navbar-brand {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
-    color: $primary-color; // Brand color
+    color: $primary-color;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-    
-    &:hover {
-      color: $accent-color; // Hover effect on brand text
-    }
-
-    // Link style
-    text-decoration: none;
+    letter-spacing: 3px;
+    padding: 0.5rem 1rem;
   }
 
   .spacer {
@@ -49,56 +35,75 @@ $button-background-color: transparent; // Transparent button background
     font-size: 1rem;
     font-weight: 500;
     text-transform: uppercase;
-    color: $primary-color; // Blue text color
-    background-color: transparent; // Transparent background by default
-    border: 2px solid transparent; // No border by default
+    color: $primary-color;
+    background-color: transparent;
+    border: 2px solid transparent;
     padding: 0.75rem 1.5rem;
     border-radius: 5px;
     cursor: pointer;
     transition: border-color 0.3s ease, color 0.3s ease;
-    box-shadow: none; // No shadow effect for buttons to make them more subtle
+    box-shadow: none;
 
     &:hover {
-      border-color: $accent-color; // Yellow border on hover
-      color: $primary-color; // Text color stays blue on hover
-    }
-
-    &:focus {
-      outline: none;
-      border-color: $focus-color;
-      box-shadow: 0 0 5px 1px $focus-color;
-    }
-
-    &.home,
-    &.profile { // Home and Profile buttons
-      &:hover {
-        border: 3px solid $accent-color; // Thicker yellow border on hover for Home/Profile
-      }
-    }
-
-    &.warn { // Logout button
-      &:hover {
-        border: 3px solid $accent-color; // Thicker yellow border on hover for logout button
-      }
+      border-color: $accent-color;
+      color: $primary-color;
     }
   }
-}
 
-// Mobile-responsive design
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem 1.5rem;
+  .nav-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: auto;
+    transition: transform 0.3s ease-in-out;
+    margin-top: 10px;
   }
 
-  .nav-link {
-    width: 100%;
-    text-align: left;
-    margin-bottom: 0.75rem;
+  .hamburger-icon {
+    display: none; // Initially hidden
+    font-size: 2rem;
+    cursor: pointer;
   }
 
-  .spacer {
-    display: none;
+  // Mobile menu
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 1rem 1.5rem;
+      flex-direction: row;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      display: none; // Initially hidden on mobile
+      flex-direction: column;
+      width: 100%;
+      background-color: $background-color;
+      position: absolute;
+      top: 60px; // Adjusted position below the navbar
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1rem;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links.active {
+      display: flex; // Show the menu when active
+    }
+
+    .hamburger-icon {
+      display: block; // Show hamburger icon on mobile
+    }
+
+    .nav-link {
+      width: 100%;
+      padding: 1rem;
+      text-align: left;
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
   }
 }

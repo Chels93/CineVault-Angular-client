@@ -1,156 +1,234 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { UserProfileComponent } from './user-profile.component';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { FetchApiDataService } from '../fetch-api-data.service';
-import { of, throwError } from 'rxjs';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FetchApiDataService, User, Movie } from '../fetch-api-data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http'; // <-- import HttpHeaders
-import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { NavigationComponent } from '../navigation/navigation.component';
+import { finalize } from 'rxjs/operators';
 
-describe('UserProfileComponent', () => {
-  let component: UserProfileComponent;
-  let fixture: ComponentFixture<UserProfileComponent>;
-  let fetchApiDataService: jasmine.SpyObj<FetchApiDataService>;
-  let snackBar: jasmine.SpyObj<MatSnackBar>;
-  let router: jasmine.SpyObj<Router>;
+// Component for displaying and managing the user's profile. Includes functionality for updating user information, viewing favorite movies, and logging out.
+@Component({
+  selector: 'app-user-profile',
+  templateUrl: './user-profile.component.html',
+  styleUrls: ['./user-profile.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    FormsModule,
+    NavigationComponent,
+  ],
+})
+export class UserProfileComponent implements OnInit {
+  // User data retrieved from the API
+  userData: User = {
+    username: '',
+    email: '',
+    birthdate: new Date(),
+    favoriteMovies: [],
+    password: '',
+  };
 
-  beforeEach(async () => {
-    // Create spies for the services
-    const fetchApiDataSpy = jasmine.createSpyObj('FetchApiDataService', [
-      'getUser', 
-      'getfavoriteMovies', 
-      'updateUser', 
-      'removeFromFavorites'
-    ]);
-    const snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+  // Data used for editing user information
+  updatedUsername = '';
+  updatedEmail = '';
+  updatedBirthdate = '';
 
-    // Configure the testing module
-    await TestBed.configureTestingModule({
-      declarations: [UserProfileComponent],
-      imports: [
-        FormsModule,
-        CommonModule,
-        MatSnackBarModule,
-        MatInputModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatCardModule,
-      ],
-      providers: [
-        { provide: FetchApiDataService, useValue: fetchApiDataSpy },
-        { provide: MatSnackBar, useValue: snackBarSpy },
-        { provide: Router, useValue: routerSpy },
-      ],
-    }).compileComponents();
+  // List of user's favorite movies
+  favoriteMovies: Movie[] = [];
+  loading = false; // Indicates whether a network request is ongoing
+  error: string | null = null; // Holds error messages for display
+  currentRoute: string = ''; // Tracks the current route for contextual actions
 
-    fixture = TestBed.createComponent(UserProfileComponent);
-    component = fixture.componentInstance;
-    fetchApiDataService = TestBed.inject(FetchApiDataService) as jasmine.SpyObj<FetchApiDataService>;
-    snackBar = TestBed.inject(MatSnackBar) as jasmine.SpyObj<MatSnackBar>;
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+  constructor(
+    private fetchApiData: FetchApiDataService,
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {}
 
-    // Mock localStorage functions
-    spyOn(localStorage, 'getItem').and.callFake((key: string) => key === 'authToken' ? 'fake-token' : null);
-    spyOn(localStorage, 'setItem').and.callThrough();
+  ngOnInit(): void {
+    // Ensure user is logged in before accessing the profile
+    this.checkAuthentication();
 
-    // Mock the API responses
-    fetchApiDataService.getUser.and.returnValue(of({
-      username: 'testuser',
-      email: 'test@example.com',
-      favoriteMovies: [],
-      birthdate: '2000-01-01',
-    }));
-    fetchApiDataService.getfavoriteMovies.and.returnValue(of([]));
-    fetchApiDataService.updateUser.and.returnValue(of({}));
-    fetchApiDataService.removeFromFavorites.and.returnValue(of({}));
+    // Fetch user data and favorite movies
+    this.getUser();
+    this.getfavoriteMovies();
 
-    fixture.detectChanges();
-  });
+    // Retrieve the current route for any route-specific logic
+    this.currentRoute = this.router.url.split('/').pop() || '';
+  }
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
+  // Verifies if the user is authenticated; redirects to login if not
+  private checkAuthentication(): void {
+    if (!this.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      this.snackBar.open('Please log in to access your profile.', 'Close', {
+        duration: 3000,
+      });
+    }
+  }
 
-  it('should fetch user data on initialization', () => {
-    expect(fetchApiDataService.getUser).toHaveBeenCalled();
-    expect(component.userData.username).toBe('testuser');
-  });
+  // Checks if the user has a valid authentication token
+  private isAuthenticated(): boolean {
+    const token = localStorage.getItem('authToken');
+    if (!token) return false;
 
-  it('should display a snackbar message if the user update is successful', () => {
-    component.updateUser();
-    expect(fetchApiDataService.updateUser).toHaveBeenCalledWith(component.userData);
-    expect(snackBar.open).toHaveBeenCalledWith('Profile updated successfully', 'Close', { duration: 2000 });
-  });
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const isTokenExpired = payload.exp * 1000 < Date.now();
+      return !isTokenExpired;
+    } catch (error) {
+      return false;
+    }
+  }
 
-  it('should display a snackbar message if user data fetch fails', () => {
-    const error = new HttpErrorResponse({ status: 404, statusText: 'Not Found' });
-    fetchApiDataService.getUser.and.returnValue(throwError(() => error));
-    fixture.detectChanges();
-    expect(snackBar.open).toHaveBeenCalledWith('Error fetching user data', 'Close', { duration: 2000 });
-  });
+  // Handles errors by displaying a message and logging the error. @param error - The error object returned from the HTTP request
 
-  it('should navigate to login page if no auth token is found', () => {
-    spyOn(localStorage, 'getItem').and.returnValue(null);
-    component.ngOnInit();
-    expect(router.navigate).toHaveBeenCalledWith(['/login']);
-  });
+  private handleError(error: HttpErrorResponse): void {
+    console.error('Error occurred:', error);
+    const message =
+      error.status === 404
+        ? 'User or favorite movies not found.'
+        : 'An error occurred. Please try again later.';
+    this.snackBar.open(message, 'Close', { duration: 3000 });
+    this.error = error.message;
+    this.loading = false;
+  }
 
-  it('should remove a movie from favorites and show snackbar on successful removal', () => {
-    // Updated movie mock objects with correct types for genre and director
-    component.favoriteMovies = [
-      { 
-        _id: '1', 
-        title: 'Movie 1', 
-        genre: { name: 'Action', description: 'Action-packed movie' }, 
-        director: { name: 'Director 1', bio: 'A well-known director', birthYear: 1970, deathYear: 2020 }, 
-        synopsis: 'A thrilling action movie.', 
-        imagePath: '/path/to/image1.jpg' 
+  // Fetches user data from the API
+  private getUser(): void {
+    this.loading = true;
+    this.fetchApiData
+      .getUser()
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (userData: User) => {
+          this.userData = userData;
+
+          // Populate the form fields for user update
+          this.updatedUsername = userData.username;
+          this.updatedEmail = userData.email;
+          this.updatedBirthdate =
+            typeof userData.birthdate === 'string'
+              ? new Date(userData.birthdate).toISOString().split('T')[0]
+              : '';
+        },
+        error: (err) => this.handleError(err),
+      });
+  }
+
+  // Fetches the user's favorite movies
+  private getfavoriteMovies(): void {
+    this.loading = true;
+    this.fetchApiData
+      .getfavoriteMovies()
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (movies: Movie[]) => {
+          this.favoriteMovies = movies;
+        },
+        error: (err: HttpErrorResponse) => this.handleError(err),
+      });
+  }
+
+  // Toggles the display of movie details. @param movie - The movie whose details are toggled
+  toggleAllDetails(movie: Movie): void {
+    if (!movie.hasOwnProperty('areDetailsVisible')) {
+      movie.areDetailsVisible = false;
+    }
+    movie.areDetailsVisible = !movie.areDetailsVisible;
+  }
+
+  // Adds or removes a movie from the user's favorites. @param movie - The movie to be added or removed
+  toggleFavorite(movie: Movie): void {
+    const isFavorite = this.favoriteMovies.some((m) => m._id === movie._id);
+
+    const request = isFavorite
+      ? this.fetchApiData.removeFromFavorites(movie._id)
+      : this.fetchApiData.addToFavorites(movie._id);
+
+    request.subscribe({
+      next: () => {
+        if (isFavorite) {
+          // Remove from favorites list
+          this.favoriteMovies = this.favoriteMovies.filter(
+            (m) => m._id !== movie._id
+          );
+          this.snackBar.open('Removed from favorites!', 'Close', {
+            duration: 2000,
+          });
+        } else {
+          // Add to favorites list
+          this.favoriteMovies.push(movie);
+          this.snackBar.open('Added to favorites!', 'Close', {
+            duration: 2000,
+          });
+        }
       },
-      { 
-        _id: '2', 
-        title: 'Movie 2', 
-        genre: { name: 'Comedy', description: 'A hilarious comedy' }, 
-        director: { name: 'Director 2', bio: 'A famous comedian director', birthYear: 1980, deathYear: 2025 }, 
-        synopsis: 'A hilarious comedy.', 
-        imagePath: '/path/to/image2.jpg' 
-      }
-    ];
-  
-    // Call the method with only 2 arguments
-    component.removeFromFavorites('testuser', '1');  // Now passing only 2 arguments
-    
-    // Correct the spy call and check if the method was called with 2 arguments
-    expect(fetchApiDataService.removeFromFavorites).toHaveBeenCalledWith('testuser', '1');  // Checking with 2 arguments
-    expect(component.favoriteMovies.length).toBe(1);
-    expect(snackBar.open).toHaveBeenCalledWith('Movie removed from favorites', 'Close', { duration: 2000 });
-  });
-  
+      error: (err) => this.handleError(err),
+    });
+  }
 
-  it('should log out and navigate to the login page', () => {
-    spyOn(localStorage, 'clear');
-    component.logout();
-    expect(localStorage.clear).toHaveBeenCalled();
-    expect(snackBar.open).toHaveBeenCalledWith('Logged out successfully!', 'Close', { duration: 2000 });
-    expect(router.navigate).toHaveBeenCalledWith(['/login']);
-  });
+  // Updates user information using the API
+  updateUser(): void {
+    if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
+      this.snackBar.open('All fields are required.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
 
-  it('should load favorite movies from localStorage if present', () => {
-    const storedFavorites = JSON.stringify([{ _id: '1', title: 'Stored Movie' }]);
-    spyOn(localStorage, 'getItem').and.returnValue(storedFavorites);
-    expect(component.favoriteMovies.length).toBe(1);
-    expect(component.favoriteMovies[0].title).toBe('Stored Movie');
-  });
+    this.loading = true;
+    const updatedUserData: User = {
+      ...this.userData,
+      username: this.updatedUsername,
+      email: this.updatedEmail,
+      birthdate: new Date(this.updatedBirthdate),
+    };
 
-  it('should not load favorite movies from localStorage if not present', () => {
-    spyOn(localStorage, 'getItem').and.returnValue(null);
-    expect(component.favoriteMovies.length).toBe(0);
-  });
+    this.fetchApiData
+      .updateUser(updatedUserData)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: (updatedData: User) => {
+          this.userData = updatedData;
+          this.snackBar.open('Profile updated successfully!', 'Close', {
+            duration: 3000,
+          });
+        },
+        error: (err: HttpErrorResponse) => this.handleError(err),
+      });
+  }
 
-});
+  // Logs the user out and redirects to the login page
+  logout(): void {
+    localStorage.removeItem('authToken');
+    this.router.navigate(['/login']);
+    this.snackBar.open('Logged out successfully!', 'Close', { duration: 3000 });
+  }
+
+  // Handles image loading errors by replacing it with a placeholder image. @param event - The image error event
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/placeholder-image.jpg';
+  }
+}

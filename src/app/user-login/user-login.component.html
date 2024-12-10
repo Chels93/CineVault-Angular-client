@@ -1,44 +1,79 @@
 <div class="login-form">
-    <div class="welcome-page">
-      <h1>Welcome to <span class="brand">CineVault</span>!</h1>
-    </div>
-    <form [formGroup]="loginForm" (ngSubmit)="logInUser()">
-      <mat-card class="login-card">
-        <h2 class="form-title">
-          {{ isLoggedIn ? "Welcome Back!" : "Log In" }}
-        </h2>
-  
-        <!-- Username Field -->
-        <mat-form-field class="form-field" appearance="fill">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" placeholder="Enter your username" required />
-          <mat-error *ngIf="loginForm.get('username')?.hasError('required') && loginForm.get('username')?.touched">
-            Username is required
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Password Field -->
-        <mat-form-field class="form-field" appearance="fill">
-          <mat-label>Password</mat-label>
-          <input matInput formControlName="password" type="password" placeholder="Enter your password" required />
-          <mat-error *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
-            Password is required
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Submit Button -->
-        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="submit-button">
-          Log In
-        </button>
-  
-        <!-- Route to Registration -->
-        <div class="login-link">
-          <span>Not registered? </span>
-          <a mat-raised-button color="primary" (click)="navigateToRegistration()">
-            Sign up here.
-          </a>
-        </div>
-      </mat-card>
-    </form>
+  <!-- Welcome section that displays application brand -->
+  <div class="welcome-page">
+    <h1>Welcome to <span class="brand">CINEVAULT</span>!</h1>
   </div>
-  
+
+  <!-- Login form with form validation using Angular Reactive Forms -->
+  <form [formGroup]="loginForm" (ngSubmit)="logInUser()">
+    <!-- Card containing the login form fields -->
+    <mat-card class="login-card">
+      <!-- Conditional form title based on login status -->
+      <h2 class="form-title">
+        {{ isLoggedIn ? "Welcome Back!" : "Log In" }}
+      </h2>
+
+      <!-- Username field with validation -->
+      <mat-form-field class="form-field" appearance="fill">
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          formControlName="username"
+          placeholder="Enter your username"
+          required
+        />
+
+        <!-- Error message for when username field is required but not touched -->
+        <mat-error
+          *ngIf="
+            loginForm.get('username')?.hasError('required') &&
+            loginForm.get('username')?.touched
+          "
+        >
+          Username is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Password field with validation  -->
+      <mat-form-field class="form-field" appearance="fill">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          type="password"
+          placeholder="Enter your password"
+          required
+        />
+
+        <!-- Error message when password field is required but not touched -->
+        <mat-error
+          *ngIf="
+            loginForm.get('password')?.hasError('required') &&
+            loginForm.get('password')?.touched
+          "
+        >
+          Password is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Submit button, disabled if form is invalid -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="submit-button"
+      >
+        Log In
+      </button>
+
+      <!-- Link to navigate to the registration page if user is not registered -->
+      <div class="login-link">
+        <span>Not registered? </span>
+        <a mat-raised-button color="primary" (click)="navigateToRegistration()">
+          Sign up here.
+        </a>
+      </div>
+    </mat-card>
+  </form>
+</div>

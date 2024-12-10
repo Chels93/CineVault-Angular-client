@@ -11,7 +11,7 @@ describe('NavigationComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [NavigationComponent],
-      imports: [RouterTestingModule] // Import RouterTestingModule to mock Router navigation
+      imports: [RouterTestingModule], // Import RouterTestingModule to mock Router navigation
     });
 
     fixture = TestBed.createComponent(NavigationComponent);

@@ -1,138 +1,151 @@
-/* Login Form Styling */
 .login-form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(120deg, #118ab2, #06d6a0); // Background gradient
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #118ab2, #06d6a0);
+  padding: 2rem;
+  text-align: center;
+
+  /* Welcome page styling */
+  .welcome-page {
+    margin-bottom: 3rem; /* Space between heading and form */
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 3rem;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      padding: 0;
+      margin-top: 0; /* Remove the top margin */
+      position: relative;
+      z-index: 1; /* Ensure it's above the background */
+    }
+
+    /* Brand name (CineVault) styling */
+    .brand {
+      color: #ffd166; /* Brand color for CineVault */
+      font-weight: bolder;
+      text-transform: uppercase;
+      font-size: 3.7rem;
+      letter-spacing: 2px;
+    }
+  }
+
+  /* Login card container styling */
+  .login-card {
+    max-width: 400px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 2rem;
-    text-align: center;
-  
-    .welcome-page {
-      margin-bottom: 3rem; /* Space between heading and form */
-      
-      h1 {
-        font-size: 3.5rem;
-        margin-bottom: 3rem;
-        color: #fff;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-        text-align: center;
-        padding: 0;
-        margin-top: 0; /* Remove the top margin */
-        position: relative;
-        z-index: 1; /* Ensure it's above the background */
-      }
-  
-      .brand {
-        color: #ffd166; /* Brand color for CineVault */
-        font-weight: bolder;
-        text-transform: uppercase;
-        font-size: 3.7rem;
-        letter-spacing: 2px;
-      }
+    animation: fadeIn 0.6s ease;
+
+    /* Form title styling (conditional based on login status) */
+    .form-title {
+      font-size: 1.8rem;
+      color: #118ab2;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      text-align: center;
     }
-  
-    .login-card {
-      max-width: 400px;
-      width: 100%;
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      animation: fadeIn 0.6s ease;
-  
-      .form-title {
-        font-size: 1.8rem;
+
+    /* Styling for form fields */
+    .form-field {
+      margin-bottom: 1rem;
+
+      mat-label {
+        font-weight: 500;
         color: #118ab2;
-        margin-bottom: 1.5rem;
-        font-weight: 600;
-        text-align: center;
       }
-  
-      .form-field {
-        margin-bottom: 1rem;
-  
-        mat-label {
-          font-weight: 500;
-          color: #118ab2;
-        }
-  
-        input {
-          border-radius: 8px;
-          &:focus {
-            border-color: #06d6a0;
-          }
-        }
-  
-        mat-error {
-          font-size: 0.85rem;
-          color: #ef476f; /* Error color */
-        }
-      }
-  
-      .submit-button {
-        font-size: 1.3rem;
-        padding: 1rem 2.5rem;
-        border-radius: 40px;
-        background-color: #ffd166;
-        color: #fff;
-        font-weight: bold;
-        border: none;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      
-        &:hover {
-          background-color: #ff9f00;
-          box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-          transform: translateY(-5px);
-        }
-      
-        &:active {
-          transform: translateY(1px);
-        }
-      
+
+      /* Input fields styling */
+      input {
+        border-radius: 8px;
         &:focus {
-          outline: none;
-          border: 2px solid #118ab2;  // Highlight border on focus
-        }
-      
-        &:disabled {
-          background-color: #b0bec5;
-          cursor: not-allowed;
-          box-shadow: none;
+          border-color: #06d6a0;
         }
       }
-  
-      .login-link {
-        margin-top: 1.5rem;
-        font-size: 0.9rem;
-        text-align: center;
-  
-        a {
-          color: #118ab2;
-          font-weight: 500;
-          text-decoration: none;
-  
-          &:hover {
-            text-decoration: underline;
-          }
-        }
+
+      /* Error message styling */
+      mat-error {
+        font-size: 0.85rem;
+        color: #ef476f; /* Error color */
       }
     }
-  
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
+
+    /* Submit button styling */
+    .submit-button {
+      font-size: 1.3rem;
+      padding: 1rem 2.5rem;
+      border-radius: 40px;
+      background-color: #ffd166;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+      /* Hover effect for button */
+      &:hover {
+        background-color: #ff9f00;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+
+      /* Active button effect */
+      &:active {
+        transform: translateY(1px);
+      }
+
+      /* Focus effect for accessibility */
+      &:focus {
+        outline: none;
+        border: 2px solid #118ab2; // Highlight border on focus
+      }
+
+      /* Disabled button state */
+      &:disabled {
+        background-color: #b0bec5;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+    }
+
+    /* Link to registration page */
+    .login-link {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+
+      a {
+        color: #118ab2;
+        font-weight: 500;
+        text-decoration: none;
+
+        /* Hover effect for the link */
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
-  
+
+  /* Keyframe animation for fading in the login card */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

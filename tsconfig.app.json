@@ -1,17 +1,33 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+/* 
+  To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html.
+  Provides a guide on how to configure TypeScript compilation and options for various use cases.
+*/
+/* 
+  To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options.
+  Detailed documentation about compiler options used by Angular applications to optimize build and development processes.
+*/
 {
+    // Extends from the base TypeScript configuration file (tsconfig.json), inheriting common settings
     "extends": "./tsconfig.json",
+  
     "compilerOptions": {
+      // Defines the output directory for compiled JavaScript files
       "outDir": "./out-tsc/app",
+  
+      // Specifies the type definitions to include during compilation, in this case, for Node.js
       "types": [
-        "node"
+        "node"  // Includes type definitions for Node.js to enable proper TypeScript typing for Node APIs
       ]
     },
+  
+    // Specifies the list of files that should be explicitly included in the compilation
     "files": [
-      "src/main.ts",
+      "src/main.ts",  // The main entry point for the Angular application
     ],
+  
+    // Includes all TypeScript declaration files (e.g., .d.ts) for type definitions
     "include": [
-      "src/**/*.d.ts"
+      "src/**/*.d.ts"  // Includes all .d.ts files in the src folder and subdirectories
     ]
   }
+  

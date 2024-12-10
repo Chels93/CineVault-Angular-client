@@ -1,188 +1,292 @@
-/* Common variables */
+/* Common Variables */
 $primary-color: #118ab2;
-$input-border-color: #ffd166;
-$input-focus-border-color: #007bff;
-$form-background-color: #f8f9fa;
-$form-padding: 20px;
-$form-border-radius: 8px;
-$form-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-$form-outline-color: #ffd166;
-$card-gap-large: 1rem;
-$card-gap-medium: 0.75rem;
-$card-gap-small: 0.5rem;
-$card-padding-small: 1rem;
-$card-padding-large: 1.5rem;
-$button-text-color: #ffffff;
-$button-background-color: #ef476f;
-$button-border-color: #ef476f;
-$card-background-color: #ffffff;
-$card-image-height: 15rem;
-$card-height: 30rem;
-$button-spacing: 0.5rem;
-$title-spacing: 2rem;
-$breakpoint-lg: 992px;
-$breakpoint-md: 768px;
-$breakpoint-sm: 576px;
+$secondary-color: #ffd166;
+$text-color: #333;
+$header-font: "Poppins", sans-serif;
+$movie-title-font-size: 18px;
 
-/* Movie cards container styling */
+/* Movie Library Header Styling */
+.page-header {
+  font-family: "Poppins", sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  color: #118ab2;
+  text-transform: lowercase;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.page-header::first-letter {
+  text-transform: uppercase;
+}
+
+/* Container for all movie cards */
 .movie-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Default to 4 columns */
+  grid-gap: 16px;
+  padding: 10px;
+
+  /* On medium screens (1200px and smaller), use 3 columns */
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 12px; /* Smaller gap between movies */
+  }
+
+  /* On smaller screens (768px and smaller), use 2 columns */
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 8px; /* Smaller gap between movies */
+  }
+
+  /* On extra-small screens (480px and smaller), use 1 column */
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    grid-gap: 6px; /* Reduce gap even more */
+  }
 }
 
-/* Individual movie card styling */
+/* Styling for individual movie cards */
 .movie-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  max-width: 340px;
+  height: 500px;
+  min-height: 500px;
+  position: relative;
+  border: 2px solid #ffd166 !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .movie-image-container,
+  .movie-title {
+    transition: opacity 0.3s ease;
+  }
+
+  &.show-details {
     height: auto;
-    width: 100%;
-    max-width: 20rem;
-    overflow: hidden;
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-    background-color: $card-background-color;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
-    padding: $card-padding-large;
+    opacity: 0;
+    pointer-events: none;
+  }
 
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
+  /* Movie Details */
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-top: 16px;
+  padding: 16px;
+  max-height: calc(100% - 32px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #f9f9f9;
 
-    @media (max-width: $breakpoint-lg) {
-      max-width: 18rem;
-      justify-content: center;
-    }
+  p {
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    font-size: 14px;
+  }
 
-    @media (max-width: $breakpoint-md) {
-      max-width: 15rem;
-      padding: $card-padding-small;
-      justify-content: center;
-    }
-
-    @media (max-width: $breakpoint-sm) {
-      max-width: 12rem;
-      margin: 0.5rem;
-      padding: $card-padding-small;
-      justify-content: center;
-    }
+  strong {
+    font-weight: 600;
+    color: $primary-color;
+  }
 }
 
-/* Heart icon styling */
-
-mat-icon.favorite {
-    color: black !important; /* Ensure the heart icon turns black when it's a favorite */
+/* Movie title inside the header */
+.movie-card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  padding: 10px;
 }
 
-mat-icon.not-favorite {
-    color: gray !important; /* Ensure the heart icon remains gray when it's not a favorite */
+.movie-card-header .movie-title {
+  font-size: 20px;
+  font-weight: normal;
+  color: #118ab2;
+  text-align: center;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  background-clip: text;
+  font-family: $header-font;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  word-break: break-word;
+  display: block;
+  padding-bottom: 5px;
 }
 
+/* Styling for the movie image container */
+.movie-image-container {
+  width: 100%;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-bottom: 20px;
 
-/* Movie card favorite icon container */
-.favorite-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    padding: 0.5rem; /* Add padding to avoid clipping */
-    justify-content: flex-start; /* Ensure the items are aligned to the left */
-    
-    mat-icon {
-      margin-right: 8px; /* Space between the icon and the text */
-      transition: color 0.3s ease;
-    }
+  @media (max-width: 768px) {
+    height: 300px; /* Adjust image height on smaller screens */
+  }
 
-    span {
-      font-size: 14px;
-      color: #555;
-      font-weight: 500;
-    }
-
-    /* Apply color change when the movie is in the favorites list */
-    .favorite {
-      color: black !important; /* Ensure the icon turns black when favorited */
-    }
-
-    .not-favorite {
-      color: gray !important; /* Default color for non-favorite icon */
-    }
+  @media (max-width: 480px) {
+    height: 200px; /* Further adjust image height on extra-small screens */
+  }
 }
 
-/* Responsive styles */
+/* Movie Image Styling */
+.movie-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Buttons container */
 .buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-overflow: ellipsis;
+  flex-direction: row;
+  flex-wrap: wrap;
+  object-fit: cover;
+  gap: 4px;
+  margin-top: auto;
+  max-width: 100%;
+  padding: 16px;
+  position: relative;
+
+  /* Adjust for smaller screens */
+  @media (max-width: 1024px) {
+    font-size: 14px; /* Increase font size slightly on smaller screens */
+    flex-direction: row; /* Keep buttons in a row */
+    justify-content: space-between; /* Space out buttons evenly */
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* For even smaller screens */
+  @media (max-width: 768px) {
+    font-size: 16px; /* Further increase font size for readability */
+    flex-direction: column; /* Stack buttons vertically */
+    justify-content: center;
+    gap: 12px;
+    height: auto; /* Allow button container height to adjust */
+    min-width: 100%; /* Ensure buttons are not too small */
+    padding: 12px; /* Add padding for more space between buttons */
+  }
+
+  /* For extra small screens */
+  @media (max-width: 480px) {
+    font-size: 18px; /* Increase font size on mobile */
+    justify-content: center;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 8px; /* Adjust gap between buttons */
+    min-width: 100px; /* Keep buttons from becoming too narrow */
+    padding: 8px;
+  }
+}
+
+/* Button styles */
+.favorite-container,
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 16px;
+  border-radius: 24px;
+  border: 2px solid $primary-color;
+  color: $primary-color;
+  cursor: pointer;
+  background-color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  height: 44px;
+  max-width: 216px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  padding: 0 8px; /* Adjust padding to fit within the max width */
+
+  .text-container {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 16px;
+    justify-content: flex-start;
+    text-align: center;
+    gap: 4px;
+  }
 
-    button {
-      font-size: 14px;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease;
+  /* On hover, change background, text color, and icon color */
+  &:hover {
+    background-color: $primary-color;
+    color: white;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 
-      &.mat-button {
-        color: #fff;
-        background-color: $primary-color;
-        border-color: $primary-color;
-
-        &:hover {
-          background-color: darken($primary-color, 10%);
-          transform: translateY(-3px);
-        }
-
-        &:focus {
-          outline: 2px solid $input-focus-border-color;
-        }
-      }
-
-      &.favorite-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        font-size: 14px;
-        background-color: #fff;
-        border: 2px solid $primary-color;
-        color: $primary-color;
-        border-radius: 8px;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-
-        mat-icon {
-          transition: color 0.3s ease;
-        }
-
-        &:hover {
-          background-color: $primary-color;
-          color: #fff;
-          mat-icon {
-            color: #fff;
-          }
-        }
-
-        &:focus {
-          outline: 2px solid $input-focus-border-color;
-        }
-
-        &.added {
-          color: #fff;
-          background-color: $button-background-color;
-          border-color: $button-background-color;
-
-          &:hover {
-            background-color: darken($button-background-color, 10%);
-          }
-
-          mat-icon {
-            color: #fff;
-          }
-        }
-      }
+    /* Change the icon color to yellow on hover */
+    mat-icon {
+      color: #ffd166;
     }
+  }
+
+  &.favorite {
+    background-color: $secondary-color;
+    color: $secondary-color;
+  }
+
+  /* Target the favorite icon for 'Add to Favorites' */
+  .favorite-container mat-icon {
+    color: #ffd166;
+    font-size: 28px;
+
+    display: inline-block;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    box-sizing: content-box;
+    white-space: nowrap;
+  }
+
+  /* Target show details icon */
+  .button-container mat-icon {
+    color: darken($secondary-color, 20%);
+    font-size: 20px;
+  }
+}
+
+/* Details section */
+.movie-details {
+  margin-top: 16px;
+  color: $text-color;
+
+  p {
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  strong {
+    font-weight: 600;
+    color: #118ab2;
+  }
 }

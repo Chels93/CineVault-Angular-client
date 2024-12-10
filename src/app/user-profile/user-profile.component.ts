@@ -38,6 +38,7 @@ import { finalize } from 'rxjs/operators';
   ],
 })
 export class UserProfileComponent implements OnInit {
+  // User data and input bindings
   userData: User = {
     username: '',
     email: '',
@@ -46,52 +47,59 @@ export class UserProfileComponent implements OnInit {
     password: '',
   };
 
+  // Input fields for editing user information
   updatedUsername = '';
   updatedEmail = '';
   updatedBirthdate = '';
 
+  // Array to store the user's favorite movies
   favoriteMovies: Movie[] = [];
   loading = false;
   error: string | null = null;
-
   currentRoute: string = '';
 
   constructor(
     private fetchApiData: FetchApiDataService,
-    private snackBar: MatSnackBar,
-    private router: Router
+    private snackBar: MatSnackBar, // For displaying messages
+    private router: Router // For navigation
   ) {}
 
   ngOnInit(): void {
+    // Verify if user is authenticated and fetch user data
     this.checkAuthentication();
     this.getUser();
     this.getfavoriteMovies();
-    this.currentRoute = this.router.url.split('/').pop() || ''; // Extract last part of the route
+    this.currentRoute = this.router.url.split('/').pop() || ''; // Extract current route
   }
 
+  // Checks if user is authenticated; redirects to login if not
   private checkAuthentication(): void {
     if (!this.isAuthenticated()) {
       this.router.navigate(['/login']);
-      this.snackBar.open('Please log in to access your profile.', 'Close', { duration: 3000 });
+      this.snackBar.open('Please log in to access your profile.', 'Close', {
+        duration: 3000,
+      });
     }
   }
 
+  // Determines if user is authenticated by checking the token
   private isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     if (!token) {
       return false;
     }
-  
+
     // Optional: Add token validation logic
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const isTokenExpired = payload.exp * 1000 < Date.now();
+      const payload = JSON.parse(atob(token.split('.')[1])); // Decode token
+      const isTokenExpired = payload.exp * 1000 < Date.now(); // Check expiration
       return !isTokenExpired;
     } catch (error) {
       return false;
     }
   }
 
+  // Handles API errors and displays appropriate messages
   private handleError(error: HttpErrorResponse): void {
     console.error('Error occurred:', error);
     const message =
@@ -103,6 +111,7 @@ export class UserProfileComponent implements OnInit {
     this.loading = false;
   }
 
+  // Fetches user data from API and populates input fields
   private getUser(): void {
     this.loading = true;
     this.fetchApiData
@@ -122,6 +131,7 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  // Fetches user's favorite movies from API
   private getfavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
@@ -135,6 +145,7 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  // Toggles display of movie details in UI
   toggleAllDetails(movie: Movie): void {
     // Ensure the property exists
     if (!movie.hasOwnProperty('areDetailsVisible')) {
@@ -143,6 +154,7 @@ export class UserProfileComponent implements OnInit {
     movie.areDetailsVisible = !movie.areDetailsVisible;
   }
 
+  // Adds or removes a movie from user's favorites
   toggleFavorite(movie: Movie): void {
     const isFavorite = this.favoriteMovies.some((m) => m._id === movie._id);
 
@@ -153,20 +165,29 @@ export class UserProfileComponent implements OnInit {
     request.subscribe({
       next: () => {
         if (isFavorite) {
-          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
-          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+          this.favoriteMovies = this.favoriteMovies.filter(
+            (m) => m._id !== movie._id
+          );
+          this.snackBar.open('Removed from favorites!', 'Close', {
+            duration: 2000,
+          });
         } else {
           this.favoriteMovies.push(movie);
-          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+          this.snackBar.open('Added to favorites!', 'Close', {
+            duration: 2000,
+          });
         }
       },
       error: (err) => this.handleError(err),
     });
   }
 
+  // Updates user profile with the edited details
   updateUser(): void {
     if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
-      this.snackBar.open('All fields are required.', 'Close', { duration: 3000 });
+      this.snackBar.open('All fields are required.', 'Close', {
+        duration: 3000,
+      });
       return;
     }
 
@@ -184,18 +205,22 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (updatedData: User) => {
           this.userData = updatedData;
-          this.snackBar.open('Profile updated successfully!', 'Close', { duration: 3000 });
+          this.snackBar.open('Profile updated successfully!', 'Close', {
+            duration: 3000,
+          });
         },
         error: (err: HttpErrorResponse) => this.handleError(err),
       });
   }
 
+  // Logs out user by clearing authentication token
   logout(): void {
     localStorage.removeItem('authToken');
     this.router.navigate(['/login']);
     this.snackBar.open('Logged out successfully!', 'Close', { duration: 3000 });
   }
 
+  // Replaces broken image links with a placeholder image
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';
