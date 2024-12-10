@@ -1,28 +1,33 @@
 <mat-toolbar color="primary" class="navbar">
-  <!-- Brand -->
-  <a class="navbar-brand" routerLink="/movies">CINEVAULT</a>
-
-  <!-- Spacer -->
-  <span class="spacer"></span>
-
-  <!-- Hamburger Icon -->
-  <mat-icon *ngIf="!isMenuOpen" class="hamburger-icon" (click)="toggleMenu()"
-    >menu</mat-icon
-  >
-  <mat-icon *ngIf="isMenuOpen" class="hamburger-icon" (click)="toggleMenu()"
-    >close</mat-icon
-  >
-
-  <!-- Navigation Links (hidden by default, shown when menu is open) -->
-  <div class="nav-links" [ngClass]="{ active: isMenuOpen }">
-    <button mat-button (click)="goToMovies()" class="nav-link home">
-      Home
-    </button>
-    <button mat-button (click)="goToProfile()" class="nav-link profile">
-      Profile
-    </button>
-    <button mat-button color="warn" (click)="logOut()" class="nav-link warn">
-      Logout
-    </button>
-  </div>
-</mat-toolbar>
+    <!-- Brand -->
+    <a class="navbar-brand" routerLink="/movies">CINEVAULT</a>
+  
+    <!-- Spacer -->
+    <span class="spacer"></span>
+  
+    <!-- Hamburger Icon -->
+    <mat-icon
+      class="hamburger-icon"
+      (click)="toggleMenu()"
+      *ngIf="!isMenuOpen"
+      >menu</mat-icon
+    >
+    <mat-icon
+      class="hamburger-icon"
+      (click)="toggleMenu()"
+      *ngIf="isMenuOpen"
+      >close</mat-icon
+    >
+  
+    <!-- Dropdown Navigation Links -->
+    <div class="nav-links" [ngClass]="{ active: isMenuOpen }">
+      <button mat-button (click)="goToMovies()" class="nav-link home">Home</button>
+      <button mat-button (click)="goToProfile()" class="nav-link profile">
+        Profile
+      </button>
+      <button mat-button color="warn" (click)="logOut()" class="nav-link warn">
+        Logout
+      </button>
+    </div>
+  </mat-toolbar>
+  
