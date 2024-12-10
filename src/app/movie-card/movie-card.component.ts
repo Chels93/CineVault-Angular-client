@@ -28,8 +28,9 @@ import { User } from '../fetch-api-data.service';
   ],
 })
 export class MovieCardComponent implements OnInit {
-  @Output() favoriteToggled = new EventEmitter<void>();
+  @Output() favoriteToggled = new EventEmitter<void>(); // Output event to notify when the favorite state changes
 
+  // User data and favorite movies properties
   userData: User = {
     username: '',
     email: '',
@@ -44,41 +45,45 @@ export class MovieCardComponent implements OnInit {
   error: string | null = null;
 
   constructor(
-    private fetchApiData: FetchApiDataService,
-    private router: Router,
-    private snackBar: MatSnackBar
+    private fetchApiData: FetchApiDataService, // Injecting the FetchApiDataService to handle API calls
+    private router: Router, // Injecting the Router to handle navigation events
+    private snackBar: MatSnackBar // Injecting MatSnackBar for notifications
   ) {
     // Subscribe to navigation events to refresh data on /movies navigation
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url === '/movies') {
-        this.getUser(() => this.getAllMovies());
+        this.getUser(() => this.getAllMovies()); // Fetch user and movies when navigating to '/movies'
       }
     });
   }
 
   ngOnInit(): void {
+    // Fetch user data and movies when the component is initialized
     this.getUser(() => {
-      this.getAllMovies();
+      this.getAllMovies(); // Fetch all movies
+      this.loadFavoritesFromLocalStorage(); // Load favorites from localStorage
     });
   }
 
+  // Checks if the user is authenticated based on token in localStorage
   isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']); // Navigate to login if no token is found
       return false;
     }
     return true;
   }
 
+  // Fetch user data and handle errors
   private getUser(callback?: () => void): void {
     this.loading = true;
     this.error = null;
 
     this.fetchApiData.getUser().subscribe({
       next: (userData: User) => {
-        this.userData = userData;
-        this.favoriteMovies = userData.favoriteMovies;
+        this.userData = userData; // Store user data
+        this.favoriteMovies = userData.favoriteMovies; // Store user's favorite movies
         if (callback) callback();
         this.loading = false;
       },
@@ -89,6 +94,7 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
+  // Fetch all movies and map favorite status based on user data
   getAllMovies(): void {
     this.fetchApiData.getAllMovies().subscribe({
       next: (movies: Movie[]) => {
@@ -106,48 +112,85 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
+  // Load favorite movies from localStorage and update their favorite status
+  private loadFavoritesFromLocalStorage(): void {
+    const storedFavorites = JSON.parse(
+      localStorage.getItem('favoriteMovies') || '[]'
+    );
+    this.favoriteMovies = storedFavorites;
+
+    // Update the favorite status for each movie based on localStorage
+    this.movies.forEach((movie) => {
+      movie.isFavorite = this.favoriteMovies.some(
+        (fav) => fav._id === movie._id
+      );
+    });
+  }
+
+  // Toggle the favorite status of a movie
   toggleFavorite(movie: Movie): void {
     if (movie.isFavorite) {
+      // Remove movie from favorites
       this.fetchApiData.removeFromFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
-        movie.isFavorite = false;
-        this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
-        this.getUser();
+        this.favoriteMovies = this.favoriteMovies.filter(
+          (m) => m._id !== movie._id
+        );
+        // Update the localStorage
+        localStorage.setItem(
+          'favoriteMovies',
+          JSON.stringify(this.favoriteMovies)
+        );
+        movie.isFavorite = false; // Update movie favorite status
+        this.snackBar.open('Removed from favorites!', 'Close', {
+          duration: 2000,
+        });
+        this.getUser(); // Refresh user data
       });
     } else {
+      // Add movie to favorites
       this.fetchApiData.addToFavorites(movie._id).subscribe(() => {
         this.favoriteMovies.push(movie);
-        movie.isFavorite = true;
+        // Update the localStorage
+        localStorage.setItem(
+          'favoriteMovies',
+          JSON.stringify(this.favoriteMovies)
+        );
+        movie.isFavorite = true; // Update movie favorite status
         this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
-        this.getUser();
+        this.getUser(); // Refresh user data
       });
     }
   }
 
+  // Handle image loading errors by setting a placeholder image
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';
   }
 
+  // Toggle visibility of movie details
   toggleAllDetails(movie: Movie): void {
     if (movie.areDetailsVisible === undefined) {
-      movie.areDetailsVisible = false;
+      movie.areDetailsVisible = false; // Initialize if not defined
     }
-    movie.areDetailsVisible = !movie.areDetailsVisible;
+    movie.areDetailsVisible = !movie.areDetailsVisible; // Toggle visibility
   }
 
+  // Create authorization headers with token for API calls
   createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
     if (!token) {
-      throw new Error('No token found. Please log in.');
+      throw new Error('No token found. Please log in.'); // Throw error if no token
     }
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`); // Return headers with token
   }
 
+  // Get the authentication token from localStorage
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('authToken'); // Return the token from localStorage
   }
 
+  // Handle errors from API calls
   private handleError(error: HttpErrorResponse): void {
     this.error = error.message || 'An unknown error occurred.';
     console.error('Error:', error);

@@ -1,64 +1,114 @@
 <div class="registration-form">
-    <div class="welcome-page">
-      <h1>Welcome to <span class="brand">CineVault</span>!</h1>
-    </div>
-    <form [formGroup]="registrationForm" (ngSubmit)="registerUser()">
-      <mat-card class="registration-card">
-        <h2 class="form-title">Register</h2>
-  
-        <!-- Username Field -->
-        <mat-form-field class="form-field" appearance="fill">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
-          <mat-error *ngIf="registrationForm.get('username')?.hasError('required') && registrationForm.get('username')?.touched">
-            Username is required
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Password Field -->
-        <mat-form-field class="form-field" appearance="fill">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" />
-          <mat-error *ngIf="registrationForm.get('password')?.hasError('required') && registrationForm.get('password')?.touched">
-            Password is required
-          </mat-error>
-          <mat-error *ngIf="registrationForm.get('password')?.hasError('minlength') && registrationForm.get('password')?.touched">
-            Password must be at least 6 characters long
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Email Field -->
-        <mat-form-field class="form-field" appearance="fill">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" />
-          <mat-error *ngIf="registrationForm.get('email')?.hasError('required') && registrationForm.get('email')?.touched">
-            Email is required
-          </mat-error>
-          <mat-error *ngIf="registrationForm.get('email')?.hasError('email') && registrationForm.get('email')?.touched">
-            Please enter a valid email address
-          </mat-error>
-        </mat-form-field>
-  
-        <!-- Birthdate Field -->
-        <mat-form-field class="form-field" appearance="fill">
-            <mat-label>Birthdate</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="birthdate" />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-          
-        <!-- Submit Button -->
-        <button mat-raised-button color="primary" type="submit" [disabled]="registrationForm.invalid" class="submit-button">
-          Register
-        </button>
-  
-        <!-- Route to Login -->
-        <div class="login-link">
-          <span>Already have an account? </span>
-          <a mat-raised-button color="primary" [routerLink]="['/login']">Login here.</a>
-
-        </div>
-      </mat-card>
-    </form>
+  <!-- Welcome Section for Registration page -->
+  <div class="welcome-page">
+    <h1>Welcome to <span class="brand">CineVault</span>!</h1>
   </div>
-  
+
+  <!-- Registration Form starts here -->
+  <form [formGroup]="registrationForm" (ngSubmit)="registerUser()">
+    <!-- Main Registration Card container -->
+    <mat-card class="registration-card">
+      <!-- Form Title -->
+      <h2 class="form-title">Register</h2>
+
+      <!-- Username Field -->
+      <mat-form-field class="form-field" appearance="fill">
+        <mat-label>Username</mat-label>
+        <!-- Username input field connected to formControlName -->
+        <input matInput formControlName="username" />
+
+        <!-- Error message for Username Field: Displayed if field is empty or touched but not filled -->
+        <mat-error
+          *ngIf="
+            registrationForm.get('username')?.hasError('required') &&
+            registrationForm.get('username')?.touched
+          "
+        >
+          Username is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Password Field -->
+      <mat-form-field class="form-field" appearance="fill">
+        <mat-label>Password</mat-label>
+        <!-- Password input field with type 'password' for masking text -->
+        <input matInput type="password" formControlName="password" />
+
+        <!-- Error message for Password Field: Displayed if password is missing or doesn't meet the minimum length -->
+        <mat-error
+          *ngIf="
+            registrationForm.get('password')?.hasError('required') &&
+            registrationForm.get('password')?.touched
+          "
+        >
+          Password is required
+        </mat-error>
+        <mat-error
+          *ngIf="
+            registrationForm.get('password')?.hasError('minlength') &&
+            registrationForm.get('password')?.touched
+          "
+        >
+          Password must be at least 6 characters long
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Email Field -->
+      <mat-form-field class="form-field" appearance="fill">
+        <mat-label>Email</mat-label>
+        <!-- Email input field with type 'email' to validate the email format -->
+        <input matInput type="email" formControlName="email" />
+
+        <!-- Error messages for Email Field -->
+        <mat-error
+          *ngIf="
+            registrationForm.get('email')?.hasError('required') &&
+            registrationForm.get('email')?.touched
+          "
+        >
+          Email is required
+        </mat-error>
+        <mat-error
+          *ngIf="
+            registrationForm.get('email')?.hasError('email') &&
+            registrationForm.get('email')?.touched
+          "
+        >
+          Please enter a valid email address
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Birthdate Field -->
+      <mat-form-field class="form-field" appearance="fill">
+        <mat-label>Birthdate</mat-label>
+        <!-- Birthdate input field with Angular Material Datepicker -->
+        <input matInput [matDatepicker]="picker" formControlName="birthdate" />
+
+        <!-- Datepicker toggle for selecting the birthdate -->
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <!-- Datepicker UI Component -->
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- Submit Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="registrationForm.invalid"
+        class="submit-button"
+      >
+        Register
+      </button>
+
+      <!-- Link to Login page for existing users -->
+      <div class="login-link">
+        <span>Already have an account? </span>
+        <!-- Navigation to the login page using Angular router -->
+        <a mat-raised-button color="primary" [routerLink]="['/login']"
+          >Login here.</a
+        >
+      </div>
+    </mat-card>
+  </form>
+</div>

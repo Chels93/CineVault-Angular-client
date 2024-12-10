@@ -13,7 +13,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 
 describe('UserLoginComponent', () => {
@@ -24,73 +23,154 @@ describe('UserLoginComponent', () => {
   let snackBar: jasmine.SpyObj<MatSnackBar>;
   let router: jasmine.SpyObj<Router>;
 
+  // Setting up the test environment before each test
   beforeEach(async () => {
-    fetchApiDataService = jasmine.createSpyObj('FetchApiDataService', ['userLogin']);
+    // Create spies for the services that the component depends on
+    fetchApiDataService = jasmine.createSpyObj('FetchApiDataService', [
+      'userLogin',
+    ]);
     dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
     snackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
     router = jasmine.createSpyObj('Router', ['navigate']);
 
+    // Configure the TestBed
     await TestBed.configureTestingModule({
-      declarations: [UserLoginComponent],
+      declarations: [UserLoginComponent], // Declare the component to be tested
       imports: [
-        MatDialogModule,
-        MatSnackBarModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        RouterTestingModule,
-        MatCardModule,
-        FormsModule,
-        MatButtonModule,
+        MatDialogModule, // Import necessary Material modules for dialogs
+        MatSnackBarModule, // Import Material Snackbar for notifications
+        MatFormFieldModule, // Import Material FormField for input fields
+        MatInputModule, // Import Material Input for form controls
+        ReactiveFormsModule, // Import ReactiveFormsModule to use reactive forms
+        HttpClientTestingModule, // Import HttpClientTestingModule to mock HTTP requests
+        RouterTestingModule, // Import RouterTestingModule to mock routing
+        MatCardModule, // Import Material Card module for card design
+        MatButtonModule, // Import Material Button module for button styling
       ],
       providers: [
-        { provide: FetchApiDataService, useValue: fetchApiDataService },
-        { provide: MatDialogRef, useValue: dialogRefSpy },
-        { provide: MatSnackBar, useValue: snackBar },
-        { provide: Router, useValue: router },
+        { provide: FetchApiDataService, useValue: fetchApiDataService }, // Provide mocked API service
+        { provide: MatDialogRef, useValue: dialogRefSpy }, // Provide mocked MatDialogRef
+        { provide: MatSnackBar, useValue: snackBar }, // Provide mocked MatSnackBar
+        { provide: Router, useValue: router }, // Provide mocked Router service
       ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(UserLoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    }).compileComponents(); // Compile components and their templates
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  // Setup for each individual test
+  beforeEach(() => {
+    fixture = TestBed.createComponent(UserLoginComponent); // Create a fixture for the component
+    component = fixture.componentInstance; // Get the component instance
+    fixture.detectChanges(); // Trigger change detection to update the component template
   });
 
-  it('should call userLogin and show success message on successful login', () => {
-    const mockResponse = {
-      user: { username: 'testuser', id: '123' },
-      token: 'mock-token',
-    };
+  // Test for the initial component setup
+  it('should create the component', () => {
+    expect(component).toBeTruthy(); // Check if the component is created successfully
+  });
 
-    fetchApiDataService.userLogin.and.returnValue(of(mockResponse));
+  // Test for the login form submission (successful login scenario)
+  it('should call userLogin when the form is valid and submitted', () => {
+    // Prepare mock form data for valid login
+    component.loginForm.setValue({
+      username: 'testUser',
+      password: 'testPassword',
+    });
 
-    component.loginForm.setValue({ username: 'testuser', password: 'password' });
+    // Mock the userLogin API call to return a successful response
+    fetchApiDataService.userLogin.and.returnValue(of({ token: 'dummyToken' }));
+
+    // Call the login function
     component.logInUser();
 
-    expect(fetchApiDataService.userLogin).toHaveBeenCalled();
-    expect(snackBar.open).toHaveBeenCalledWith(
-      'Login success, Welcome testuser',
-      'OK',
-      { duration: 2000 }
-    );
-    expect(router.navigate).toHaveBeenCalledWith(['/movies']);
+    // Check if the userLogin function was called with correct parameters
+    expect(fetchApiDataService.userLogin).toHaveBeenCalledWith({
+      username: 'testUser',
+      password: 'testPassword',
+    });
+
+    // Ensure the login token is saved in localStorage
+    expect(localStorage.getItem('authToken')).toBe('dummyToken');
+    expect(localStorage.getItem('username')).toBe('testUser');
+
+    // Check if the success snackbar is triggered
+    expect(snackBar.open).toHaveBeenCalledWith('Login successful!', 'Close', {
+      duration: 2000,
+    });
+
+    // Ensure the user is navigated to the profile page
+    expect(router.navigate).toHaveBeenCalledWith(['/profile']);
   });
 
-  it('should call logOutUser and clear localStorage on logout', () => {
-    spyOn(localStorage, 'removeItem');
-    component.logOutUser();
-    expect(localStorage.removeItem).toHaveBeenCalledWith('user');
-    expect(localStorage.removeItem).toHaveBeenCalledWith('authToken');
-    expect(snackBar.open).toHaveBeenCalledWith(
-      'Logged out successfully',
-      'OK',
-      { duration: 2000 }
+  // Test for the login form submission (failed login scenario)
+  it('should display an error message when the login fails', () => {
+    // Prepare mock form data for valid login
+    component.loginForm.setValue({
+      username: 'testUser',
+      password: 'testPassword',
+    });
+
+    // Mock the userLogin API call to simulate a failure
+    fetchApiDataService.userLogin.and.returnValue(
+      of({
+        error: 'Invalid credentials',
+      })
     );
-    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+
+    // Call the login function
+    component.logInUser();
+
+    // Ensure the error snackbar is triggered
+    expect(snackBar.open).toHaveBeenCalledWith(
+      'Login failed. Please try again.',
+      'Close',
+      { duration: 3000 }
+    );
+  });
+
+  // Test for the case when the form is invalid and submission is prevented
+  it('should not call userLogin if the form is invalid', () => {
+    // Set invalid form data
+    component.loginForm.setValue({
+      username: '',
+      password: '',
+    });
+
+    // Call the login function with invalid form data
+    component.logInUser();
+
+    // Verify the userLogin function is not called with invalid form
+    expect(fetchApiDataService.userLogin).not.toHaveBeenCalled();
+  });
+
+  // Test for the "Sign up here" button click
+  it('should navigate to the registration page when "Sign up here" is clicked', () => {
+    // Trigger the navigation to the registration page
+    component.navigateToRegistration();
+
+    // Check if the router navigates to the /register route
+    expect(router.navigate).toHaveBeenCalledWith(['/register']);
+  });
+
+  // Test for the "isAuthenticated" method
+  it('should check if the user is authenticated based on the token', () => {
+    // Mock the localStorage data for a valid token
+    spyOn(localStorage, 'getItem').and.returnValue('dummyToken');
+
+    // Call the authentication check method
+    const result = component['isAuthenticated'](); // Access private method for testing
+
+    // Assert that the method returns true for a valid token
+    expect(result).toBeTrue();
+  });
+
+  // Test for the "isAuthenticated" method when the token is expired or invalid
+  it('should return false if the token is expired or invalid', () => {
+    // Mock an expired token scenario
+    spyOn(localStorage, 'getItem').and.returnValue(null);
+
+    const result = component['isAuthenticated'](); // Access private method for testing
+
+    // Assert that the method returns false when no token is found
+    expect(result).toBeFalse();
   });
 });

@@ -1,42 +1,66 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { FetchApiDataService } from '../fetch-api-data.service';  // Service import is fine
+import { FetchApiDataService } from '../fetch-api-data.service';
 import { CommonModule } from '@angular/common';
-
-// Ensure that the UserLoginComponent and MovieCardComponent exist and are correctly imported
-import { UserLoginComponent } from '../user-login/user-login.component';  // Adjust path as needed
-import { MovieCardComponent } from '../movie-card/movie-card.component';  // Adjust path as needed
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
-  standalone: true,  // Assuming this is a standalone component
-  imports: [
-    MatToolbarModule,
-    UserLoginComponent,  // Import the components as needed
-    MovieCardComponent, 
-    CommonModule
-  ]
+  standalone: true,
+  imports: [MatToolbarModule, CommonModule, MatIconModule, MatButtonModule],
 })
 export class NavigationComponent {
-  constructor(private router: Router, private fetchApiData: FetchApiDataService) {}
+  isMenuOpen = false;
 
-  // Log out the user by clearing localStorage and navigating to the login page
+  constructor(
+    private router: Router,
+    private fetchApiData: FetchApiDataService
+  ) {}
+
+  // Toggle menu visibility when hamburger is clicked
+  toggleMenu(): void {
+    console.log('Toggling menu'); // Debugging to check if this function is triggered
+    this.isMenuOpen = !this.isMenuOpen;
+    console.log('Menu Open:', this.isMenuOpen); // Check the value of `isMenuOpen`
+  }
+
+  // Close the menu if clicked outside of the navbar
+  @HostListener('document:click', ['$event'])
+  closeMenuOnClick(event: MouseEvent): void {
+    const clickedInside = (event.target as HTMLElement).closest('.navbar');
+    if (!clickedInside) {
+      this.isMenuOpen = false;
+      console.log('Closing Menu');
+    }
+  }
+
+  // Close menu on screen resize (for responsiveness)
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const screenWidth = window.innerWidth;
+    if (screenWidth > 768) {
+      this.isMenuOpen = false;
+    }
+  }
+
+  // Navigate to Movies
+  goToMovies(): void {
+    this.router.navigate(['/movies']);
+  }
+
+  // Navigate to Profile
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  // Logout functionality
   logOut(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
-    this.router.navigate(['/login']); // Navigate to the login page after logout
-  }
-
-  // Navigate to the movies page (updated from go() to goToMovies() for clarity)
-  goToMovies(): void {
-    this.router.navigate(['/movies']); // Navigate to the /movies route
-  }
-
-  // Navigate to the profile page
-  goToProfile(): void {
-    this.router.navigate(['/profile']); // Navigate to the /profile page
+    this.router.navigate(['/login']);
   }
 }

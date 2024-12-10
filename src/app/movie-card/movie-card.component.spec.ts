@@ -20,6 +20,7 @@ describe('MovieCardComponent', () => {
   let snackBar: jasmine.SpyObj<MatSnackBar>;
 
   beforeEach(async () => {
+    // Creating spy objects for dependencies that will be injected into the component
     fetchApiDataService = jasmine.createSpyObj('FetchApiDataService', [
       'getAllMovies',
       'addToFavorites',
@@ -30,6 +31,7 @@ describe('MovieCardComponent', () => {
     router = jasmine.createSpyObj('Router', ['navigate']);
     snackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
 
+    // Configuring the testing module with necessary declarations, imports, and providers
     await TestBed.configureTestingModule({
       declarations: [MovieCardComponent],
       imports: [
@@ -47,98 +49,122 @@ describe('MovieCardComponent', () => {
       ],
     }).compileComponents();
 
+    // Creating component instance and triggering change detection
     fixture = TestBed.createComponent(MovieCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create the component', () => {
+    // Test to check if the component is created successfully
     expect(component).toBeTruthy();
   });
 
   it('should fetch movies on initialization', () => {
+    // Test to ensure that movies are fetched on component initialization
     const mockMovies = [{ _id: '1', title: 'Test Movie' }] as any;
     fetchApiDataService.getAllMovies.and.returnValue(of(mockMovies));
 
-    component.ngOnInit();
+    component.ngOnInit(); // Calling ngOnInit to trigger the movie fetch
 
-    expect(fetchApiDataService.getAllMovies).toHaveBeenCalled();
-    expect(component.movies).toEqual(mockMovies);
-    expect(component.loading).toBeFalse();
+    expect(fetchApiDataService.getAllMovies).toHaveBeenCalled(); // Ensure getAllMovies was called
+    expect(component.movies).toEqual(mockMovies); // Ensure movies are set correctly in the component
   });
 
-  it('should handle API error when fetching movies', () => {
-    const errorResponse = new HttpErrorResponse({ error: 'Error', status: 500 });
-    fetchApiDataService.getAllMovies.and.returnValue(throwError(() => errorResponse));
+  it('should handle error when fetching movies fails', () => {
+    // Test to simulate an error when fetching movies and ensure it is handled correctly
+    const errorResponse = new HttpErrorResponse({
+      error: 'Error fetching movies',
+      status: 500,
+    });
+    fetchApiDataService.getAllMovies.and.returnValue(throwError(errorResponse));
 
-    component.ngOnInit();
+    component.ngOnInit(); // Trigger movie fetching
 
-    expect(component.error).toEqual(`Error fetching movies: Error`);
-    expect(component.loading).toBeFalse();
+    expect(component.error).toBe(
+      'Failed to load movies. Please try again later.'
+    );
+    expect(component.movies).toEqual([]); // Ensure movies are empty on error
   });
 
-  it('should toggle favorite status and update UI', () => {
-    const movie = { _id: '1', isFavorite: false } as any;
-    const user = { favoriteMovies: [] };
-    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(user));
-    fetchApiDataService.addToFavorites.and.returnValue(of({ favoriteMovies: ['1'] }));
+  it('should add movie to favorites when toggleFavorite is called', () => {
+    // Test to ensure a movie is added to favorites correctly
+    const movie = { _id: '1', title: 'Test Movie', isFavorite: false } as any;
+    fetchApiDataService.addToFavorites.and.returnValue(of(movie)); // Mock the add to favorites API call
 
-    component.toggleFavorite(movie);
+    component.toggleFavorite(movie); // Calling the toggleFavorite method
 
-    expect(fetchApiDataService.addToFavorites).toHaveBeenCalledWith('username', '1', jasmine.any(Object)); // Updated for correct headers
-    expect(snackBar.open).toHaveBeenCalledWith('Added to favorites', 'Close', { duration: 2000 });
+    expect(fetchApiDataService.addToFavorites).toHaveBeenCalledWith(movie._id);
     expect(movie.isFavorite).toBeTrue();
+    expect(snackBar.open).toHaveBeenCalledWith('Added to favorites!', 'Close', {
+      duration: 2000,
+    });
   });
 
-  it('should remove a movie from favorites', () => {
-    const movie = { _id: '1', isFavorite: true } as any;
-    const user = { favoriteMovies: ['1'] };
-    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(user));
-    fetchApiDataService.removeFromFavorites.and.returnValue(of({ favoriteMovies: [] }));
+  it('should remove movie from favorites when toggleFavorite is called', () => {
+    // Test to ensure a movie is removed from favorites correctly
+    const movie = { _id: '1', title: 'Test Movie', isFavorite: true } as any;
+    fetchApiDataService.removeFromFavorites.and.returnValue(of(movie)); // Mock the remove from favorites API call
 
-    component.toggleFavorite(movie);
+    component.toggleFavorite(movie); // Calling the toggleFavorite method
 
-    expect(fetchApiDataService.removeFromFavorites).toHaveBeenCalledWith('username', '1', jasmine.any(Object)); // Updated for correct headers
-    expect(snackBar.open).toHaveBeenCalledWith('Removed from favorites', 'Close', { duration: 2000 });
+    expect(fetchApiDataService.removeFromFavorites).toHaveBeenCalledWith(
+      movie._id
+    );
     expect(movie.isFavorite).toBeFalse();
+    expect(snackBar.open).toHaveBeenCalledWith(
+      'Removed from favorites!',
+      'Close',
+      { duration: 2000 }
+    );
   });
 
-  it('should navigate to login if the user is not authenticated', () => {
-    spyOn(localStorage, 'getItem').and.returnValue(null);
-  
-    // Now you can access isAuthenticated since it's public
-    expect(component.isAuthenticated()).toBeFalse();
+  it('should handle image loading errors gracefully', () => {
+    // Test to ensure a fallback image is used when there's an image loading error
+    const event = new Event('error');
+    const imgElement = document.createElement('img');
+    spyOn(imgElement, 'setAttribute'); // Mock setAttribute to ensure it is called
+
+    component.onImageError(event); // Trigger error handling
+
+    expect(imgElement.setAttribute).toHaveBeenCalledWith(
+      'src',
+      'assets/placeholder-image.jpg'
+    );
+  });
+
+  it('should toggle movie details visibility', () => {
+    // Test to ensure movie details visibility toggles correctly
+    const movie = {
+      _id: '1',
+      title: 'Test Movie',
+      areDetailsVisible: false,
+    } as any;
+
+    component.toggleAllDetails(movie); // First toggle (details should be visible)
+    expect(movie.areDetailsVisible).toBeTrue();
+
+    component.toggleAllDetails(movie); // Second toggle (details should be hidden)
+    expect(movie.areDetailsVisible).toBeFalse();
+  });
+
+  it('should navigate to login if not authenticated', () => {
+    // Test to ensure that navigation occurs when no auth token is found
+    localStorage.removeItem('authToken'); // Simulate no token being present
+
+    const result = component.isAuthenticated();
+
+    expect(result).toBeFalse();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
-  
 
-  it('should toggle synopsis visibility', () => {
-    const movie = { isSynopsisVisible: false } as any;
+  it('should create correct authorization headers', () => {
+    // Test to check if correct authorization headers are created
+    const token = 'dummyToken';
+    spyOn(localStorage, 'getItem').and.returnValue(token); // Mocking localStorage
 
-    component.toggleSynopsis(movie);
+    const headers = component.createAuthHeaders();
 
-    expect(movie.isSynopsisVisible).toBeTrue();
-    component.toggleSynopsis(movie);
-    expect(movie.isSynopsisVisible).toBeFalse();
-  });
-
-  it('should toggle director visibility', () => {
-    const movie = { isDirectorVisible: false } as any;
-
-    component.toggleDirector(movie);
-
-    expect(movie.isDirectorVisible).toBeTrue();
-    component.toggleDirector(movie);
-    expect(movie.isDirectorVisible).toBeFalse();
-  });
-
-  it('should toggle genre visibility', () => {
-    const movie = { isGenreVisible: false } as any;
-
-    component.toggleGenre(movie);
-
-    expect(movie.isGenreVisible).toBeTrue();
-    component.toggleGenre(movie);
-    expect(movie.isGenreVisible).toBeFalse();
+    expect(headers.get('Authorization')).toBe(`Bearer ${token}`);
   });
 });

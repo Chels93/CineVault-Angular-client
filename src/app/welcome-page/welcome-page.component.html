@@ -1,26 +1,29 @@
 <div class="welcome-page">
-    <h1>Welcome to <span class="brand">CineVault</span>!</h1>
-  
-    <div class="button-container">
-      <!-- Navigate to Register page -->
-      <button 
-        mat-raised-button 
-        color="primary" 
-        aria-label="Sign Up for CineVault" 
-        (click)="openSignupDialog()" 
-        class="action-button">
-        Sign Up
-      </button>
-  
-      <!-- Navigate to Login page -->
-      <button 
-        mat-raised-button 
-        color="primary" 
-        aria-label="Login to CineVault" 
-        (click)="openLoginDialog()" 
-        class="action-button">
-        Login
-      </button>
-    </div>
+  <!-- Heading for welcome page with CineVault brand name highlighted -->
+  <h1>Welcome to <span class="brand">CINEVAULT</span>!</h1>
+
+  <!-- Container for action buttons (Sign Up and Login)-->
+  <div class="button-container">
+    <!-- Sign Up button, navigates to the registration dialog when clicked -->
+    <button
+      mat-raised-button
+      color="primary"
+      aria-label="Sign Up for CineVault"
+      (click)="openSignupDialog()"
+      class="action-button"
+    >
+      Sign Up
+    </button>
+
+    <!-- Login button, navigates to the login dialog when clicked -->
+    <button
+      mat-raised-button
+      color="primary"
+      aria-label="Login to CineVault"
+      (click)="openLoginDialog()"
+      class="action-button"
+    >
+      Login
+    </button>
   </div>
-  
+</div>

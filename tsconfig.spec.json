@@ -1,17 +1,30 @@
+/* 
+  To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html.
+  This link provides a comprehensive guide on how to configure TypeScript and its various options.
+*/
+/* 
+  To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options.
+  Detailed documentation about Angular compiler options, which help optimize the Angular build process and enable advanced features.
+*/
 
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
+    // Extends from the base TypeScript configuration file (tsconfig.json), inheriting general settings
     "extends": "./tsconfig.json",
+  
     "compilerOptions": {
-      "outDir": "./out-tsc/spec",
+      // Specifies the output directory for compiled JavaScript files, specifically for tests
+      "outDir": "./out-tsc/spec",  // Compiled files for the test suite will be placed here
+  
+      // Defines the type definitions to be included in the project, specifically for Jasmine testing
       "types": [
-        "jasmine"
+        "jasmine"  // Includes Jasmine type definitions to provide proper typing for testing framework (useful for testing)
       ]
     },
+  
+    // Specifies which files should be included in the compilation for testing purposes
     "include": [
-      "src/**/*.spec.ts",
-      "src/**/*.d.ts"
+      "src/**/*.spec.ts",  // Includes all TypeScript files with a .spec.ts extension (test files)
+      "src/**/*.d.ts"  // Includes all TypeScript declaration files (.d.ts) to ensure type definitions are available during testing
     ]
   }
   

@@ -9,21 +9,23 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./welcome-page.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    RouterModule
+    CommonModule, // To use basic Anguolar directives like ngIf, ngFor
+    RouterModule, // To enable routing functionality within this component
   ],
 })
 export class WelcomePageComponent implements OnInit {
+  // Inject Router service into constructor for navigation functionality
   constructor(private router: Router) {}
 
+  // Lifecycle hook that runs once component is initialized
   ngOnInit(): void {}
 
-  // Navigate directly to the Register page
+  // Method to navigate directly to Register page when signup button is clicked
   openSignupDialog(): void {
     this.router.navigate(['/register']);
   }
 
-  // Open the Login dialog (if you still want to keep this feature)
+  // Method to navigate directly to Login page when login button is clicked
   openLoginDialog(): void {
     this.router.navigate(['/login']);
   }

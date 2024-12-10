@@ -13,23 +13,28 @@ import { CommonModule } from '@angular/common';
   imports: [RouterModule, NavigationComponent, CommonModule],
 })
 export class AppComponent implements OnInit {
-  hideNavBar: boolean = false;
+  hideNavBar: boolean = false; // Flag to determine if navigation bar should be hidden
   title = 'myFlix-Angular-client';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {} // Router service to listen to routing events
 
   ngOnInit(): void {
-    // Subscribe to router events to check the current route
+    // Subscribe to router events to track when navigation ends
     this.router.events
       .pipe(
-        filter((event) => event instanceof NavigationEnd)
+        filter((event) => event instanceof NavigationEnd) // Only process NavigationEnd events
       )
       .subscribe((event) => {
-        const navigationEndEvent = event as NavigationEnd; // Cast event to NavigationEnd type
-        // Hide the navbar on specific routes
-        if (navigationEndEvent.urlAfterRedirects === '/login' || 
-            navigationEndEvent.urlAfterRedirects === '/register' || 
-            navigationEndEvent.urlAfterRedirects === '/welcome') {
+        // Cast event to NavigationEnd type for strong typing
+        const navigationEndEvent = event as NavigationEnd;
+
+        // Conditional logic to hide navigation bar on specific routes
+        // If user navigates to one of these pages, hide the navbar
+        if (
+          navigationEndEvent.urlAfterRedirects === '/login' ||
+          navigationEndEvent.urlAfterRedirects === '/register' ||
+          navigationEndEvent.urlAfterRedirects === '/welcome'
+        ) {
           this.hideNavBar = true;
         } else {
           this.hideNavBar = false;
