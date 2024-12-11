@@ -28,16 +28,6 @@ export class NavigationComponent {
     console.log('Menu Open:', this.isMenuOpen); // Check the value of `isMenuOpen`
   }
 
-  // Close the menu if clicked outside of the navbar
-  @HostListener('document:click', ['$event'])
-  closeMenuOnClick(event: MouseEvent): void {
-    const clickedInside = (event.target as HTMLElement).closest('.navbar');
-    if (!clickedInside) {
-      this.isMenuOpen = false;
-      console.log('Closing Menu');
-    }
-  }
-
   // Close menu on screen resize (for responsiveness)
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
