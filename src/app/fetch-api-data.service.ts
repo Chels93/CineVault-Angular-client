@@ -5,14 +5,19 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 // Define Movie and User interfaces to structure data for type safety
 export interface Movie {
   _id: string;
   title: string;
   genre: { name: string; description: string };
-  director: { name: string; bio: string; birthYear: number; deathYear?: number | null };
+  director: {
+    name: string;
+    bio: string;
+    birthYear: number;
+    deathYear?: number | null;
+  };
   synopsis: string;
   imagePath: string;
   releaseDate: Date;
@@ -88,11 +93,15 @@ export class FetchApiDataService {
     if (!username) {
       return throwError(() => new Error('No username found. Please log in.'));
     }
+
     return this.httpClient
       .get<User>(`${this.apiUrl}/users/${username}`, {
         headers: this.createAuthHeaders(),
       })
-      .pipe(catchError(this.handleError)); // Use centralized error handling
+      .pipe(
+        catchError(this.handleError),
+        tap((user) => console.log('Fetched user data:', user)) // Debugging
+      );
   }
 
   // Fetch favorite movies of a user
@@ -167,22 +176,19 @@ export class FetchApiDataService {
       .pipe(catchError(this.handleError)); // Centralized error handling
   }
 
-  // Update user information
-  public updateUser(updatedUserData: Partial<User>): Observable<User> {
+// Updated updateUser method without using username in the URL
+public updateUser(payload: any): Observable<any> {
     const username = this.getUsername();
     if (!username) {
-      throw new Error('No username found. Please log in.');
+      return throwError(() => new Error('No username found. Please log in.'));
     }
-
-    // Ensure required fields are provided before making the API call
-    if (!updatedUserData.username || !updatedUserData.email) {
-      throw new Error('Both username and email are required.');
-    }
-
+  
     return this.httpClient
-      .put<User>(`${this.apiUrl}/users/${username}`, updatedUserData, {
+      .put(`${this.apiUrl}/users/${username}`, payload, {
         headers: this.createAuthHeaders(),
       })
-      .pipe(catchError(this.handleError)); // Centralized error handling
+      .pipe(catchError(this.handleError)); // Catch any errors
   }
+  
+  
 }
