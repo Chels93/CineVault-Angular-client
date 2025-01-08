@@ -82,8 +82,12 @@ export class MovieCardComponent implements OnInit {
 
     this.fetchApiData.getUser().subscribe({
       next: (userData: User) => {
-        this.userData = userData; // Store user data
-        this.favoriteMovies = userData.favoriteMovies; // Store user's favorite movies
+        this.userData = userData;
+        this.favoriteMovies = userData.favoriteMovies;
+
+        // Ensure movies are synced with favorites
+        this.updateMovieFavorites();
+
         if (callback) callback();
         this.loading = false;
       },
@@ -94,14 +98,20 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
+  private updateMovieFavorites(): void {
+    this.movies.forEach((movie) => {
+      movie.isFavorite = this.favoriteMovies.some(
+        (fav) => fav._id === movie._id
+      );
+    });
+  }
+
   // Fetch all movies and map favorite status based on user data
   getAllMovies(): void {
     this.fetchApiData.getAllMovies().subscribe({
       next: (movies: Movie[]) => {
-        this.movies = movies.map((movie) => ({
-          ...movie,
-          isFavorite: this.favoriteMovies.some((fav) => fav._id === movie._id),
-        }));
+        this.movies = movies;
+        this.updateMovieFavorites(); // Sync favorites after loading movies
         this.loading = false;
       },
       error: (err: HttpErrorResponse) => {
@@ -130,37 +140,42 @@ export class MovieCardComponent implements OnInit {
   // Toggle the favorite status of a movie
   toggleFavorite(movie: Movie): void {
     if (movie.isFavorite) {
-      // Remove movie from favorites
-      this.fetchApiData.removeFromFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies = this.favoriteMovies.filter(
-          (m) => m._id !== movie._id
-        );
-        // Update the localStorage
-        localStorage.setItem(
-          'favoriteMovies',
-          JSON.stringify(this.favoriteMovies)
-        );
-        movie.isFavorite = false; // Update movie favorite status
-        this.snackBar.open('Removed from favorites!', 'Close', {
-          duration: 2000,
-        });
-        this.getUser(); // Refresh user data
+      // Remove from favorites
+      this.fetchApiData.removeFromFavorites(movie._id).subscribe({
+        next: () => {
+          // Update favorite movies and movie state
+          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+          movie.isFavorite = false; // Immediately update the UI state
+          localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
+          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+        },
+        error: (err) => {
+          console.error('Error removing favorite:', err);
+          this.snackBar.open('Failed to remove from favorites. Please try again.', 'Close', {
+            duration: 2000,
+          });
+        },
       });
     } else {
-      // Add movie to favorites
-      this.fetchApiData.addToFavorites(movie._id).subscribe(() => {
-        this.favoriteMovies.push(movie);
-        // Update the localStorage
-        localStorage.setItem(
-          'favoriteMovies',
-          JSON.stringify(this.favoriteMovies)
-        );
-        movie.isFavorite = true; // Update movie favorite status
-        this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
-        this.getUser(); // Refresh user data
+      // Add to favorites
+      this.fetchApiData.addToFavorites(movie._id).subscribe({
+        next: () => {
+          // Update favorite movies and movie state
+          this.favoriteMovies.push(movie);
+          movie.isFavorite = true; // Immediately update the UI state
+          localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
+          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+        },
+        error: (err) => {
+          console.error('Error adding favorite:', err);
+          this.snackBar.open('Failed to add to favorites. Please try again.', 'Close', {
+            duration: 2000,
+          });
+        },
       });
     }
   }
+  
 
   // Handle image loading errors by setting a placeholder image
   onImageError(event: Event): void {
