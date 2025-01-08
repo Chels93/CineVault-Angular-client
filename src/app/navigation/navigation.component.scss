@@ -2,7 +2,6 @@
 $primary-color: #118ab2;
 $accent-color: #ffd166;
 $background-color: #f8f9fa;
-$text-color: #333333;
 $hover-border-color: $primary-color;
 $focus-color: #007bff;
 $button-background-color: transparent;
@@ -10,7 +9,7 @@ $button-background-color: transparent;
 /* Navbar styling */
 .navbar {
   background-color: $background-color;
-  color: $text-color;
+  color: $primary-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
