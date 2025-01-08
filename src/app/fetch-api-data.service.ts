@@ -176,19 +176,17 @@ export class FetchApiDataService {
       .pipe(catchError(this.handleError)); // Centralized error handling
   }
 
-// Updated updateUser method without using username in the URL
-public updateUser(payload: any): Observable<any> {
+  // Updated updateUser method without using username in the URL
+  public updateUser(payload: any): Observable<any> {
     const username = this.getUsername();
     if (!username) {
       return throwError(() => new Error('No username found. Please log in.'));
     }
-  
+
     return this.httpClient
       .put(`${this.apiUrl}/users/${username}`, payload, {
         headers: this.createAuthHeaders(),
       })
       .pipe(catchError(this.handleError)); // Catch any errors
   }
-  
-  
 }

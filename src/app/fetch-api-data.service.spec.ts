@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing'; // Importing the Angular testing framework
 import { FetchApiDataService, User, Movie } from './fetch-api-data.service'; // Importing the service and related interfaces
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'; // Modules for mocking HTTP requests
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing'; // Modules for mocking HTTP requests
 
 // Main test suite for the FetchApiDataService
 describe('FetchApiDataService', () => {
@@ -31,7 +34,12 @@ describe('FetchApiDataService', () => {
         _id: '1',
         title: 'Test Movie',
         genre: { name: 'Action', description: 'Action genre' },
-        director: { name: 'John', bio: 'Director bio', birthYear: 1970, deathYear: null }, // Mock data allowing null for `deathYear`
+        director: {
+          name: 'John',
+          bio: 'Director bio',
+          birthYear: 1970,
+          deathYear: null,
+        }, // Mock data allowing null for `deathYear`
         synopsis: 'Test synopsis',
         imagePath: 'path/to/image',
         releaseDate: new Date(), // Mock release date
