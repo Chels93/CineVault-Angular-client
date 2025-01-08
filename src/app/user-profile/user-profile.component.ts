@@ -38,6 +38,7 @@ import { finalize } from 'rxjs/operators';
   ],
 })
 export class UserProfileComponent implements OnInit {
+  // Initial user data setup
   userData: User = {
     username: '',
     email: '',
@@ -60,6 +61,7 @@ export class UserProfileComponent implements OnInit {
     private router: Router
   ) {}
 
+  // Lifecycle hook - Component initialization
   ngOnInit(): void {
     this.checkAuthentication();
     this.getUser();
@@ -67,6 +69,7 @@ export class UserProfileComponent implements OnInit {
     this.currentRoute = this.router.url.split('/').pop() || '';
   }
 
+  // Check if user is authenticated
   private checkAuthentication(): void {
     if (!this.isAuthenticated()) {
       this.router.navigate(['/login']);
@@ -76,6 +79,7 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  // Check token validity
   private isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     if (!token) return false;
@@ -88,6 +92,7 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  // Centralized error handling
   private handleError(error: HttpErrorResponse): void {
     console.error('Error occurred:', error);
     this.snackBar.open(
@@ -101,6 +106,7 @@ export class UserProfileComponent implements OnInit {
     this.loading = false;
   }
 
+  // Get user data
   private getUser(): void {
     this.loading = true;
     this.fetchApiData
@@ -119,6 +125,7 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  // Get favorite movies
   private getFavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
@@ -130,10 +137,12 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  // Toggle movie details visiblity
   toggleAllDetails(movie: Movie): void {
     movie.areDetailsVisible = !movie.areDetailsVisible;
   }
 
+  // Toggle movie favorite status
   toggleFavorite(movie: Movie): void {
     const isFavorite = this.favoriteMovies.some((m) => m._id === movie._id);
     const request = isFavorite
@@ -160,6 +169,7 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  // Update user profile
   updateUser(): void {
     if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
       this.error = 'Username, Email, and Birthdate are required!';
@@ -188,12 +198,14 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  // Logout user
   logout(): void {
     localStorage.removeItem('authToken');
     this.router.navigate(['/login']);
     this.snackBar.open('Logged out successfully!', 'Close', { duration: 3000 });
   }
 
+  // Handle image error
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';

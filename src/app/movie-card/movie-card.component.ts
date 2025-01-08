@@ -144,16 +144,27 @@ export class MovieCardComponent implements OnInit {
       this.fetchApiData.removeFromFavorites(movie._id).subscribe({
         next: () => {
           // Update favorite movies and movie state
-          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+          this.favoriteMovies = this.favoriteMovies.filter(
+            (m) => m._id !== movie._id
+          );
           movie.isFavorite = false; // Immediately update the UI state
-          localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
-          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+          localStorage.setItem(
+            'favoriteMovies',
+            JSON.stringify(this.favoriteMovies)
+          );
+          this.snackBar.open('Removed from favorites!', 'Close', {
+            duration: 2000,
+          });
         },
         error: (err) => {
           console.error('Error removing favorite:', err);
-          this.snackBar.open('Failed to remove from favorites. Please try again.', 'Close', {
-            duration: 2000,
-          });
+          this.snackBar.open(
+            'Failed to remove from favorites. Please try again.',
+            'Close',
+            {
+              duration: 2000,
+            }
+          );
         },
       });
     } else {
@@ -163,19 +174,27 @@ export class MovieCardComponent implements OnInit {
           // Update favorite movies and movie state
           this.favoriteMovies.push(movie);
           movie.isFavorite = true; // Immediately update the UI state
-          localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
-          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+          localStorage.setItem(
+            'favoriteMovies',
+            JSON.stringify(this.favoriteMovies)
+          );
+          this.snackBar.open('Added to favorites!', 'Close', {
+            duration: 2000,
+          });
         },
         error: (err) => {
           console.error('Error adding favorite:', err);
-          this.snackBar.open('Failed to add to favorites. Please try again.', 'Close', {
-            duration: 2000,
-          });
+          this.snackBar.open(
+            'Failed to add to favorites. Please try again.',
+            'Close',
+            {
+              duration: 2000,
+            }
+          );
         },
       });
     }
   }
-  
 
   // Handle image loading errors by setting a placeholder image
   onImageError(event: Event): void {
