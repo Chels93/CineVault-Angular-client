@@ -14,21 +14,36 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [MatToolbarModule, CommonModule, MatIconModule, MatButtonModule],
 })
 export class NavigationComponent {
+  /**
+   * Tracks whether the navigation menu is open.
+   */
   isMenuOpen = false;
 
+  /**
+   * Initializes the `NavigationComponent`.
+   * @param router Handles navigation between application routes.
+   * @param fetchApiData Provides access to API data fetching services.
+   */
   constructor(
     private router: Router,
     private fetchApiData: FetchApiDataService
   ) {}
 
-  // Toggle menu visibility when hamburger is clicked
+  /**
+   * Toggles the visibility of the navigation menu.
+   * Called when the hamburger icon is clicked.
+   */
   toggleMenu(): void {
-    console.log('Toggling menu'); // Debugging to check if this function is triggered
+    console.log('Toggling menu');
     this.isMenuOpen = !this.isMenuOpen;
-    console.log('Menu Open:', this.isMenuOpen); // Check the value of `isMenuOpen`
+    console.log('Menu Open:', this.isMenuOpen);
   }
 
-  // Close menu on screen resize (for responsiveness)
+  /**
+   * Listener for the `resize` event to close the menu if the screen width exceeds 768px.
+   * Ensures responsive behavior of the navigation menu.
+   * @param event The resize event triggered by the window.
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
     const screenWidth = window.innerWidth;
@@ -37,17 +52,23 @@ export class NavigationComponent {
     }
   }
 
-  // Navigate to Movies
+  /**
+   * Navigates to the Movies view.
+   */
   goToMovies(): void {
     this.router.navigate(['/movies']);
   }
 
-  // Navigate to Profile
+  /**
+   * Navigates to the Profile view.
+   */
   goToProfile(): void {
     this.router.navigate(['/profile']);
   }
 
-  // Logout functionality
+  /**
+   * Logs the user out by clearing local storage and navigating to the login view.
+   */
   logOut(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');

@@ -39,49 +39,65 @@ import { MatNativeDateModule } from '@angular/material/core';
   styleUrls: ['./user-registration.component.scss'],
 })
 export class UserRegistrationComponent implements OnInit {
-  registrationForm!: FormGroup; // To manage form controls and validation
+  /**
+   * Reactive form group for managing registration form controls and validation.
+   */
+  registrationForm!: FormGroup;
 
-  @Output() openLoginEvent = new EventEmitter<void>(); // To trigger login dialog or page open
+  /**
+   * Event emitter to signal when the login dialog or page should open.
+   */
+  @Output() openLoginEvent = new EventEmitter<void>();
 
+  /**
+   * Constructor for initializing component dependencies.
+   * @param fetchApiData Service for handling API requests related to user registration.
+   * @param router Service for navigation to different routes.
+   * @param dialogRef Optional reference for closing the registration dialog.
+   * @param snackBar Service for displaying notifications via snack bars.
+   * @param fb FormBuilder for creating and managing the registration form.
+   */
   constructor(
-    public fetchApiData: FetchApiDataService, // To handle API requests for user registration
-    private router: Router, // For navigation
-    @Optional() // To close dialog after registration
+    public fetchApiData: FetchApiDataService,
+    private router: Router,
+    @Optional()
     public dialogRef: MatDialogRef<UserRegistrationComponent> | null = null,
-    public snackBar: MatSnackBar, // To show snack bar notifcations
-    private fb: FormBuilder // Service for creating reactive forms
+    public snackBar: MatSnackBar,
+    private fb: FormBuilder
   ) {
     this.registrationForm = this.fb.group({
-      // FOrm group for user registration, with form controls and validation
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.email]],
-      birthdate: [''], // Optional field
+      birthdate: [''],
     });
   }
 
+  /**
+   * Lifecycle hook for additional setup after component initialization.
+   */
   ngOnInit(): void {
-    // Any additional setup can go here
+    /**
+     * Any additional setup can go here
+     */
   }
 
-  // Method to register the user
+  /**
+   * Handles user registration by validating the form and sending a request to the API.
+   * Displays notifications and navigates to the login page on success.
+   */
   registerUser(): void {
-    // Ensure form is valid before proceeding with registration
     if (this.registrationForm.valid) {
-      // Call registration API with form values
       this.fetchApiData.userRegistration(this.registrationForm.value).subscribe(
         (result: any) => {
           console.log('Registration successful:', result);
-          localStorage.removeItem('authToken'); // Clear any existing authToken to ensure a fresh login
+          localStorage.removeItem('authToken');
           this.snackBar.open('User registration successful!', 'OK', {
             duration: 2000,
           });
-
-          // Redirect to the login page after successful registration
           this.router.navigate(['/login']);
         },
         (error: any) => {
-          // Handle errors from the registration API
           const errorMessage = this.extractErrorMessage(error);
           this.snackBar.open(
             `User registration failed: ${errorMessage}`,
@@ -93,17 +109,23 @@ export class UserRegistrationComponent implements OnInit {
     }
   }
 
-  // Emit the event when the link is clicked
+  /**
+   * Emits an event to trigger the login dialog or page.
+   */
   openLoginDialog(): void {
     this.openLoginEvent.emit();
   }
 
-  // Close dialog if user is not redirected or registration fails
+  /**
+   * Closes the registration dialog if it exists.
+   */
   closeDialog(): void {
     this.dialogRef?.close();
   }
 
-  // Navigate to login after registration
+  /**
+   * Navigates to the login page after closing the dialog (if open).
+   */
   navigateToLogin(): void {
     if (this.dialogRef) {
       this.dialogRef.close();
@@ -111,7 +133,11 @@ export class UserRegistrationComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  // Method to extract error messages from the backend error response
+  /**
+   * Extracts and formats error messages from the backend error response.
+   * @param error The error response from the backend.
+   * @returns A user-friendly error message.
+   */
   private extractErrorMessage(error: any): string {
     console.log('Error response from backend:', error);
     if (error.error && error.error.errors) {
@@ -119,7 +145,6 @@ export class UserRegistrationComponent implements OnInit {
         .map((err: { path: string; msg: string }) => `${err.path}: ${err.msg}`)
         .join(', ');
     }
-    // Return a generic error message if no specific error details are available
     return (
       error.message || 'An unknown error occurred. Please try again later.'
     );

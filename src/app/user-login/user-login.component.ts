@@ -30,35 +30,58 @@ import { MatDialogModule } from '@angular/material/dialog';
   ],
 })
 export class UserLoginComponent implements OnInit {
-  loginForm: FormGroup; // Form group for login fields
-  isLoggedIn: boolean = false; // Flag to check if user is logged in
+  /**
+   * Reactive form group for the login form fields.
+   */
+  loginForm: FormGroup;
 
+  /**
+   * Indicates whether the user is currently logged in.
+   */
+  isLoggedIn: boolean = false;
+
+  /**
+   * Initializes the `UserLoginComponent`.
+   * @param fetchApiData Service to handle API requests, including user login.
+   * @param dialogRef Reference to the dialog (optional) for managing the modal.
+   * @param snackBar Service for displaying notifications to the user.
+   * @param router Router for navigating between application views.
+   * @param fb FormBuilder for creating and managing reactive forms.
+   * @param dialog Service for managing dialogs.
+   */
   constructor(
-    private fetchApiData: FetchApiDataService, // Inject API service for login request
+    private fetchApiData: FetchApiDataService,
     @Optional() private dialogRef: MatDialogRef<UserLoginComponent>,
-    private snackBar: MatSnackBar, // Inject snackbar service for user notifications
-    private router: Router, // Inject router for navigation
-    private fb: FormBuilder, // Form builder to create reactive form
-    private dialog: MatDialog // Inject MatDialog for dialog/modal management
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
-    // Initialize the login form with validation
+    /**
+     * Initializes the login form with fields for `username` and `password`,
+     * both of which are required.
+     */
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
 
-  // lifecycle hook for initialization
+  /**
+   * Lifecycle hook called on component initialization.
+   * Checks if the user is already authenticated and redirects to the profile page if so.
+   */
   ngOnInit(): void {
-    // Check if the user is already authenticated and navigate to profile page if logged in
     if (this.isAuthenticated()) {
       this.router.navigate(['/profile']);
     }
   }
 
-  // Method to login the user
+  /**
+   * Handles user login.
+   * Validates the login form, sends the login request, and stores the user's token upon success.
+   */
   logInUser(): void {
-    // If th eform is invalid, show a snackbar with a message
     if (this.loginForm.invalid) {
       this.snackBar.open('Please fill out all fields correctly.', 'Close', {
         duration: 2000,
@@ -66,21 +89,23 @@ export class UserLoginComponent implements OnInit {
       return;
     }
 
-    // Extract form values (username and password)
+    /**
+     * Extract form values (username and password)
+     */
     const credentials = this.loginForm.value;
 
-    // Call API service to log in the user with the provided credentials
+    /**
+     * Call API service to log in the user with the provided credentials
+     */
     this.fetchApiData.userLogin(credentials).subscribe({
       next: (response) => {
-        // Store authentiaction token and username in localStorage upon successful login
         localStorage.setItem('authToken', response.token);
         localStorage.setItem('username', credentials.username);
-        this.isLoggedIn = true; // Update login status
+        this.isLoggedIn = true;
         this.snackBar.open('Login successful!', 'Close', { duration: 2000 });
         this.router.navigate(['/profile']);
       },
       error: (error) => {
-        // Show error message if login fails
         const errorMessage =
           error.error?.message || 'Login failed. Please try again.';
         this.snackBar.open(errorMessage, 'Close', { duration: 3000 });
@@ -88,26 +113,29 @@ export class UserLoginComponent implements OnInit {
     });
   }
 
-  // Method to navigate to the registration page
+  /**
+   * Navigates the user to the registration page.
+   */
   navigateToRegistration(): void {
     this.router.navigate(['/register']);
   }
 
-  // Helper method to check if the user is authenticated
+  /**
+   * Checks if the user is authenticated by validating the token stored in local storage.
+   * @returns `true` if the user is authenticated, `false` otherwise.
+   */
   private isAuthenticated(): boolean {
-    const token = localStorage.getItem('authToken'); // Retreive token from localStorage
+    const token = localStorage.getItem('authToken');
     if (!token) {
-      return false; // If no token, user is not authenticated
+      return false;
     }
-
-    // Token validation logic
     try {
       const payload = JSON.parse(atob(token.split('.')[1])); // Decode the JWT
       const isTokenExpired = payload.exp * 1000 < Date.now(); // Check if token is expired
       return !isTokenExpired;
     } catch (error) {
       console.error('Invalid token:', error);
-      return false; // Return false if decoding fails
+      return false;
     }
   }
 }
