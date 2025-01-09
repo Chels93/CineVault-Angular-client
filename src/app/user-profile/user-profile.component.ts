@@ -38,7 +38,9 @@ import { finalize } from 'rxjs/operators';
   ],
 })
 export class UserProfileComponent implements OnInit {
-  // Initial user data setup
+  /**
+   * The user's profile data.
+   */
   userData: User = {
     username: '',
     email: '',
@@ -46,22 +48,31 @@ export class UserProfileComponent implements OnInit {
     favoriteMovies: [],
     password: '',
   };
-
   updatedUsername = '';
   updatedEmail = '';
   updatedBirthdate = '';
   favoriteMovies: Movie[] = [];
+
   loading = false;
   error: string | null = null;
   currentRoute = '';
 
+  /**
+   * Initializes the `UserProfileComponent`.
+   * @param fetchApiData Service for API operations.
+   * @param snackBar Service for displaying notifications.
+   * @param router Service for navigation.
+   */
   constructor(
     private fetchApiData: FetchApiDataService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}
 
-  // Lifecycle hook - Component initialization
+  /**
+   * Lifecycle hook that runs on component initialization.
+   * Checks authentication and retrieves user data and favorite movies.
+   */
   ngOnInit(): void {
     this.checkAuthentication();
     this.getUser();
@@ -69,7 +80,9 @@ export class UserProfileComponent implements OnInit {
     this.currentRoute = this.router.url.split('/').pop() || '';
   }
 
-  // Check if user is authenticated
+  /**
+   * Checks if the user is authenticated. Redirects to the login page if not authenticated.
+   */
   private checkAuthentication(): void {
     if (!this.isAuthenticated()) {
       this.router.navigate(['/login']);
@@ -79,7 +92,10 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  // Check token validity
+  /**
+   * Validates the user's authentication token.
+   * @returns `true` if the token is valid, `false` otherwise.
+   */
   private isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     if (!token) return false;
@@ -92,7 +108,10 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  // Centralized error handling
+  /**
+   * Centralized error handler for API responses.
+   * @param error The HTTP error to handle.
+   */
   private handleError(error: HttpErrorResponse): void {
     console.error('Error occurred:', error);
     this.snackBar.open(
@@ -106,7 +125,9 @@ export class UserProfileComponent implements OnInit {
     this.loading = false;
   }
 
-  // Get user data
+  /**
+   * Fetches user data from the API.
+   */
   private getUser(): void {
     this.loading = true;
     this.fetchApiData
@@ -125,7 +146,9 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
-  // Get favorite movies
+  /**
+   * Fetches the user's favorite movies from the API.
+   */
   private getFavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
@@ -137,12 +160,18 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
-  // Toggle movie details visiblity
+  /**
+   * Toggles the visibility of details for a specific movie.
+   * @param movie The movie to toggle details for.
+   */
   toggleAllDetails(movie: Movie): void {
     movie.areDetailsVisible = !movie.areDetailsVisible;
   }
 
-  // Toggle movie favorite status
+  /**
+   * Adds or removes a movie from the user's favorites.
+   * @param movie The movie to add or remove.
+   */
   toggleFavorite(movie: Movie): void {
     const isFavorite = this.favoriteMovies.some((m) => m._id === movie._id);
     const request = isFavorite
@@ -169,7 +198,9 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  // Update user profile
+  /**
+   * Updates the user's profile with new data.
+   */
   updateUser(): void {
     if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
       this.error = 'Username, Email, and Birthdate are required!';
@@ -198,14 +229,19 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
-  // Logout user
+  /**
+   * Logs the user out by clearing their authentication token.
+   */
   logout(): void {
     localStorage.removeItem('authToken');
     this.router.navigate(['/login']);
     this.snackBar.open('Logged out successfully!', 'Close', { duration: 3000 });
   }
 
-  // Handle image error
+  /**
+   * Handles fallback for broken image links.
+   * @param event The image error event.
+   */
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';

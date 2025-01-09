@@ -9,7 +9,9 @@ import { UserLoginComponent } from './user-login/user-login.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { UserRegistrationComponent } from './user-registration/user-registration.component';
 
-// Define application routes
+/**
+ * Defines the application's routes and their associated components.
+ */
 export const routes: Routes = [
   { path: 'register', component: UserRegistrationComponent },
   { path: 'welcome', component: WelcomePageComponent },
@@ -20,7 +22,9 @@ export const routes: Routes = [
   { path: '**', redirectTo: '/welcome', pathMatch: 'full' },
 ];
 
-// NgModule configuration
+/**
+ * Configures the root application routing module.
+ */
 @NgModule({
   imports: [RouterModule.forRoot(routes), CommonModule, MatDialogModule],
   exports: [RouterModule],

@@ -1,14 +1,23 @@
-import { mergeApplicationConfig, ApplicationConfig } from '@angular/core'; // mergeApplicationConfig is used to combine app configs, ApplicationConfig is the type for configuration
-import { provideServerRendering } from '@angular/platform-server'; // To provide server-side rendering (SSR) services
-import { appConfig } from './src/app/app.config'; // Importing the existing client-side application configuration
+import { mergeApplicationConfig, ApplicationConfig } from '@angular/core'; 
+import { provideServerRendering } from '@angular/platform-server'; 
+import { appConfig } from './src/app/app.config'; 
 
-// Define the server-side configuration for the application
+/**
+ * Bootstrap the Angular application.
+ * 
+ * This function initializes the Angular app by providing necessary services 
+ * such as HTTP client, animations, and routing configuration.
+ * 
+ * @returns A Promise that resolves when the application is successfully bootstrapped.
+ */
 const serverConfig: ApplicationConfig = {
   providers: [
-    provideServerRendering(), // Provides the necessary service for SSR (Server-Side Rendering), enabling Angular to render the app on the server
+    provideServerRendering(), 
   ],
 };
 
-// Merge the client-side configuration (appConfig) with the server-side configuration (serverConfig)
-// This allows Angular to apply the same app configuration for both the client and the server, ensuring consistency
+/** 
+* Merge the client-side configuration (appConfig) with the server-side configuration (serverConfig)
+* This allows Angular to apply the same app configuration for both the client and the server, ensuring consistency
+*/
 export const config = mergeApplicationConfig(appConfig, serverConfig);

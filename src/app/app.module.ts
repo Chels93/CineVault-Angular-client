@@ -38,10 +38,13 @@ const routes: Routes = [
   { path: '', redirectTo: '/welcome', pathMatch: 'full' },
 ];
 
-// Define root module for app
+/**
+ * Root module of the Angular application.
+ * This module defines declarations for components and imports necessary modules for functionality.
+ * It also configures the routing for the application.
+ */
 @NgModule({
   declarations: [
-    // Declare components used within app
     AppComponent,
     UserRegistrationComponent,
     UserLoginComponent,
@@ -51,7 +54,6 @@ const routes: Routes = [
     NavigationComponent,
   ],
   imports: [
-    // Import necessary modules for functionality
     BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
@@ -73,6 +75,6 @@ const routes: Routes = [
   providers: [
     // Optional services can be added here
   ],
-  bootstrap: [AppComponent], // Bootstrapping the root component
+  bootstrap: [AppComponent], 
 })
 export class AppModule {}
