@@ -8,47 +8,38 @@
 */
 
 {
-    // Disable the automatic compilation on save (compilation happens only when explicitly triggered)
     "compileOnSave": false,
-  
     "compilerOptions": {
-      // Directory where compiled JavaScript files will be saved
       "outDir": "./dist/out-tsc",
-  
-      // Enable strict type-checking options for better type safety
-      "strict": true,  // Enable all strict type-checking options
-      "noImplicitOverride": true,  // Ensures that overriding methods must be explicitly marked with `override`
-      "noPropertyAccessFromIndexSignature": true,  // Disallows accessing properties via an index signature (e.g., `obj['key']`)
-      "noImplicitReturns": true,  // Requires functions to have a return type or an explicit return statement
-      "noFallthroughCasesInSwitch": true,  // Prevents fall-through behavior in `switch` statements (requires `break` or `return` in each case)
-      "skipLibCheck": true,  // Skips type-checking of declaration files (improves compilation speed)
-      "isolatedModules": true,  // Ensures that each file can be safely transpiled independently (useful for Babel and other bundlers)
-      "esModuleInterop": true,  // Enables compatibility with CommonJS modules in a way that allows default imports
-      "sourceMap": true,  // Generates source maps for debugging purposes
-      "declaration": false,  // Does not generate type declaration files (.d.ts)
-      "experimentalDecorators": true,  // Enables support for experimental decorators (required for Angular)
-      "moduleResolution": "bundler",  // Uses bundler module resolution strategy (ideal for bundlers like Webpack)
-      "importHelpers": true,  // Reduces the size of the generated code by importing helper functions instead of inlining them
-      "target": "ES2022",  // Specifies the ECMAScript version to compile to (ES2022 features will be used)
-      "module": "ES2022",  // Specifies the module system to use (ES2022 module syntax)
-      "lib": [
-        "ES2022",  // Includes ES2022 standard library features
-        "dom"  // Includes DOM library to enable web-related APIs (e.g., document, window)
-      ]
+      "strict": true,
+      "noImplicitOverride": true,
+      "noPropertyAccessFromIndexSignature": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "skipLibCheck": true,
+      "isolatedModules": true,
+      "esModuleInterop": true,
+      "sourceMap": true,
+      "declaration": true, // Enable declarations for TypeDoc
+      "experimentalDecorators": true,
+      "moduleResolution": "bundler",
+      "importHelpers": true,
+      "target": "ES2022",
+      "module": "ES2022",
+      "lib": ["ES2022", "dom"],
+      "baseUrl": "./", // Add this to resolve module paths
+      "paths": {
+        "@app/*": ["src/app/*"], // Add this for alias resolution
+        "@env/*": ["src/environments/*"] // Example of environment alias
+      }
     },
-  
     "angularCompilerOptions": {
-      // Disables legacy message IDs for internationalization (i18n) in Angular
       "enableI18nLegacyMessageIdFormat": false,
-  
-      // Enforces strict checks for dependency injection parameters in Angular services/components
-      "strictInjectionParameters": true,  // Ensures strict typing for injected parameters in Angular components/services
-  
-      // Enforces stricter input access modifiers (e.g., using `@Input()` in Angular components)
-      "strictInputAccessModifiers": true,  // Ensures strict access modifiers for inputs in Angular components
-  
-      // Enforces strict template type-checking in Angular
-      "strictTemplates": true  // Enables template type-checking to ensure type safety in Angular templates
-    }
+      "strictInjectionParameters": true,
+      "strictInputAccessModifiers": true,
+      "strictTemplates": true
+    },
+    "include": ["src/**/*.ts"], // Ensure TypeDoc can find all TypeScript files
+    "exclude": ["**/*.spec.ts", "node_modules", "dist"] // Exclude unnecessary files
   }
   

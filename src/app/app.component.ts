@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   title = 'myFlix-Angular-client';
 
   /**
-   * @constructor Injects the Router service for listening to route events.
+   * @param router -  Injects the Router service for listening to route events.
    * @param router - Angular's Router service for handling navigation.
    */
   constructor(private router: Router) {}

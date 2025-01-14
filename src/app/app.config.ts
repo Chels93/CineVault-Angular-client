@@ -1,5 +1,5 @@
 /**
- * @file Defines the core configuration for the Angular application.
+ * @module Defines the core configuration for the Angular application.
  * Includes providers for change detection, client hydration, animations, and HTTP client functionality.
  */
 
