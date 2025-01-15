@@ -5,8 +5,8 @@
 @include mat.core();
 
 // Define color palettes using Material's palette functions
-$myFlix-Angular-client-primary: mat.define-palette(mat.$indigo-palette);
-$myFlix-Angular-client-accent: mat.define-palette(
+$CineVault-Angular-client-primary: mat.define-palette(mat.$indigo-palette);
+$CineVault-Angular-client-accent: mat.define-palette(
   mat.$pink-palette,
   A200,
   A100,
@@ -14,27 +14,27 @@ $myFlix-Angular-client-accent: mat.define-palette(
 );
 
 // Define the warn palette
-$myFlix-Angular-client-warn: mat.define-palette(mat.$red-palette);
+$CineVault-Angular-client-warn: mat.define-palette(mat.$red-palette);
 
 // Define the custom theme using `define-light-theme`
-$myFlix-Angular-client-theme: mat.define-light-theme(
+$CineVault-Angular-client-theme: mat.define-light-theme(
   (
     color: (
-      primary: $myFlix-Angular-client-primary,
-      accent: $myFlix-Angular-client-accent,
-      warn: $myFlix-Angular-client-warn,
+      primary: $CineVault-Angular-client-primary,
+      accent: $CineVault-Angular-client-accent,
+      warn: $CineVault-Angular-client-warn,
     ),
   )
 );
 
 // Apply the theme to all Angular Material components
-@include mat.all-component-themes($myFlix-Angular-client-theme);
+@include mat.all-component-themes($CineVault-Angular-client-theme);
 
 // Optional: Apply typography styles if needed
-// @include mat.typography-hierarchy($myFlix-Angular-client-theme);
+// @include mat.typography-hierarchy($CineVault-Angular-client-theme);
 
 // Optional: Handle deprecated color variants if necessary
-// @include mat.color-variants-backwards-compatibility($myFlix-Angular-client-theme);
+// @include mat.color-variants-backwards-compatibility($CineVault-Angular-client-theme);
 
 // Global styles
 html,

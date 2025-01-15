@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
   /**
    * The title of the application, used in metadata or branding.
    */
-  title = 'myFlix-Angular-client';
+  title = 'CineVault-Angular-client';
 
   /**
    * @param router -  Injects the Router service for listening to route events.
