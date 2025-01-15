@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "myFlix-Angular-client": {
+    "CineVault-Angular-client": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -67,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "myFlix-Angular-client:build:production"
+              "browserTarget": "CineVault-Angular-client:build:production"
             },
             "development": {
-              "browserTarget": "myFlix-Angular-client:build:development"
+              "browserTarget": "CineVault-Angular-client:build:development"
             }
           },
           "defaultConfiguration": "development"
