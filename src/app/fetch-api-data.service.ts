@@ -226,9 +226,14 @@ export class FetchApiDataService {
     username: string;
     password: string;
   }): Observable<any> {
-    return this.httpClient
-      .post(`${this.apiUrl}/login`, credentials)
-      .pipe(catchError(this.handleError));
+    return this.httpClient.post(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response: any) => {
+        // Assuming the API returns a token on successful login
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('username', credentials.username);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
@@ -238,9 +243,14 @@ export class FetchApiDataService {
    * @returns An Observable containing the registration result.
    */
   public userRegistration(user: User): Observable<any> {
-    return this.httpClient
-      .post(`${this.apiUrl}/users`, user)
-      .pipe(catchError(this.handleError));
+    return this.httpClient.post(`${this.apiUrl}/users`, user).pipe(
+      tap((response: any) => {
+        // If registration is successful, you can log the user in and save the token
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('username', user.username); // Store the username for future requests
+      }),
+      catchError(this.handleError)
+    );
   }
 
   /**
