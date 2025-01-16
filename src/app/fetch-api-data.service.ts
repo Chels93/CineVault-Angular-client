@@ -58,7 +58,7 @@ export interface User {
   providedIn: 'root', // This ensures the service is provided globally
 })
 export class FetchApiDataService {
-  private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com';
+  private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com/';
 
   constructor(private httpClient: HttpClient) {}
 
@@ -226,14 +226,9 @@ export class FetchApiDataService {
     username: string;
     password: string;
   }): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/login`, credentials).pipe(
-      tap((response: any) => {
-        // Assuming the API returns a token on successful login
-        localStorage.setItem('authToken', response.token);
-        localStorage.setItem('username', credentials.username);
-      }),
-      catchError(this.handleError)
-    );
+    return this.httpClient
+      .post(`${this.apiUrl}/login`, credentials)
+      .pipe(catchError(this.handleError)); // Centralized error handling
   }
 
   /**
@@ -243,14 +238,9 @@ export class FetchApiDataService {
    * @returns An Observable containing the registration result.
    */
   public userRegistration(user: User): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/users`, user).pipe(
-      tap((response: any) => {
-        // If registration is successful, you can log the user in and save the token
-        localStorage.setItem('authToken', response.token);
-        localStorage.setItem('username', user.username); // Store the username for future requests
-      }),
-      catchError(this.handleError)
-    );
+    return this.httpClient
+      .post(`${this.apiUrl}/users`, user)
+      .pipe(catchError(this.handleError)); // Centralized error handling
   }
 
   /**
