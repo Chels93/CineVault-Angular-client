@@ -58,7 +58,7 @@ export interface User {
   providedIn: 'root', // This ensures the service is provided globally
 })
 export class FetchApiDataService {
-  private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com/';
+  private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com';
 
   constructor(private httpClient: HttpClient) {}
 
