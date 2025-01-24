@@ -130,8 +130,8 @@ export class UserLoginComponent implements OnInit {
       return false;
     }
     try {
-      const payload = JSON.parse(atob(token.split('.')[1])); // Decode the JWT
-      const isTokenExpired = payload.exp * 1000 < Date.now(); // Check if token is expired
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const isTokenExpired = payload.exp * 1000 < Date.now();
       return !isTokenExpired;
     } catch (error) {
       console.error('Invalid token:', error);

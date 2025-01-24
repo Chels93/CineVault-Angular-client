@@ -33,8 +33,8 @@ export function app(): express.Express {
   server.get(
     '**',
     express.static(browserDistFolder, {
-      maxAge: '1y', // Cache static assets for a year
-      index: 'index.html', // Use index.html as the default page
+      maxAge: '1y',
+      index: 'index.html',
     })
   );
 

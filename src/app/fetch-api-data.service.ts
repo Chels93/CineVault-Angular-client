@@ -55,7 +55,7 @@ export interface User {
 }
 
 @Injectable({
-  providedIn: 'root', // This ensures the service is provided globally
+  providedIn: 'root',
 })
 export class FetchApiDataService {
   private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com';

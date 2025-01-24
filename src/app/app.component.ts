@@ -34,13 +34,9 @@ export class AppComponent implements OnInit {
    * Subscribes to route events to update the visibility of the navigation bar based on the current route.
    */
   ngOnInit(): void {
-    // Subscribe to router events to track when navigation ends
     this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd) // Only process NavigationEnd events
-      )
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
-        // Cast event to NavigationEnd type for strong typing
         const navigationEndEvent = event as NavigationEnd;
 
         /**

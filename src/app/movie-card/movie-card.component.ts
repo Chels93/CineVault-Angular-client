@@ -28,9 +28,7 @@ import { User } from '../fetch-api-data.service';
   ],
 })
 export class MovieCardComponent implements OnInit {
-  @Output() favoriteToggled = new EventEmitter<void>(); // Output event to notify when the favorite state changes
-
-  // User data and favorite movies properties
+  @Output() favoriteToggled = new EventEmitter<void>();
   userData: User = {
     username: '',
     email: '',
@@ -45,37 +43,33 @@ export class MovieCardComponent implements OnInit {
   error: string | null = null;
 
   constructor(
-    private fetchApiData: FetchApiDataService, // Injecting the FetchApiDataService to handle API calls
-    private router: Router, // Injecting the Router to handle navigation events
-    private snackBar: MatSnackBar // Injecting MatSnackBar for notifications
+    private fetchApiData: FetchApiDataService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
-    // Subscribe to navigation events to refresh data on /movies navigation
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url === '/movies') {
-        this.getUser(() => this.getAllMovies()); // Fetch user and movies when navigating to '/movies'
+        this.getUser(() => this.getAllMovies());
       }
     });
   }
 
   ngOnInit(): void {
-    // Fetch user data and movies when the component is initialized
     this.getUser(() => {
-      this.getAllMovies(); // Fetch all movies
-      this.loadFavoritesFromLocalStorage(); // Load favorites from localStorage
+      this.getAllMovies();
+      this.loadFavoritesFromLocalStorage();
     });
   }
 
-  // Checks if the user is authenticated based on token in localStorage
   isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      this.router.navigate(['/login']); // Navigate to login if no token is found
+      this.router.navigate(['/login']);
       return false;
     }
     return true;
   }
 
-  // Fetch user data and handle errors
   private getUser(callback?: () => void): void {
     this.loading = true;
     this.error = null;
@@ -85,7 +79,6 @@ export class MovieCardComponent implements OnInit {
         this.userData = userData;
         this.favoriteMovies = userData.favoriteMovies;
 
-        // Ensure movies are synced with favorites
         this.updateMovieFavorites();
 
         if (callback) callback();
@@ -106,12 +99,11 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
-  // Fetch all movies and map favorite status based on user data
   getAllMovies(): void {
     this.fetchApiData.getAllMovies().subscribe({
       next: (movies: Movie[]) => {
         this.movies = movies;
-        this.updateMovieFavorites(); // Sync favorites after loading movies
+        this.updateMovieFavorites();
         this.loading = false;
       },
       error: (err: HttpErrorResponse) => {
@@ -122,14 +114,12 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
-  // Load favorite movies from localStorage and update their favorite status
   private loadFavoritesFromLocalStorage(): void {
     const storedFavorites = JSON.parse(
       localStorage.getItem('favoriteMovies') || '[]'
     );
     this.favoriteMovies = storedFavorites;
 
-    // Update the favorite status for each movie based on localStorage
     this.movies.forEach((movie) => {
       movie.isFavorite = this.favoriteMovies.some(
         (fav) => fav._id === movie._id
@@ -137,17 +127,14 @@ export class MovieCardComponent implements OnInit {
     });
   }
 
-  // Toggle the favorite status of a movie
   toggleFavorite(movie: Movie): void {
     if (movie.isFavorite) {
-      // Remove from favorites
       this.fetchApiData.removeFromFavorites(movie._id).subscribe({
         next: () => {
-          // Update favorite movies and movie state
           this.favoriteMovies = this.favoriteMovies.filter(
             (m) => m._id !== movie._id
           );
-          movie.isFavorite = false; // Immediately update the UI state
+          movie.isFavorite = false;
           localStorage.setItem(
             'favoriteMovies',
             JSON.stringify(this.favoriteMovies)
@@ -168,12 +155,10 @@ export class MovieCardComponent implements OnInit {
         },
       });
     } else {
-      // Add to favorites
       this.fetchApiData.addToFavorites(movie._id).subscribe({
         next: () => {
-          // Update favorite movies and movie state
           this.favoriteMovies.push(movie);
-          movie.isFavorite = true; // Immediately update the UI state
+          movie.isFavorite = true;
           localStorage.setItem(
             'favoriteMovies',
             JSON.stringify(this.favoriteMovies)
@@ -196,35 +181,30 @@ export class MovieCardComponent implements OnInit {
     }
   }
 
-  // Handle image loading errors by setting a placeholder image
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';
   }
 
-  // Toggle visibility of movie details
   toggleAllDetails(movie: Movie): void {
     if (movie.areDetailsVisible === undefined) {
-      movie.areDetailsVisible = false; // Initialize if not defined
+      movie.areDetailsVisible = false;
     }
-    movie.areDetailsVisible = !movie.areDetailsVisible; // Toggle visibility
+    movie.areDetailsVisible = !movie.areDetailsVisible;
   }
 
-  // Create authorization headers with token for API calls
   createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
     if (!token) {
-      throw new Error('No token found. Please log in.'); // Throw error if no token
+      throw new Error('No token found. Please log in.');
     }
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`); // Return headers with token
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
-  // Get the authentication token from localStorage
   getToken(): string | null {
-    return localStorage.getItem('authToken'); // Return the token from localStorage
+    return localStorage.getItem('authToken');
   }
 
-  // Handle errors from API calls
   private handleError(error: HttpErrorResponse): void {
     this.error = error.message || 'An unknown error occurred.';
     console.error('Error:', error);

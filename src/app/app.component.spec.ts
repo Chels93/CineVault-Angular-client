@@ -7,9 +7,8 @@ describe('AppComponent', () => {
   let app: AppComponent;
 
   beforeEach(async () => {
-    // Configure the testing module before each test
     await TestBed.configureTestingModule({
-      imports: [AppComponent], // Import the AppComponent module to be tested
+      imports: [AppComponent],
     }).compileComponents(); // Compile the components to prepare them for testing
 
     fixture = TestBed.createComponent(AppComponent); // Create a fixture instance for AppComponent
