@@ -16,7 +16,7 @@ import { User } from '../fetch-api-data.service';
  * MovieCardComponent displays individual movie cards and manages the user's favorite movies.
  * It provides functionality for adding/removing movies from favorites, handling image errors, and toggling movie details.
  *
- * @component
+ * @class
  */
 @Component({
   selector: 'app-movie-card',
