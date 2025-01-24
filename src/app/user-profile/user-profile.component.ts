@@ -237,10 +237,13 @@ export class UserProfileComponent implements OnInit {
           this.updatedBirthdate = updatedUserData.birthdate
             ? updatedUserData.birthdate.toString()
             : '';
+
+          localStorage.setItem('username', updatedUserData.username);
+          localStorage.setItem('userData', JSON.stringify(updatedUserData));
+
           this.snackBar.open('Profile updated successfully!', 'Close', {
             duration: 3000,
           });
-          localStorage.setItem('userData', JSON.stringify(updatedUserData));
         },
         error: (err) => this.handleError(err),
       });
