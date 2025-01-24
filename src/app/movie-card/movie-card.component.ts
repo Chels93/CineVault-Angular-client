@@ -111,6 +111,7 @@ export class MovieCardComponent implements OnInit {
 
         this.updateMovieFavorites();
 
+        localStorage.setItem('userData', JSON.stringify(userData));
         if (callback) callback();
         this.loading = false;
       },
