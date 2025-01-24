@@ -120,6 +120,10 @@ export class FetchApiDataService {
    * @returns An Observable containing an array of movies.
    */
   public getAllMovies(): Observable<Movie[]> {
+    const username = this.getUsername();
+    if (!username) {
+      return throwError(() => new Error('No username found. Please log in.'));
+    }
     return this.httpClient
       .get<Movie[]>(`${this.apiUrl}/movies`, {
         headers: this.createAuthHeaders(),
