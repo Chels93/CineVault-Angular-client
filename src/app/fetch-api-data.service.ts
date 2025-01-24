@@ -259,6 +259,14 @@ export class FetchApiDataService {
       .put(`${this.apiUrl}/users/${username}`, payload, {
         headers: this.createAuthHeaders(),
       })
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap((response: any) => {
+          if (payload.username) {
+            localStorage.setItem('username', payload.username);
+            console.log('Updated username in localStorage:', payload.username);
+          }
+        }),
+        catchError(this.handleError)
+      );
   }
 }
