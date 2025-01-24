@@ -76,8 +76,24 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.checkAuthentication();
     this.getUser();
-    this.getFavoriteMovies();
+    this.getfavoriteMovies();
     this.currentRoute = this.router.url.split('/').pop() || '';
+
+    const storedUserData = localStorage.getItem('userData');
+    const storedMovies = localStorage.getItem('favoriteMovies');
+
+    if (storedUserData) {
+      this.userData = JSON.parse(storedUserData);
+      this.updatedUsername = this.userData.username;
+      this.updatedEmail = this.userData.email;
+      this.updatedBirthdate = this.userData.birthdate
+        ? new Date(this.userData.birthdate).toISOString().split('T')[0]
+        : '';
+    }
+
+    if (storedMovies) {
+      this.favoriteMovies = JSON.parse(storedMovies);
+    }
   }
 
   /**
@@ -149,7 +165,7 @@ export class UserProfileComponent implements OnInit {
   /**
    * Fetches the user's favorite movies from the API.
    */
-  private getFavoriteMovies(): void {
+  private getfavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
       .getfavoriteMovies()
@@ -224,6 +240,7 @@ export class UserProfileComponent implements OnInit {
           this.snackBar.open('Profile updated successfully!', 'Close', {
             duration: 3000,
           });
+          localStorage.setItem('userData', JSON.stringify(updatedUserData));
         },
         error: (err) => this.handleError(err),
       });
