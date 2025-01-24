@@ -250,7 +250,7 @@ export class FetchApiDataService {
    * @returns An Observable containing the result of the update operation.
    */
   public updateUser(payload: any): Observable<any> {
-    const username = this.getUsername();
+    const username = localStorage.getItem('username');
     if (!username) {
       return throwError(() => new Error('No username found. Please log in.'));
     }
@@ -260,10 +260,9 @@ export class FetchApiDataService {
         headers: this.createAuthHeaders(),
       })
       .pipe(
-        tap((response: any) => {
-          if (payload.username) {
+        tap(() => {
+          if (payload.username && payload.username !== username) {
             localStorage.setItem('username', payload.username);
-            console.log('Updated username in localStorage:', payload.username);
           }
         }),
         catchError(this.handleError)
