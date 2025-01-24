@@ -238,9 +238,17 @@ export class FetchApiDataService {
    * @returns An Observable containing the registration result.
    */
   public userRegistration(user: User): Observable<any> {
+    if (!user.username || !user.password || !user.email) {
+      return throwError(
+        () => new Error('Username, password, and email are required.')
+      );
+    }
+
+    console.log('User being registered:', user);
+
     return this.httpClient
       .post(`${this.apiUrl}/users`, user)
-      .pipe(catchError(this.handleError)); // Centralized error handling
+      .pipe(catchError(this.handleError));
   }
 
   /**
