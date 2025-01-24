@@ -1,7 +1,7 @@
 {
   "name": "cine-vault-angular-client",
   "version": "0.0.0",
-  "homepage": "https://Chels93.github.io/MyFlix-Angular-client",
+  "homepage": "https://Chels93.github.io/CineVault-Angular-client",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:CineVault-Angular-client": "node dist/cine-vault-angular-client/server/server.mjs",
-    "deploy": "ng build --output-path=dist && gh-pages -d dist"
+    "deploy": "gh-pages -d docs -b master"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +40,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^18.18.0",
+    "angular-cli-ghpages": "^2.0.3",
     "gh-pages": "^6.3.0",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
