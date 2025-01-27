@@ -10,6 +10,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 import { User } from '../fetch-api-data.service';
 
 /**
@@ -31,6 +33,7 @@ import { User } from '../fetch-api-data.service';
     CommonModule,
     RouterModule,
     MatSnackBarModule,
+    FormsModule
   ],
 })
 export class MovieCardComponent implements OnInit {
@@ -63,7 +66,8 @@ export class MovieCardComponent implements OnInit {
   constructor(
     private fetchApiData: FetchApiDataService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdRef: ChangeDetectorRef
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url === '/movies') {
@@ -113,8 +117,7 @@ export class MovieCardComponent implements OnInit {
       next: (userData: User) => {
         this.userData = userData;
         this.favoriteMovies = userData.favoriteMovies;
-        localStorage.setItem('userData', JSON.stringify(userData));
-        localStorage.setItem('username', userData.username);
+        localStorage.setItem('userData', JSON.stringify(this.userData));
         this.loading = false;
         if (callback) callback();
       },
@@ -295,6 +298,7 @@ export class MovieCardComponent implements OnInit {
           this.snackBar.open('Profile updated successfully!', 'Close', {
             duration: 3000,
           });
+          this.cdRef.detectChanges();
         },
         error: (err) => this.handleError(err),
       });
