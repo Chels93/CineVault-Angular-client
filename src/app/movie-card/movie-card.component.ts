@@ -95,7 +95,7 @@ export class MovieCardComponent implements OnInit {
   }
 
   /**
-   * Fetches the current user's data from the API and updates the favorite movies.
+   * Retrieves the current user's data from the API and updates the favorite movies.
    * Optionally calls a callback function once the data is retrieved.
    *
    * @param callback Optional callback to be executed after fetching the user data.
@@ -111,11 +111,14 @@ export class MovieCardComponent implements OnInit {
         this.userData = userData;
         this.favoriteMovies = userData.favoriteMovies;
         localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem('username', userData.username);
         this.loading = false;
         if (callback) callback();
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        this.error = 'Failed to load user data.';
+        console.error('Error fetching user data:', err);
       },
     });
   }
