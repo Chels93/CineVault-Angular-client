@@ -77,9 +77,8 @@ export class FetchApiDataService {
    * @returns The username or null if not found.
    */
   public getUsername(): string {
-    return localStorage.getItem('username') || ''; 
+    return localStorage.getItem('username') || '';
   }
-  
 
   /**
    * Creates authorization headers for HTTP requests.

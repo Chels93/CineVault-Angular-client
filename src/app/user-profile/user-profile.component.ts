@@ -275,24 +275,24 @@ export class MovieCardComponent implements OnInit {
       birthdate: this.userData.birthdate || undefined,
       favoriteMovies: this.userData.favoriteMovies || [],
     };
-
+  
     this.fetchApiData
       .updateUser(this.userData.username, updatedUserDetails)
       .subscribe({
         next: (result) => {
-          localStorage.setItem('username', this.userData.username);
-
-          this.snackBar.open('Profile updated', 'OK', {
-            duration: 2000,
-          });
+          // Update the localStorage with the new username
+          localStorage.setItem('username', result.username);
+  
+          // Show success message
+          this.snackBar.open('Profile updated', 'OK', { duration: 2000 });
         },
         error: (error) => {
-          this.snackBar.open(error.message || 'An error occurred', 'OK', {
-            duration: 2000,
-          });
+          // Handle errors and show error message
+          this.snackBar.open(error.message || 'An error occurred', 'OK', { duration: 2000 });
         },
       });
   }
+  
 
   /**
    * Retrieves the authentication token from local storage.
