@@ -276,18 +276,19 @@ export class MovieCardComponent implements OnInit {
       favoriteMovies: this.userData.favoriteMovies || [],
     };
 
-    // Call the updateUser method from the FetchApiDataService
     this.fetchApiData
       .updateUser(this.userData.username, updatedUserDetails)
       .subscribe({
         next: (result) => {
-          // Show success message
           this.snackBar.open('Profile updated', 'OK', {
             duration: 2000,
           });
+
+          if (this.userData.username !== updatedUserDetails.username) {
+            localStorage.setItem('username', updatedUserDetails.username);
+          }
         },
         error: (error) => {
-          // Handle errors and show error message
           this.snackBar.open(error.message || 'An error occurred', 'OK', {
             duration: 2000,
           });

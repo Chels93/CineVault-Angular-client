@@ -273,6 +273,11 @@ export class FetchApiDataService {
         tap((result) => {
           // Optionally handle any successful response here
           console.log('User updated successfully:', result);
+
+          // Update localStorage with the new username
+          if (userDetails.username && userDetails.username !== username) {
+            localStorage.setItem('username', userDetails.username); // Update localStorage
+          }
         })
       );
   }
