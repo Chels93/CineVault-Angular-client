@@ -145,18 +145,25 @@ export class UserProfileComponent implements OnInit {
    * Fetches user data from the API.
    */
   private getUser(): void {
+    const username = JSON.parse(
+      localStorage.getItem('userData') || '{}'
+    ).username;
+    if (!username) {
+      this.snackBar.open('No user found. Please log in again.', 'Close', {
+        duration: 3000,
+      });
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.loading = true;
     this.fetchApiData
-      .getUser()
+      .getUser(username)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (userData: User) => {
           this.userData = userData;
-          this.updatedUsername = userData.username;
-          this.updatedEmail = userData.email;
-          this.updatedBirthdate = userData.birthdate
-            ? new Date(userData.birthdate).toISOString().split('T')[0]
-            : '';
+          localStorage.setItem('userData', JSON.stringify(userData));
         },
         error: (err) => this.handleError(err),
       });
@@ -218,35 +225,23 @@ export class UserProfileComponent implements OnInit {
    * Updates the user's profile with new data.
    */
   updateUser(): void {
-    if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
-      this.error = 'Username, Email, and Birthdate are required!';
-      return;
-    }
+    const updatedUserData = {
+      username: this.updatedUsername,
+      email: this.updatedEmail,
+      birthdate: new Date(this.updatedBirthdate),
+    };
 
-    this.fetchApiData
-      .updateUser({
-        username: this.updatedUsername,
-        email: this.updatedEmail,
-        birthdate: this.updatedBirthdate,
-      })
-      .subscribe({
-        next: (updatedUserData: User) => {
-          this.userData = updatedUserData;
-          this.updatedUsername = updatedUserData.username;
-          this.updatedEmail = updatedUserData.email;
-          this.updatedBirthdate = updatedUserData.birthdate
-            ? updatedUserData.birthdate.toString()
-            : '';
-
-          localStorage.setItem('username', updatedUserData.username);
-          localStorage.setItem('userData', JSON.stringify(updatedUserData));
-
-          this.snackBar.open('Profile updated successfully!', 'Close', {
-            duration: 3000,
-          });
-        },
-        error: (err) => this.handleError(err),
-      });
+    this.fetchApiData.updateUser(updatedUserData).subscribe({
+      next: (updatedUser: User) => {
+        this.userData = updatedUser;
+        localStorage.setItem('userData', JSON.stringify(updatedUser)); // Update local storage
+        this.snackBar.open('Profile updated successfully!', 'Close', {
+          duration: 2000,
+        });
+        this.router.navigate(['/movies']); // Redirect after successful update
+      },
+      error: (error: HttpErrorResponse) => this.handleError(error),
+    });
   }
 
   /**

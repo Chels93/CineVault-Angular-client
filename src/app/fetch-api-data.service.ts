@@ -76,7 +76,7 @@ export class FetchApiDataService {
    *
    * @returns The username or null if not found.
    */
-  private getUsername(): string | null {
+  public getUsername(): string | null {
     const username = localStorage.getItem('username');
     console.log('Retrieved username:', username);
     return username;
@@ -136,19 +136,8 @@ export class FetchApiDataService {
    *
    * @returns An Observable containing user data.
    */
-  public getUser(): Observable<User> {
-    const username = this.getUsername();
-    if (!username) {
-      return throwError(() => new Error('No username found. Please log in.'));
-    }
-    return this.httpClient
-      .get<User>(`${this.apiUrl}/users/${username}`, {
-        headers: this.createAuthHeaders(),
-      })
-      .pipe(
-        catchError(this.handleError),
-        tap((user) => console.log('Fetched user data:', user)) // Debugging
-      );
+  public getUser(username: string): Observable<User> {
+    return this.httpClient.get<User>(`${this.apiUrl}/users/${username}`);
   }
 
   /**
@@ -261,24 +250,8 @@ export class FetchApiDataService {
    * @param payload - The updated user data.
    * @returns An Observable containing the result of the update operation.
    */
-  public updateUser(payload: any): Observable<any> {
-    const updatedUsername = localStorage.getItem('username');
-    console.log('Updated username:', updatedUsername);
-    if (!updatedUsername) {
-      return throwError(() => new Error('No username found. Please log in.'));
-    }
-
-    return this.httpClient
-      .put(`${this.apiUrl}/users/${updatedUsername}`, payload, {
-        headers: this.createAuthHeaders(),
-      })
-      .pipe(
-        tap(() => {
-          if (payload.username && payload.username !== updatedUsername) {
-            localStorage.setItem('username', payload.username);
-          }
-        }),
-        catchError(this.handleError)
-      );
+  public updateUser(userData: Partial<User>): Observable<User> {
+    const username = JSON.parse(localStorage.getItem('userData') || '{}').username;
+    return this.httpClient.put<User>(`${this.apiUrl}/users/${username}`, userData);
   }
 }

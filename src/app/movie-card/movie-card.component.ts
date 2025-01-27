@@ -64,7 +64,7 @@ export class MovieCardComponent implements OnInit {
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url === '/movies') {
-        this.getUser(() => this.getAllMovies());
+        this.getUser(() => this.getAllMovies()); // Ensure getUser accepts this callback
       }
     });
   }
@@ -104,19 +104,17 @@ export class MovieCardComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.fetchApiData.getUser().subscribe({
+    const username = this.fetchApiData.getUsername() || '';
+
+    this.fetchApiData.getUser(username).subscribe({
       next: (userData: User) => {
         this.userData = userData;
         this.favoriteMovies = userData.favoriteMovies;
-
-        this.updateMovieFavorites();
-
         localStorage.setItem('userData', JSON.stringify(userData));
-        if (callback) callback();
         this.loading = false;
+        if (callback) callback();
       },
-      error: (error: HttpErrorResponse) => {
-        this.handleError(error);
+      error: () => {
         this.loading = false;
       },
     });
@@ -262,9 +260,6 @@ export class MovieCardComponent implements OnInit {
    */
   createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
-    if (!token) {
-      throw new Error('No token found. Please log in.');
-    }
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
@@ -273,8 +268,12 @@ export class MovieCardComponent implements OnInit {
    *
    * @returns The authentication token or null if not found.
    */
-  getToken(): string | null {
-    return localStorage.getItem('authToken');
+  getToken(): string {
+    const token = localStorage.getItem('authToken');
+    if (token === null || token.trim() === '') {
+      throw new Error('Authentication token is missing or invalid.');
+    }
+    return token;
   }
 
   /**
