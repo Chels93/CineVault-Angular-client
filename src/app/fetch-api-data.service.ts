@@ -55,7 +55,7 @@ export interface User {
 }
 
 @Injectable({
-  providedIn: 'root', // This ensures the service is provided globally
+  providedIn: 'root',
 })
 export class FetchApiDataService {
   private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com';
@@ -76,10 +76,8 @@ export class FetchApiDataService {
    *
    * @returns The username or null if not found.
    */
-  private getUsername(): string | null {
-    const username = localStorage.getItem('username');
-    console.log('Retrieved username:', username);
-    return username;
+  public getUsername(): string {
+    return localStorage.getItem('username') || '';
   }
 
   /**
@@ -120,6 +118,10 @@ export class FetchApiDataService {
    * @returns An Observable containing an array of movies.
    */
   public getAllMovies(): Observable<Movie[]> {
+    const username = this.getUsername();
+    if (!username) {
+      return throwError(() => new Error('No username found. Please log in.'));
+    }
     return this.httpClient
       .get<Movie[]>(`${this.apiUrl}/movies`, {
         headers: this.createAuthHeaders(),
@@ -132,19 +134,8 @@ export class FetchApiDataService {
    *
    * @returns An Observable containing user data.
    */
-  public getUser(): Observable<User> {
-    const username = this.getUsername();
-    if (!username) {
-      return throwError(() => new Error('No username found. Please log in.'));
-    }
-    return this.httpClient
-      .get<User>(`${this.apiUrl}/users/${username}`, {
-        headers: this.createAuthHeaders(),
-      })
-      .pipe(
-        catchError(this.handleError),
-        tap((user) => console.log('Fetched user data:', user)) // Debugging
-      );
+  public getUser(username: string): Observable<User> {
+    return this.httpClient.get<User>(`${this.apiUrl}/users/${username}`);
   }
 
   /**
@@ -228,7 +219,7 @@ export class FetchApiDataService {
   }): Observable<any> {
     return this.httpClient
       .post(`${this.apiUrl}/login`, credentials)
-      .pipe(catchError(this.handleError));
+      .pipe(catchError(this.handleError)); // Centralized error handling
   }
 
   /**
@@ -238,6 +229,14 @@ export class FetchApiDataService {
    * @returns An Observable containing the registration result.
    */
   public userRegistration(user: User): Observable<any> {
+    if (!user.username || !user.password || !user.email) {
+      return throwError(
+        () => new Error('Username, password, and email are required.')
+      );
+    }
+
+    console.log('User being registered:', user);
+
     return this.httpClient
       .post(`${this.apiUrl}/users`, user)
       .pipe(catchError(this.handleError));
@@ -246,19 +245,38 @@ export class FetchApiDataService {
   /**
    * Updates user information.
    *
-   * @param payload - The updated user data.
+   * @param username - The username of the user to be updated.
+   * @param userDetails - The updated user data.
    * @returns An Observable containing the result of the update operation.
    */
-  public updateUser(payload: any): Observable<any> {
-    const username = this.getUsername();
-    if (!username) {
-      return throwError(() => new Error('No username found. Please log in.'));
+  public updateUser(username: string, userDetails: User): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => new Error('No token found. Please log in.'));
+    }
+
+    // Ensure userDetails is provided and not empty
+    if (!userDetails || !userDetails.username || !userDetails.email) {
+      return throwError(() => new Error('User details are incomplete.'));
     }
 
     return this.httpClient
-      .put(`${this.apiUrl}/users/${username}`, payload, {
-        headers: this.createAuthHeaders(),
+      .put(`${this.apiUrl}/users/${username}`, userDetails, {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${token}`,
+        }),
       })
-      .pipe(catchError(this.handleError));
+      .pipe(
+        catchError(this.handleError),
+        tap((result) => {
+          // Optionally handle any successful response here
+          console.log('User updated successfully:', result);
+
+          // Update localStorage with the new username
+          if (userDetails.username && userDetails.username !== username) {
+            localStorage.setItem('username', userDetails.username); // Update localStorage
+          }
+        })
+      );
   }
 }

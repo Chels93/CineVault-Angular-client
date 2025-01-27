@@ -1,46 +1,42 @@
-import { Component, OnInit } from '@angular/core';
-import { FetchApiDataService, User, Movie } from '../fetch-api-data.service';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FetchApiDataService, Movie } from '../fetch-api-data.service';
+import { Router, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { NavigationComponent } from '../navigation/navigation.component';
-import { finalize } from 'rxjs/operators';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { User } from '../fetch-api-data.service';
 
+/**
+ * MovieCardComponent displays individual movie cards and manages the user's favorite movies.
+ * It provides functionality for adding/removing movies from favorites, handling image errors, and toggling movie details.
+ *
+ * @class
+ */
 @Component({
-  selector: 'app-user-profile',
-  templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.scss'],
+  selector: 'app-movie-card',
+  templateUrl: './movie-card.component.html',
+  styleUrls: ['./movie-card.component.scss'],
   standalone: true,
   imports: [
-    CommonModule,
     MatCardModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
     MatIconModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatInputModule,
-    FormsModule,
-    NavigationComponent,
+    MatButtonModule,
+    MatDialogModule,
+    CommonModule,
+    RouterModule,
+    MatSnackBarModule,
   ],
 })
-export class UserProfileComponent implements OnInit {
-  /**
-   * The user's profile data.
-   */
+export class MovieCardComponent implements OnInit {
+  /** Emits an event when the favorite status of a movie is toggled */
+  @Output() favoriteToggled = new EventEmitter<void>();
+  /** Stores the current user's data */
   userData: User = {
     username: '',
     email: '',
@@ -48,202 +44,276 @@ export class UserProfileComponent implements OnInit {
     favoriteMovies: [],
     password: '',
   };
-  updatedUsername = '';
-  updatedEmail = '';
-  updatedBirthdate = '';
-  favoriteMovies: Movie[] = [];
 
-  loading = false;
+  favoriteMovies: Movie[] = [];
+  movies: Movie[] = [];
+  loading: boolean = true;
   error: string | null = null;
-  currentRoute = '';
 
   /**
-   * Initializes the `UserProfileComponent`.
-   * @param fetchApiData Service for API operations.
-   * @param snackBar Service for displaying notifications.
-   * @param router Service for navigation.
+   * Creates an instance of the MovieCardComponent.
+   *
+   * @param fetchApiData Service to interact with the API for fetching movie and user data.
+   * @param router Angular Router to handle navigation.
+   * @param snackBar Angular Material Snackbar for displaying notifications.
    */
   constructor(
     private fetchApiData: FetchApiDataService,
-    private snackBar: MatSnackBar,
-    private router: Router
-  ) {}
-
-  /**
-   * Lifecycle hook that runs on component initialization.
-   * Checks authentication and retrieves user data and favorite movies.
-   */
-  ngOnInit(): void {
-    this.checkAuthentication();
-    this.getUser();
-    this.getFavoriteMovies();
-    this.currentRoute = this.router.url.split('/').pop() || '';
-  }
-
-  /**
-   * Checks if the user is authenticated. Redirects to the login page if not authenticated.
-   */
-  private checkAuthentication(): void {
-    if (!this.isAuthenticated()) {
-      this.router.navigate(['/login']);
-      this.snackBar.open('Please log in to access your profile.', 'Close', {
-        duration: 3000,
-      });
-    }
-  }
-
-  /**
-   * Validates the user's authentication token.
-   * @returns `true` if the token is valid, `false` otherwise.
-   */
-  private isAuthenticated(): boolean {
-    const token = localStorage.getItem('authToken');
-    if (!token) return false;
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp * 1000 > Date.now();
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Centralized error handler for API responses.
-   * @param error The HTTP error to handle.
-   */
-  private handleError(error: HttpErrorResponse): void {
-    console.error('Error occurred:', error);
-    this.snackBar.open(
-      error.status === 404
-        ? 'User or favorite movies not found.'
-        : 'An error occurred. Please try again later.',
-      'Close',
-      { duration: 3000 }
-    );
-    this.error = error.message;
-    this.loading = false;
-  }
-
-  /**
-   * Fetches user data from the API.
-   */
-  private getUser(): void {
-    this.loading = true;
-    this.fetchApiData
-      .getUser()
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (userData: User) => {
-          this.userData = userData;
-          this.updatedUsername = userData.username;
-          this.updatedEmail = userData.email;
-          this.updatedBirthdate = userData.birthdate
-            ? new Date(userData.birthdate).toISOString().split('T')[0]
-            : '';
-        },
-        error: (err) => this.handleError(err),
-      });
-  }
-
-  /**
-   * Fetches the user's favorite movies from the API.
-   */
-  private getFavoriteMovies(): void {
-    this.loading = true;
-    this.fetchApiData
-      .getfavoriteMovies()
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (movies: Movie[]) => (this.favoriteMovies = movies),
-        error: (err) => this.handleError(err),
-      });
-  }
-
-  /**
-   * Toggles the visibility of details for a specific movie.
-   * @param movie The movie to toggle details for.
-   */
-  toggleAllDetails(movie: Movie): void {
-    movie.areDetailsVisible = !movie.areDetailsVisible;
-  }
-
-  /**
-   * Adds or removes a movie from the user's favorites.
-   * @param movie The movie to add or remove.
-   */
-  toggleFavorite(movie: Movie): void {
-    const isFavorite = this.favoriteMovies.some((m) => m._id === movie._id);
-    const request = isFavorite
-      ? this.fetchApiData.removeFromFavorites(movie._id)
-      : this.fetchApiData.addToFavorites(movie._id);
-
-    request.subscribe({
-      next: () => {
-        if (isFavorite) {
-          this.favoriteMovies = this.favoriteMovies.filter(
-            (m) => m._id !== movie._id
-          );
-          this.snackBar.open('Removed from favorites!', 'Close', {
-            duration: 2000,
-          });
-        } else {
-          this.favoriteMovies.push(movie);
-          this.snackBar.open('Added to favorites!', 'Close', {
-            duration: 2000,
-          });
-        }
-      },
-      error: (err) => this.handleError(err),
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd && event.url === '/movies') {
+        this.getUser(() => this.getAllMovies()); // Ensure getUser accepts this callback
+      }
     });
   }
 
   /**
-   * Updates the user's profile with new data.
+   * Initializes the component by loading user data and movie list.
    */
-  updateUser(): void {
-    if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
-      this.error = 'Username, Email, and Birthdate are required!';
-      return;
-    }
+  ngOnInit(): void {
+    this.getUser(() => {
+      this.getAllMovies();
+      this.loadFavoritesFromLocalStorage();
+    });
+  }
 
-    this.fetchApiData
-      .updateUser({
-        username: this.updatedUsername,
-        email: this.updatedEmail,
-        birthdate: this.updatedBirthdate,
-      })
-      .subscribe({
-        next: (updatedUserData: User) => {
-          this.userData = updatedUserData;
-          this.updatedUsername = updatedUserData.username;
-          this.updatedEmail = updatedUserData.email;
-          this.updatedBirthdate = updatedUserData.birthdate
-            ? updatedUserData.birthdate.toString()
-            : '';
-          this.snackBar.open('Profile updated successfully!', 'Close', {
-            duration: 3000,
+  /**
+   * Checks if the user is authenticated by checking the presence of an authentication token.
+   * If not authenticated, redirects to the login page.
+   *
+   * @returns true if the user is authenticated, otherwise false.
+   */
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Retrieves the current user's data from the API and updates the favorite movies.
+   * Optionally calls a callback function once the data is retrieved.
+   *
+   * @param callback Optional callback to be executed after fetching the user data.
+   */
+  private getUser(callback?: () => void): void {
+    this.loading = true;
+    this.error = null;
+
+    const username = this.fetchApiData.getUsername() || '';
+
+    this.fetchApiData.getUser(username).subscribe({
+      next: (userData: User) => {
+        this.userData = userData;
+        this.favoriteMovies = userData.favoriteMovies;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem('username', userData.username);
+        this.loading = false;
+        if (callback) callback();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = 'Failed to load user data.';
+        console.error('Error fetching user data:', err);
+      },
+    });
+  }
+
+  /**
+   * Updates the movie list to reflect the user's favorite movies.
+   * Marks each movie as favorite if it exists in the user's favorite list.
+   */
+  private updateMovieFavorites(): void {
+    this.movies.forEach((movie) => {
+      movie.isFavorite = this.favoriteMovies.some(
+        (fav) => fav._id === movie._id
+      );
+    });
+  }
+
+  /**
+   * Fetches all movies from the API and updates the movie list.
+   * Marks the movies as favorites based on the user's favorite list.
+   */
+  getAllMovies(): void {
+    this.fetchApiData.getAllMovies().subscribe({
+      next: (movies: Movie[]) => {
+        this.movies = movies;
+        this.updateMovieFavorites();
+        this.loading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.error = 'Failed to load movies. Please try again later.';
+        console.error('Error fetching movies:', err);
+        this.loading = false;
+      },
+    });
+  }
+
+  /**
+   * Loads the user's favorite movies from local storage and updates the movie list accordingly.
+   */
+  private loadFavoritesFromLocalStorage(): void {
+    const storedFavorites = JSON.parse(
+      localStorage.getItem('favoriteMovies') || '[]'
+    );
+    this.favoriteMovies = storedFavorites;
+
+    this.movies.forEach((movie) => {
+      movie.isFavorite = this.favoriteMovies.some(
+        (fav) => fav._id === movie._id
+      );
+    });
+  }
+
+  /**
+   * Toggles the favorite status of a movie.
+   * If the movie is already a favorite, it is removed from the favorites list.
+   * If the movie is not a favorite, it is added to the favorites list.
+   * Updates the local storage and displays a notification.
+   *
+   * @param movie The movie to toggle as a favorite.
+   */
+  toggleFavorite(movie: Movie): void {
+    if (movie.isFavorite) {
+      this.fetchApiData.removeFromFavorites(movie._id).subscribe({
+        next: () => {
+          this.favoriteMovies = this.favoriteMovies.filter(
+            (m) => m._id !== movie._id
+          );
+          movie.isFavorite = false;
+          localStorage.setItem(
+            'favoriteMovies',
+            JSON.stringify(this.favoriteMovies)
+          );
+          this.snackBar.open('Removed from favorites!', 'Close', {
+            duration: 2000,
           });
         },
-        error: (err) => this.handleError(err),
+        error: (err) => {
+          console.error('Error removing favorite:', err);
+          this.snackBar.open(
+            'Failed to remove from favorites. Please try again.',
+            'Close',
+            {
+              duration: 2000,
+            }
+          );
+        },
       });
+    } else {
+      this.fetchApiData.addToFavorites(movie._id).subscribe({
+        next: () => {
+          this.favoriteMovies.push(movie);
+          movie.isFavorite = true;
+          localStorage.setItem(
+            'favoriteMovies',
+            JSON.stringify(this.favoriteMovies)
+          );
+          this.snackBar.open('Added to favorites!', 'Close', {
+            duration: 2000,
+          });
+        },
+        error: (err) => {
+          console.error('Error adding favorite:', err);
+          this.snackBar.open(
+            'Failed to add to favorites. Please try again.',
+            'Close',
+            {
+              duration: 2000,
+            }
+          );
+        },
+      });
+    }
   }
 
   /**
-   * Logs the user out by clearing their authentication token.
-   */
-  logout(): void {
-    localStorage.removeItem('authToken');
-    this.router.navigate(['/login']);
-    this.snackBar.open('Logged out successfully!', 'Close', { duration: 3000 });
-  }
-
-  /**
-   * Handles fallback for broken image links.
-   * @param event The image error event.
+   * Handles image load errors by replacing the broken image with a placeholder.
+   *
+   * @param event The error event triggered when an image fails to load.
    */
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';
+  }
+
+  /**
+   * Toggles the visibility of movie details.
+   * If the details are currently visible, they will be hidden, and vice versa.
+   *
+   * @param movie The movie whose details visibility is to be toggled.
+   */
+  toggleAllDetails(movie: Movie): void {
+    if (movie.areDetailsVisible === undefined) {
+      movie.areDetailsVisible = false;
+    }
+    movie.areDetailsVisible = !movie.areDetailsVisible;
+  }
+
+  /**
+   * Creates the authorization headers to be used in API requests.
+   *
+   * @returns The HttpHeaders object containing the Authorization header with the token.
+   * @throws Error if no authentication token is found.
+   */
+  createAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+  /** Function to update user details (username, password, birthdate) */
+  updateUser(): void {
+    const updatedUserDetails: User = {
+      username: this.userData.username,
+      password: this.userData.password,
+      email: this.userData.email,
+      birthdate: this.userData.birthdate || undefined,
+      favoriteMovies: this.userData.favoriteMovies || [],
+    };
+  
+    this.fetchApiData
+      .updateUser(this.userData.username, updatedUserDetails)
+      .subscribe({
+        next: (result) => {
+          // Update the localStorage with the new username
+          localStorage.setItem('username', result.username);
+  
+          // Show success message
+          this.snackBar.open('Profile updated', 'OK', { duration: 2000 });
+        },
+        error: (error) => {
+          // Handle errors and show error message
+          this.snackBar.open(error.message || 'An error occurred', 'OK', { duration: 2000 });
+        },
+      });
+  }
+  
+
+  /**
+   * Retrieves the authentication token from local storage.
+   *
+   * @returns The authentication token or null if not found.
+   */
+  getToken(): string {
+    const token = localStorage.getItem('authToken');
+    if (token === null || token.trim() === '') {
+      throw new Error('Authentication token is missing or invalid.');
+    }
+    return token;
+  }
+
+  /**
+   * Handles API errors by setting an error message and logging the error.
+   *
+   * @param error The error object returned by the API.
+   */
+  private handleError(error: HttpErrorResponse): void {
+    this.error = error.message || 'An unknown error occurred.';
+    console.error('Error:', error);
   }
 }
