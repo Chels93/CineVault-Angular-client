@@ -95,7 +95,7 @@ export class MovieCardComponent implements OnInit {
   }
 
   /**
-   * Fetches the current user's data from the API and updates the favorite movies.
+   * Retrieves the current user's data from the API and updates the favorite movies.
    * Optionally calls a callback function once the data is retrieved.
    *
    * @param callback Optional callback to be executed after fetching the user data.
@@ -104,19 +104,21 @@ export class MovieCardComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const username = this.fetchApiData.getUsername() || ''; // Get updated username from localStorage
+    const username = this.fetchApiData.getUsername() || '';
 
     this.fetchApiData.getUser(username).subscribe({
       next: (userData: User) => {
         this.userData = userData;
         this.favoriteMovies = userData.favoriteMovies;
         localStorage.setItem('userData', JSON.stringify(userData));
-        localStorage.setItem('username', userData.username); // Update the username in localStorage
+        localStorage.setItem('username', userData.username);
         this.loading = false;
         if (callback) callback();
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
+        this.error = 'Failed to load user data.';
+        console.error('Error fetching user data:', err);
       },
     });
   }
@@ -262,6 +264,31 @@ export class MovieCardComponent implements OnInit {
   createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  }
+
+  /** Function to update user details (username, password, birthdate) */
+  updateUser(): void {
+    let user: any = {};
+    user.username = this.userData.username;
+    //user.email = this.userData.email;
+    if (this.userData.password) {
+      user.password = this.userData.password;
+    }
+    user.birthDate = this.userData.birthdate;
+
+    this.fetchApiData.updateUser(user).subscribe(
+      (result) => {
+        // Logic for a successful user registration goes here! (To be implemented)
+        this.snackBar.open('Profile updated', 'OK', {
+          duration: 2000,
+        });
+      },
+      (result) => {
+        this.snackBar.open(result, 'OK', {
+          duration: 2000,
+        });
+      }
+    );
   }
 
   /**
