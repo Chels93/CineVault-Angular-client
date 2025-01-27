@@ -192,16 +192,15 @@ export class UserProfileComponent implements OnInit {
     }
 
     this.loading = true;
-    const updatedUserDetails: User = {
+    const updatedUserData: User = {
+      ...this.userData,
       username: this.updatedUsername,
       email: this.updatedEmail,
       birthdate: new Date(this.updatedBirthdate),
-      password: this.userData.password, // Optional, assuming the password remains the same
-      favoriteMovies: this.userData.favoriteMovies || [], // Optional, can remain the same if no change
     };
 
     this.fetchApiData
-      .updateUser(this.userData.username, updatedUserDetails)
+      .updateUser(updatedUserData)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (updatedData: User) => {

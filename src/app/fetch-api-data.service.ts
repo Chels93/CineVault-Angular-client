@@ -242,41 +242,22 @@ export class FetchApiDataService {
       .pipe(catchError(this.handleError));
   }
 
-  /**
+ /**
    * Updates user information.
    *
-   * @param username - The username of the user to be updated.
-   * @param userDetails - The updated user data.
+   * @param payload - The updated user data.
    * @returns An Observable containing the result of the update operation.
    */
-  public updateUser(username: string, userDetails: User): Observable<any> {
-    const token = this.getToken();
-    if (!token) {
-      return throwError(() => new Error('No token found. Please log in.'));
-    }
-
-    // Ensure userDetails is provided and not empty
-    if (!userDetails || !userDetails.username || !userDetails.email) {
-      return throwError(() => new Error('User details are incomplete.'));
+ public updateUser(payload: any): Observable<any> {
+    const username = this.getUsername();
+    if (!username) {
+      return throwError(() => new Error('No username found. Please log in.'));
     }
 
     return this.httpClient
-      .put(`${this.apiUrl}/users/${username}`, userDetails, {
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${token}`,
-        }),
+      .put(`${this.apiUrl}/users/${username}`, payload, {
+        headers: this.createAuthHeaders(),
       })
-      .pipe(
-        catchError(this.handleError),
-        tap((result) => {
-          // Optionally handle any successful response here
-          console.log('User updated successfully:', result);
-
-          // Update localStorage with the new username
-          if (userDetails.username && userDetails.username !== username) {
-            localStorage.setItem('username', userDetails.username); // Update localStorage
-          }
-        })
-      );
+      .pipe(catchError(this.handleError));
   }
 }

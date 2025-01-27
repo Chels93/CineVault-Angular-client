@@ -45,6 +45,9 @@ export class MovieCardComponent implements OnInit {
     password: '',
   };
 
+  updatedUsername = '';
+  updatedEmail = '';
+  updatedBirthdate = '';
   favoriteMovies: Movie[] = [];
   movies: Movie[] = [];
   loading: boolean = true;
@@ -266,33 +269,36 @@ export class MovieCardComponent implements OnInit {
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
-  /** Function to update user details (username, password, birthdate) */
+  /**
+   * Updates the user's profile with new data.
+   */
   updateUser(): void {
-    const updatedUserDetails: User = {
-      username: this.userData.username,
-      password: this.userData.password,
-      email: this.userData.email,
-      birthdate: this.userData.birthdate || undefined,
-      favoriteMovies: this.userData.favoriteMovies || [],
-    };
-  
+    if (!this.updatedUsername || !this.updatedEmail || !this.updatedBirthdate) {
+      this.error = 'Username, Email, and Birthdate are required!';
+      return;
+    }
+
     this.fetchApiData
-      .updateUser(this.userData.username, updatedUserDetails)
+      .updateUser({
+        username: this.updatedUsername,
+        email: this.updatedEmail,
+        birthdate: this.updatedBirthdate,
+      })
       .subscribe({
-        next: (result) => {
-          // Update the localStorage with the new username
-          localStorage.setItem('username', result.username);
-  
-          // Show success message
-          this.snackBar.open('Profile updated', 'OK', { duration: 2000 });
+        next: (updatedUserData: User) => {
+          this.userData = updatedUserData;
+          this.updatedUsername = updatedUserData.username;
+          this.updatedEmail = updatedUserData.email;
+          this.updatedBirthdate = updatedUserData.birthdate
+            ? updatedUserData.birthdate.toString()
+            : '';
+          this.snackBar.open('Profile updated successfully!', 'Close', {
+            duration: 3000,
+          });
         },
-        error: (error) => {
-          // Handle errors and show error message
-          this.snackBar.open(error.message || 'An error occurred', 'OK', { duration: 2000 });
-        },
+        error: (err) => this.handleError(err),
       });
   }
-  
 
   /**
    * Retrieves the authentication token from local storage.
