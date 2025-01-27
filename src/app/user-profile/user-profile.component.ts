@@ -280,13 +280,11 @@ export class MovieCardComponent implements OnInit {
       .updateUser(this.userData.username, updatedUserDetails)
       .subscribe({
         next: (result) => {
+          localStorage.setItem('username', this.userData.username);
+
           this.snackBar.open('Profile updated', 'OK', {
             duration: 2000,
           });
-
-          if (this.userData.username !== updatedUserDetails.username) {
-            localStorage.setItem('username', updatedUserDetails.username);
-          }
         },
         error: (error) => {
           this.snackBar.open(error.message || 'An error occurred', 'OK', {

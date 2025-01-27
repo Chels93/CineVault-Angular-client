@@ -76,11 +76,10 @@ export class FetchApiDataService {
    *
    * @returns The username or null if not found.
    */
-  public getUsername(): string | null {
-    const username = localStorage.getItem('username');
-    console.log('Retrieved username:', username);
-    return username;
+  public getUsername(): string {
+    return localStorage.getItem('username') || ''; 
   }
+  
 
   /**
    * Creates authorization headers for HTTP requests.
