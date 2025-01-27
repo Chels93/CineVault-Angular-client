@@ -182,8 +182,10 @@ $movie-title-font-size: 18px;
   /* Primary button styles with hover and disabled states */
   button {
     display: flex;
+    align-self: center;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    text-align: center;
     font-size: 16px;
     border-radius: 24px;
     border: 2px solid $primary-color;
