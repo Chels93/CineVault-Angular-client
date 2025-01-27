@@ -55,7 +55,7 @@ export interface User {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root', // This ensures the service is provided globally
 })
 export class FetchApiDataService {
   private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com';
@@ -67,7 +67,7 @@ export class FetchApiDataService {
    *
    * @returns The authentication token or null if not found.
    */
-  public getToken(): string | null {
+  private getToken(): string | null {
     return localStorage.getItem('authToken');
   }
 
@@ -76,7 +76,7 @@ export class FetchApiDataService {
    *
    * @returns The username or null if not found.
    */
-  public getUsername(): string | null {
+  private getUsername(): string | null {
     const username = localStorage.getItem('username');
     console.log('Retrieved username:', username);
     return username;
@@ -88,7 +88,7 @@ export class FetchApiDataService {
    * @returns An instance of HttpHeaders with the 'Authorization' token.
    * @throws An error if no token is found.
    */
-  public createAuthHeaders(): HttpHeaders {
+  private createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
     if (!token) {
       throw new Error('No token found. Please log in.');
@@ -102,7 +102,7 @@ export class FetchApiDataService {
    * @param error - The error response from the HTTP request.
    * @returns An Observable with the error.
    */
-  public handleError(error: HttpErrorResponse): Observable<never> {
+  private handleError(error: HttpErrorResponse): Observable<never> {
     console.error('HTTP Status Code:', error.status);
     console.error('Error Details:', error.message);
 
@@ -120,10 +120,6 @@ export class FetchApiDataService {
    * @returns An Observable containing an array of movies.
    */
   public getAllMovies(): Observable<Movie[]> {
-    const username = this.getUsername();
-    if (!username) {
-      return throwError(() => new Error('No username found. Please log in.'));
-    }
     return this.httpClient
       .get<Movie[]>(`${this.apiUrl}/movies`, {
         headers: this.createAuthHeaders(),
@@ -136,8 +132,19 @@ export class FetchApiDataService {
    *
    * @returns An Observable containing user data.
    */
-  public getUser(username: string): Observable<User> {
-    return this.httpClient.get<User>(`${this.apiUrl}/users/${username}`);
+  public getUser(): Observable<User> {
+    const username = this.getUsername();
+    if (!username) {
+      return throwError(() => new Error('No username found. Please log in.'));
+    }
+    return this.httpClient
+      .get<User>(`${this.apiUrl}/users/${username}`, {
+        headers: this.createAuthHeaders(),
+      })
+      .pipe(
+        catchError(this.handleError),
+        tap((user) => console.log('Fetched user data:', user)) // Debugging
+      );
   }
 
   /**
@@ -221,7 +228,7 @@ export class FetchApiDataService {
   }): Observable<any> {
     return this.httpClient
       .post(`${this.apiUrl}/login`, credentials)
-      .pipe(catchError(this.handleError)); // Centralized error handling
+      .pipe(catchError(this.handleError));
   }
 
   /**

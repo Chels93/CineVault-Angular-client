@@ -13,10 +13,7 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { User } from '../fetch-api-data.service';
 
 /**
- * MovieCardComponent displays individual movie cards and manages the user's favorite movies.
- * It provides functionality for adding/removing movies from favorites, handling image errors, and toggling movie details.
- *
- * @class
+ * The MovieCardComponent displays a list of movies and manages user interactions like toggling favorites.
  */
 @Component({
   selector: 'app-movie-card',
@@ -34,9 +31,14 @@ import { User } from '../fetch-api-data.service';
   ],
 })
 export class MovieCardComponent implements OnInit {
-  /** Emits an event when the favorite status of a movie is toggled */
-  @Output() favoriteToggled = new EventEmitter<void>();
-  /** Stores the current user's data */
+  /**
+   * Event emitted when the favorite state of a movie is toggled.
+   */
+  @Output() favoriteToggled = new EventEmitter<void>(); // Output event to notify when the favorite state changes
+
+  /**
+   * User data including username, email, birthdate, and favorite movies.
+   */
   userData: User = {
     username: '',
     email: '',
@@ -45,87 +47,99 @@ export class MovieCardComponent implements OnInit {
     password: '',
   };
 
+  /**
+   * List of the user's favorite movies.
+   */
   favoriteMovies: Movie[] = [];
+
+  /**
+   * List of all movies.
+   */
   movies: Movie[] = [];
+
+  /**
+   * Indicates whether the component is loading data.
+   */
   loading: boolean = true;
+  /**
+   * Stores error messages, if any.
+   */
   error: string | null = null;
 
   /**
-   * Creates an instance of the MovieCardComponent.
-   *
-   * @param fetchApiData Service to interact with the API for fetching movie and user data.
-   * @param router Angular Router to handle navigation.
-   * @param snackBar Angular Material Snackbar for displaying notifications.
+   * Constructor for MovieCardComponent.
+   * @param fetchApiData Service for API interactions.
+   * @param router Angular Router for navigation.
+   * @param snackBar MatSnackBar for notifications.
    */
   constructor(
     private fetchApiData: FetchApiDataService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {
+    // Subscribe to navigation events to refresh data on /movies navigation
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd && event.url === '/movies') {
-        this.getUser(() => this.getAllMovies()); // Ensure getUser accepts this callback
+        this.getUser(() => this.getAllMovies()); // Fetch user and movies when navigating to '/movies'
       }
     });
   }
 
   /**
-   * Initializes the component by loading user data and movie list.
+   * Lifecycle hook that runs after the component is initialized.
    */
   ngOnInit(): void {
     this.getUser(() => {
-      this.getAllMovies();
-      this.loadFavoritesFromLocalStorage();
+      this.getAllMovies(); // Fetch all movies
+      this.loadFavoritesFromLocalStorage(); // Load favorites from localStorage
     });
   }
 
   /**
-   * Checks if the user is authenticated by checking the presence of an authentication token.
-   * If not authenticated, redirects to the login page.
-   *
-   * @returns true if the user is authenticated, otherwise false.
+   * Checks if the user is authenticated based on the token in localStorage.
+   * @returns True if authenticated, false otherwise.
    */
   isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']); // Navigate to login if no token is found
       return false;
     }
     return true;
   }
 
   /**
-   * Retrieves the current user's data from the API and updates the favorite movies.
-   * Optionally calls a callback function once the data is retrieved.
-   *
-   * @param callback Optional callback to be executed after fetching the user data.
+   * Fetches user data from the API.
+   * @param callback Optional callback function to run after user data is fetched.
    */
   private getUser(callback?: () => void): void {
     this.loading = true;
     this.error = null;
-
-    const username = this.fetchApiData.getUsername() || '';
-
-    this.fetchApiData.getUser(username).subscribe({
+    this.fetchApiData.getUser().subscribe({
       next: (userData: User) => {
         this.userData = userData;
         this.favoriteMovies = userData.favoriteMovies;
-        localStorage.setItem('userData', JSON.stringify(userData));
-        localStorage.setItem('username', userData.username);
-        this.loading = false;
+        this.updateMovieFavorites();
         if (callback) callback();
-      },
-      error: (err) => {
         this.loading = false;
-        this.error = 'Failed to load user data.';
-        console.error('Error fetching user data:', err);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.handleError(error); 
+        this.loading = false;
       },
     });
   }
+  
+  
+  private getUsername(): string | null {
+    const username = localStorage.getItem('username');
+    console.log('Retrieved username:', username); 
+    return username;
+  }
+  
 
   /**
-   * Updates the movie list to reflect the user's favorite movies.
-   * Marks each movie as favorite if it exists in the user's favorite list.
+   * Updates the favorite status of each movie based on user data.
    */
   private updateMovieFavorites(): void {
     this.movies.forEach((movie) => {
@@ -136,14 +150,13 @@ export class MovieCardComponent implements OnInit {
   }
 
   /**
-   * Fetches all movies from the API and updates the movie list.
-   * Marks the movies as favorites based on the user's favorite list.
+   * Fetches all movies from the API and updates their favorite status.
    */
   getAllMovies(): void {
     this.fetchApiData.getAllMovies().subscribe({
       next: (movies: Movie[]) => {
         this.movies = movies;
-        this.updateMovieFavorites();
+        this.updateMovieFavorites(); // Sync favorites after loading movies
         this.loading = false;
       },
       error: (err: HttpErrorResponse) => {
@@ -155,7 +168,7 @@ export class MovieCardComponent implements OnInit {
   }
 
   /**
-   * Loads the user's favorite movies from local storage and updates the movie list accordingly.
+   * Loads the user's favorite movies from localStorage.
    */
   private loadFavoritesFromLocalStorage(): void {
     const storedFavorites = JSON.parse(
@@ -163,6 +176,7 @@ export class MovieCardComponent implements OnInit {
     );
     this.favoriteMovies = storedFavorites;
 
+    // Update the favorite status for each movie based on localStorage
     this.movies.forEach((movie) => {
       movie.isFavorite = this.favoriteMovies.some(
         (fav) => fav._id === movie._id
@@ -172,11 +186,7 @@ export class MovieCardComponent implements OnInit {
 
   /**
    * Toggles the favorite status of a movie.
-   * If the movie is already a favorite, it is removed from the favorites list.
-   * If the movie is not a favorite, it is added to the favorites list.
-   * Updates the local storage and displays a notification.
-   *
-   * @param movie The movie to toggle as a favorite.
+   * @param movie The movie to toggle.
    */
   toggleFavorite(movie: Movie): void {
     if (movie.isFavorite) {
@@ -233,9 +243,8 @@ export class MovieCardComponent implements OnInit {
   }
 
   /**
-   * Handles image load errors by replacing the broken image with a placeholder.
-   *
-   * @param event The error event triggered when an image fails to load.
+   * Handles image loading errors by replacing the source with a placeholder.
+   * @param event The image error event.
    */
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
@@ -244,9 +253,7 @@ export class MovieCardComponent implements OnInit {
 
   /**
    * Toggles the visibility of movie details.
-   * If the details are currently visible, they will be hidden, and vice versa.
-   *
-   * @param movie The movie whose details visibility is to be toggled.
+   * @param movie The movie to toggle details for.
    */
   toggleAllDetails(movie: Movie): void {
     if (movie.areDetailsVisible === undefined) {
@@ -256,33 +263,28 @@ export class MovieCardComponent implements OnInit {
   }
 
   /**
-   * Creates the authorization headers to be used in API requests.
-   *
-   * @returns The HttpHeaders object containing the Authorization header with the token.
-   * @throws Error if no authentication token is found.
+   * Creates authorization headers for API calls.
+   * @returns The HTTP headers with the authorization token.
    */
   createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
+    if (!token) {
+      throw new Error('No token found. Please log in.');
+    }
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
   /**
-   * Retrieves the authentication token from local storage.
-   *
-   * @returns The authentication token or null if not found.
+   * Retrieves the authentication token from localStorage.
+   * @returns The authentication token, or null if not found.
    */
-  getToken(): string {
-    const token = localStorage.getItem('authToken');
-    if (token === null || token.trim() === '') {
-      throw new Error('Authentication token is missing or invalid.');
-    }
-    return token;
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
   }
 
   /**
-   * Handles API errors by setting an error message and logging the error.
-   *
-   * @param error The error object returned by the API.
+   * Handles errors from API calls.
+   * @param error The error response from the API.
    */
   private handleError(error: HttpErrorResponse): void {
     this.error = error.message || 'An unknown error occurred.';
