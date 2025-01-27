@@ -102,7 +102,6 @@ export class UserProfileComponent implements OnInit {
   }
 
   // Handles errors by displaying a message and logging the error. @param error - The error object returned from the HTTP request
-
   private handleError(error: HttpErrorResponse): void {
     console.error('Error occurred:', error);
     const message =
@@ -193,15 +192,16 @@ export class UserProfileComponent implements OnInit {
     }
 
     this.loading = true;
-    const updatedUserData: User = {
-      ...this.userData,
+    const updatedUserDetails: User = {
       username: this.updatedUsername,
       email: this.updatedEmail,
       birthdate: new Date(this.updatedBirthdate),
+      password: this.userData.password, // Optional, assuming the password remains the same
+      favoriteMovies: this.userData.favoriteMovies || [], // Optional, can remain the same if no change
     };
 
     this.fetchApiData
-      .updateUser(updatedUserData)
+      .updateUser(this.userData.username, updatedUserDetails)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (updatedData: User) => {

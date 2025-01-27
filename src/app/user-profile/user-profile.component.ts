@@ -268,27 +268,31 @@ export class MovieCardComponent implements OnInit {
 
   /** Function to update user details (username, password, birthdate) */
   updateUser(): void {
-    let user: any = {};
-    user.username = this.userData.username;
-    //user.email = this.userData.email;
-    if (this.userData.password) {
-      user.password = this.userData.password;
-    }
-    user.birthDate = this.userData.birthdate;
+    const updatedUserDetails: User = {
+      username: this.userData.username,
+      password: this.userData.password,
+      email: this.userData.email,
+      birthdate: this.userData.birthdate || undefined,
+      favoriteMovies: this.userData.favoriteMovies || [],
+    };
 
-    this.fetchApiData.updateUser(user).subscribe(
-      (result) => {
-        // Logic for a successful user registration goes here! (To be implemented)
-        this.snackBar.open('Profile updated', 'OK', {
-          duration: 2000,
-        });
-      },
-      (result) => {
-        this.snackBar.open(result, 'OK', {
-          duration: 2000,
-        });
-      }
-    );
+    // Call the updateUser method from the FetchApiDataService
+    this.fetchApiData
+      .updateUser(this.userData.username, updatedUserDetails)
+      .subscribe({
+        next: (result) => {
+          // Show success message
+          this.snackBar.open('Profile updated', 'OK', {
+            duration: 2000,
+          });
+        },
+        error: (error) => {
+          // Handle errors and show error message
+          this.snackBar.open(error.message || 'An error occurred', 'OK', {
+            duration: 2000,
+          });
+        },
+      });
   }
 
   /**

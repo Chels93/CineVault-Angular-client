@@ -257,6 +257,11 @@ export class FetchApiDataService {
       return throwError(() => new Error('No token found. Please log in.'));
     }
 
+    // Ensure userDetails is provided and not empty
+    if (!userDetails || !userDetails.username || !userDetails.email) {
+      return throwError(() => new Error('User details are incomplete.'));
+    }
+
     return this.httpClient
       .put(`${this.apiUrl}/users/${username}`, userDetails, {
         headers: new HttpHeaders({
@@ -266,6 +271,8 @@ export class FetchApiDataService {
       .pipe(
         catchError(this.handleError),
         tap((result) => {
+          // Optionally handle any successful response here
+          console.log('User updated successfully:', result);
         })
       );
   }
