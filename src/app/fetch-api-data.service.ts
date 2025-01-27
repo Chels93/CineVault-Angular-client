@@ -247,11 +247,42 @@ export class FetchApiDataService {
   /**
    * Updates user information.
    *
-   * @param payload - The updated user data.
+   * @param userData - The updated user data.
    * @returns An Observable containing the result of the update operation.
    */
   public updateUser(userData: Partial<User>): Observable<User> {
-    const username = JSON.parse(localStorage.getItem('userData') || '{}').username;
-    return this.httpClient.put<User>(`${this.apiUrl}/users/${username}`, userData);
+    /**  Retrieve the current username from localStorage (to ensure the right user is being updated) */
+    const storedUser = JSON.parse(localStorage.getItem('userData') || '{}');
+    const username = storedUser.username;
+
+    if (!username) {
+      return throwError(
+        () => new Error('No username found in localStorage. Please log in.')
+      );
+    }
+
+    /** If the username is being updated, we must also update localStorage */
+    if (userData.username && userData.username !== username) {
+      localStorage.setItem('username', userData.username); // Update the username in localStorage
+    }
+
+    /** Perform the PUT request to update the user information on the backend */
+    return this.httpClient
+      .put<User>(`${this.apiUrl}/users/${username}`, userData, {
+        headers: this.createAuthHeaders(),
+      })
+      .pipe(
+        tap((updatedUser) => {
+          localStorage.setItem('userData', JSON.stringify(updatedUser));
+        }),
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 400) {
+            return throwError(
+              () => new Error('Username update failed. Username already taken.')
+            );
+          }
+          return this.handleError(error);
+        })
+      );
   }
 }
