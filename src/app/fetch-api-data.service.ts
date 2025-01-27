@@ -247,61 +247,26 @@ export class FetchApiDataService {
   /**
    * Updates user information.
    *
-   * @param userData - The updated user data.
+   * @param username - The username of the user to be updated.
+   * @param userDetails - The updated user data.
    * @returns An Observable containing the result of the update operation.
    */
-  public updateUser(userData: Partial<User>): Observable<User> {
-    /** Retrieve the current user from localStorage to ensure the right user is being updated */
-    const storedUser = JSON.parse(localStorage.getItem('userData') || '{}');
-    const username = storedUser.username;
-  
-    /** Check if the username is present in localStorage, if not, return an error */
-    if (!username) {
-      return throwError(
-        () => new Error('No username found in localStorage. Please log in.')
+  public updateUser(username: string, userDetails: User): Observable<any> {
+    const token = this.getToken();
+    if (!token) {
+      return throwError(() => new Error('No token found. Please log in.'));
+    }
+
+    return this.httpClient
+      .put(`${this.apiUrl}/users/${username}`, userDetails, {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${token}`,
+        }),
+      })
+      .pipe(
+        catchError(this.handleError),
+        tap((result) => {
+        })
       );
-    }
-  
-    /** If the username is being updated, also update it in localStorage and the API request */
-    if (userData.username && userData.username !== username) {
-      /** Update the username in localStorage */
-      localStorage.setItem('username', userData.username);
-  
-      /** If username is being updated, ensure the new username is used in the PUT request */
-      return this.httpClient
-        .put<User>(`${this.apiUrl}/users/${userData}`, userData, {
-          headers: this.createAuthHeaders(),
-        })
-        .pipe(
-          /** Update localStorage with the updated user data */
-          tap((updatedUser) => {
-            localStorage.setItem('userData', JSON.stringify(updatedUser));
-          }),
-          /** Handle specific error for failed username update (username already taken) */
-          catchError((error: HttpErrorResponse) => {
-            if (error.status === 400) {
-              return throwError(
-                () => new Error('Username update failed. Username already taken.')
-              );
-            }
-            /** Handle any other errors */
-            return this.handleError(error);
-          })
-        );
-    } else {
-      /** If the username is not being updated, proceed with the same username */
-      return this.httpClient
-        .put<User>(`${this.apiUrl}/users/${username}`, userData, {
-          headers: this.createAuthHeaders(),
-        })
-        .pipe(
-          /** Update localStorage with the updated user data */
-          tap((updatedUser) => {
-            localStorage.setItem('userData', JSON.stringify(updatedUser));
-          }),
-          /** Handle general errors */
-          catchError(this.handleError)
-        );
-    }
-  }  
+  }
 }
