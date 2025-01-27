@@ -67,7 +67,7 @@ export class FetchApiDataService {
    *
    * @returns The authentication token or null if not found.
    */
-  private getToken(): string | null {
+  public getToken(): string | null {
     return localStorage.getItem('authToken');
   }
 
@@ -76,8 +76,10 @@ export class FetchApiDataService {
    *
    * @returns The username or null if not found.
    */
-  public getUsername(): string {
-    return localStorage.getItem('username') || '';
+  public getUsername(): string | null {
+    const username = localStorage.getItem('username');
+    console.log('Retrieved username:', username);
+    return username;
   }
 
   /**
@@ -86,7 +88,7 @@ export class FetchApiDataService {
    * @returns An instance of HttpHeaders with the 'Authorization' token.
    * @throws An error if no token is found.
    */
-  private createAuthHeaders(): HttpHeaders {
+  public createAuthHeaders(): HttpHeaders {
     const token = this.getToken();
     if (!token) {
       throw new Error('No token found. Please log in.');
@@ -100,7 +102,7 @@ export class FetchApiDataService {
    * @param error - The error response from the HTTP request.
    * @returns An Observable with the error.
    */
-  private handleError(error: HttpErrorResponse): Observable<never> {
+  public handleError(error: HttpErrorResponse): Observable<never> {
     console.error('HTTP Status Code:', error.status);
     console.error('Error Details:', error.message);
 
@@ -229,26 +231,18 @@ export class FetchApiDataService {
    * @returns An Observable containing the registration result.
    */
   public userRegistration(user: User): Observable<any> {
-    if (!user.username || !user.password || !user.email) {
-      return throwError(
-        () => new Error('Username, password, and email are required.')
-      );
-    }
-
-    console.log('User being registered:', user);
-
     return this.httpClient
       .post(`${this.apiUrl}/users`, user)
       .pipe(catchError(this.handleError));
   }
 
- /**
+  /**
    * Updates user information.
    *
    * @param payload - The updated user data.
    * @returns An Observable containing the result of the update operation.
    */
- public updateUser(payload: any): Observable<any> {
+  public updateUser(payload: any): Observable<any> {
     const username = this.getUsername();
     if (!username) {
       return throwError(() => new Error('No username found. Please log in.'));
