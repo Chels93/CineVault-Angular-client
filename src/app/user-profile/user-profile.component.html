@@ -98,14 +98,10 @@
                 <!-- Add to Favorites Button -->
                 <div class="favorite-container" (click)="toggleFavorite(movie)">
                   <!-- Favorite icon changes based on the movie's favorite status -->
-                  <mat-icon
-                    [ngClass]="{
-                      favorite: movie.isFavorite,
-                      'not-favorite': !movie.isFavorite
-                    }"
-                  >
-                    {{ movie.isFavorite ? "favorite" : "favorite_border" }}
+                  <mat-icon class="favorite">
+                    favorite
                   </mat-icon>
+                  
                   <!-- Text updates dynamically based on the favorite status -->
                   <div class="text-container">
                     <span>
