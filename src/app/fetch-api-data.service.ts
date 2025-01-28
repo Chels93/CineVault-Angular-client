@@ -152,7 +152,7 @@ export class FetchApiDataService {
    *
    * @returns An Observable containing an array of favorite movies.
    */
-  public getfavoriteMovies(): Observable<Movie[]> {
+  public getFavoriteMovies(): Observable<Movie[]> {
     const username = this.getUsername();
     if (!username) {
       return throwError(() => new Error('No username found. Please log in.'));

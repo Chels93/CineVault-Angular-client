@@ -156,7 +156,7 @@ export class UserProfileComponent implements OnInit {
   private getFavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
-      .getfavoriteMovies()
+      .getFavoriteMovies()
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (movies: Movie[]) => (this.favoriteMovies = movies),
@@ -173,18 +173,20 @@ export class UserProfileComponent implements OnInit {
   }
 
   /**
-   * Adds or removes a movie from the user's favorites.
-   * @param movie The movie to add or remove.
-   */
-  toggleFavorite(movie: Movie): void {
+ * Adds or removes a movie from the user's favorites and updates the backend.
+ * Also ensures that the change is reflected across all components.
+ * @param movie The movie to add or remove.
+ */
+toggleFavorite(movie: Movie): void {
     const isFavorite = this.favoriteMovies.some((m) => m._id === movie._id);
     const request = isFavorite
       ? this.fetchApiData.removeFromFavorites(movie._id)
       : this.fetchApiData.addToFavorites(movie._id);
-
+  
     request.subscribe({
       next: () => {
         if (isFavorite) {
+          // Remove movie from favorites
           this.favoriteMovies = this.favoriteMovies.filter(
             (m) => m._id !== movie._id
           );
@@ -192,11 +194,28 @@ export class UserProfileComponent implements OnInit {
             duration: 2000,
           });
         } else {
+          // Add movie to favorites
           this.favoriteMovies.push(movie);
           this.snackBar.open('Added to favorites!', 'Close', {
             duration: 2000,
           });
         }
+  
+        // Notify other components or refresh global state
+        this.refreshFavorites();
+      },
+      error: (err) => this.handleError(err),
+    });
+  }
+  
+  /**
+ * Refreshes the global state of favorite movies to synchronize across components.
+ */
+private refreshFavorites(): void {
+    this.fetchApiData.getFavoriteMovies().subscribe({
+      next: (movies: Movie[]) => {
+        this.favoriteMovies = movies;
+        localStorage.setItem('favoriteMovies', JSON.stringify(movies));
       },
       error: (err) => this.handleError(err),
     });

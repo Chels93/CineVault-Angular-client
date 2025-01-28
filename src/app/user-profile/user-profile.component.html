@@ -90,21 +90,37 @@
             />
           </div>
 
+          <!-- Content section of movie card -->
           <mat-card-content>
             <div class="movie-card-details">
+              <!-- Container for interactive buttons -->
               <div class="buttons-container">
+                <!-- Add to Favorites Button -->
                 <div class="favorite-container" (click)="toggleFavorite(movie)">
-                  <mat-icon [ngClass]="{ favorite: movie.isFavorite }">
+                  <!-- Favorite icon changes based on the movie's favorite status -->
+                  <mat-icon
+                    [ngClass]="{
+                      favorite: movie.isFavorite,
+                      'not-favorite': !movie.isFavorite
+                    }"
+                  >
                     {{ movie.isFavorite ? "favorite" : "favorite_border" }}
                   </mat-icon>
+                  <!-- Text updates dynamically based on the favorite status -->
                   <div class="text-container">
-                    <span>Remove from Favorites</span>
+                    <span>
+                      Remove from Favorites
+                    </span>
                   </div>
                 </div>
+
+                <!-- Show/Hide Details Button -->
                 <div class="button-container" (click)="toggleAllDetails(movie)">
+                  <!-- Expand/collapse icon toggles based on details visibility -->
                   <mat-icon>{{
                     movie.areDetailsVisible ? "expand_less" : "expand_more"
                   }}</mat-icon>
+                  <!-- Button text changes based on details visibility -->
                   <div class="text-container">
                     <span>{{
                       movie.areDetailsVisible ? "Hide Details" : "Show Details"
@@ -113,10 +129,28 @@
                 </div>
               </div>
 
+              <!-- Details section: Displays additional movie information if details are visible -->
               <div *ngIf="movie.areDetailsVisible" class="movie-details">
                 <p><strong>Synopsis:</strong>{{ movie.synopsis }}</p>
-                <p><strong>Genre:</strong> {{ movie.genre.name }}</p>
-                <p><strong>Director:</strong> {{ movie.director.name }}</p>
+                <div>
+                  <p><strong>Genre:</strong> {{ movie.genre.name }}</p>
+                  <p>
+                    <strong>Description:</strong>
+                    {{ movie.genre.description || "No description available." }}
+                  </p>
+                </div>
+                <div>
+                  <p><strong>Director:</strong> {{ movie.director.name }}</p>
+                  <p><strong>Bio:</strong> {{ movie.director.bio }}</p>
+                  <p>
+                    <strong>Birth Year:</strong>
+                    {{ movie.director.birthYear || "N/A" }}
+                  </p>
+                  <p>
+                    <strong>Death Year:</strong>
+                    {{ movie.director.deathYear || "N/A" }}
+                  </p>
+                </div>
               </div>
             </div>
           </mat-card-content>

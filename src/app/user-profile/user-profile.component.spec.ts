@@ -71,7 +71,7 @@ export class UserProfileComponent implements OnInit {
 
     // Fetch user data and favorite movies
     this.getUser();
-    this.getfavoriteMovies();
+    this.getFavoriteMovies();
 
     // Retrieve the current route for any route-specific logic
     this.currentRoute = this.router.url.split('/').pop() || '';
@@ -137,10 +137,10 @@ export class UserProfileComponent implements OnInit {
   }
 
   // Fetches the user's favorite movies
-  private getfavoriteMovies(): void {
+  private getFavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
-      .getfavoriteMovies()
+      .getFavoriteMovies()
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (movies: Movie[]) => {

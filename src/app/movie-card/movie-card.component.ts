@@ -124,19 +124,11 @@ export class MovieCardComponent implements OnInit {
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
-        this.handleError(error); 
+        this.handleError(error);
         this.loading = false;
       },
     });
   }
-  
-  
-  private getUsername(): string | null {
-    const username = localStorage.getItem('username');
-    console.log('Retrieved username:', username); 
-    return username;
-  }
-  
 
   /**
    * Updates the favorite status of each movie based on user data.
@@ -175,8 +167,6 @@ export class MovieCardComponent implements OnInit {
       localStorage.getItem('favoriteMovies') || '[]'
     );
     this.favoriteMovies = storedFavorites;
-
-    // Update the favorite status for each movie based on localStorage
     this.movies.forEach((movie) => {
       movie.isFavorite = this.favoriteMovies.some(
         (fav) => fav._id === movie._id
@@ -196,10 +186,7 @@ export class MovieCardComponent implements OnInit {
             (m) => m._id !== movie._id
           );
           movie.isFavorite = false;
-          localStorage.setItem(
-            'favoriteMovies',
-            JSON.stringify(this.favoriteMovies)
-          );
+          this.syncFavorites();
           this.snackBar.open('Removed from favorites!', 'Close', {
             duration: 2000,
           });
@@ -220,10 +207,7 @@ export class MovieCardComponent implements OnInit {
         next: () => {
           this.favoriteMovies.push(movie);
           movie.isFavorite = true;
-          localStorage.setItem(
-            'favoriteMovies',
-            JSON.stringify(this.favoriteMovies)
-          );
+          this.syncFavorites();
           this.snackBar.open('Added to favorites!', 'Close', {
             duration: 2000,
           });
@@ -240,6 +224,18 @@ export class MovieCardComponent implements OnInit {
         },
       });
     }
+  }
+
+  /**
+   *
+   * Updates the localStorage with the current favorite movies.
+   *
+   *
+   */
+  private syncFavorites(): void {
+    localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
+    this.updateMovieFavorites();
+    this.favoriteToggled.emit(); // Notify other components of the change
   }
 
   /**
