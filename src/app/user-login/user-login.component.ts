@@ -73,7 +73,7 @@ export class UserLoginComponent implements OnInit {
    */
   ngOnInit(): void {
     if (this.isAuthenticated()) {
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/movies']);
     }
   }
 
@@ -103,7 +103,7 @@ export class UserLoginComponent implements OnInit {
         localStorage.setItem('username', credentials.username);
         this.isLoggedIn = true;
         this.snackBar.open('Login successful!', 'Close', { duration: 2000 });
-        this.router.navigate(['/profile']);
+        this.router.navigate(['/movies']);
       },
       error: (error) => {
         const errorMessage =
