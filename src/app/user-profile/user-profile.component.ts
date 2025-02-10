@@ -76,7 +76,7 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.checkAuthentication();
     this.getUser();
-    this.getFavoriteMovies();
+    this.getfavoriteMovies();
     this.currentRoute = this.router.url.split('/').pop() || '';
   }
 
@@ -149,7 +149,7 @@ export class UserProfileComponent implements OnInit {
   /**
    * Fetches the user's favorite movies from the API.
    */
-  private getFavoriteMovies(): void {
+  private getfavoriteMovies(): void {
     this.loading = true;
     this.fetchApiData
       .getfavoriteMovies()
