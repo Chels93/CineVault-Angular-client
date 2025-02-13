@@ -58,7 +58,7 @@ export interface User {
   providedIn: 'root', // This ensures the service is provided globally
 })
 export class FetchApiDataService {
-  private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com';
+  private apiUrl = 'https://mymoviesdb-6c5720b5bef1.herokuapp.com'; // Base URL for the API
 
   constructor(private httpClient: HttpClient) {}
 
@@ -203,7 +203,6 @@ export class FetchApiDataService {
    * @param movieId - Unique identifier of the movie to be removed.
    * @returns An Observable containing the result of the operation.
    */
-
   public removeFromFavorites(movieId: string): Observable<any> {
     const username = this.getUsername();
     if (!username) {
