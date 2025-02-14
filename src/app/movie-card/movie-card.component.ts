@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FetchApiDataService, Movie } from '../fetch-api-data.service';
+import { FetchApiDataService, Movie, User } from '../fetch-api-data.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
@@ -10,8 +10,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { User } from '../fetch-api-data.service';
 
 /**
  * The MovieCardComponent displays a list of movies and manages user interactions like toggling favorites.
@@ -30,13 +30,14 @@ import { User } from '../fetch-api-data.service';
     RouterModule,
     MatSnackBarModule,
     FormsModule,
+    MatFormFieldModule
   ],
 })
 export class MovieCardComponent implements OnInit {
   /**
    * Event emitted when the favorite state of a movie is toggled.
    */
-  @Output() favoriteToggled = new EventEmitter<void>(); // Output event to notify when the favorite state changes
+  @Output() favoriteToggled = new EventEmitter<void>();
 
   /**
    * User data including username, email, birthdate, and favorite movies.
@@ -73,6 +74,7 @@ export class MovieCardComponent implements OnInit {
    * Indicates whether the component is loading data.
    */
   loading: boolean = true;
+
   /**
    * Stores error messages, if any.
    */
@@ -198,58 +200,33 @@ export class MovieCardComponent implements OnInit {
    * @param movie The movie to toggle.
    */
   toggleFavorite(movie: Movie): void {
-    if (movie.isFavorite) {
-      this.fetchApiData.removeFromFavorites(movie._id).subscribe({
-        next: () => {
-          this.favoriteMovies = this.favoriteMovies.filter(
-            (m) => m._id !== movie._id
-          );
+    const isFavorite = this.favoriteMovies.some((m) => m._id === movie._id);
+    const request = isFavorite
+      ? this.fetchApiData.removeFromFavorites(movie._id)
+      : this.fetchApiData.addToFavorites(movie._id);
+  
+    request.subscribe({
+      next: () => {
+        if (isFavorite) {
+          // Remove from favorites
+          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
           movie.isFavorite = false;
-          localStorage.setItem(
-            'favoriteMovies',
-            JSON.stringify(this.favoriteMovies)
-          );
-          this.snackBar.open('Removed from favorites!', 'Close', {
-            duration: 2000,
-          });
-        },
-        error: (err) => {
-          console.error('Error removing favorite:', err);
-          this.snackBar.open(
-            'Failed to remove from favorites. Please try again.',
-            'Close',
-            {
-              duration: 2000,
-            }
-          );
-        },
-      });
-    } else {
-      this.fetchApiData.addToFavorites(movie._id).subscribe({
-        next: () => {
+          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+        } else {
+          // Add to favorites
           this.favoriteMovies.push(movie);
           movie.isFavorite = true;
-          localStorage.setItem(
-            'favoriteMovies',
-            JSON.stringify(this.favoriteMovies)
-          );
-          this.snackBar.open('Added to favorites!', 'Close', {
-            duration: 2000,
-          });
-        },
-        error: (err) => {
-          console.error('Error adding favorite:', err);
-          this.snackBar.open(
-            'Failed to add to favorites. Please try again.',
-            'Close',
-            {
-              duration: 2000,
-            }
-          );
-        },
-      });
-    }
+          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+        }
+  
+        // Save favorite movies list in localStorage
+        localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
+      },
+      error: (err) => this.handleError(err),
+    });
   }
+  
+  
 
   /**
    * Handles image loading errors by replacing the source with a placeholder.

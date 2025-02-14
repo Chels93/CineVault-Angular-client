@@ -155,10 +155,17 @@ export class UserProfileComponent implements OnInit {
       .getfavoriteMovies()
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: (movies: Movie[]) => (this.favoriteMovies = movies),
+        next: (movies: Movie[]) => {
+          this.favoriteMovies = movies;
+          // Set the favorite status for each movie
+          this.favoriteMovies.forEach((movie) => {
+            movie.isFavorite = true; // Make sure the movie is marked as favorite
+          });
+        },
         error: (err) => this.handleError(err),
       });
   }
+  
 
   /**
    * Toggles the visibility of details for a specific movie.
@@ -177,26 +184,32 @@ export class UserProfileComponent implements OnInit {
     const request = isFavorite
       ? this.fetchApiData.removeFromFavorites(movie._id)
       : this.fetchApiData.addToFavorites(movie._id);
-
+  
     request.subscribe({
       next: () => {
         if (isFavorite) {
-          this.favoriteMovies = this.favoriteMovies.filter(
-            (m) => m._id !== movie._id
-          );
-          this.snackBar.open('Removed from favorites!', 'Close', {
-            duration: 2000,
-          });
+          // Remove from favorites
+          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+          movie.isFavorite = false;
+          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
         } else {
+          // Add to favorites
           this.favoriteMovies.push(movie);
-          this.snackBar.open('Added to favorites!', 'Close', {
-            duration: 2000,
-          });
+          movie.isFavorite = true;
+          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
         }
+  
+        // Update favoriteMovies in localStorage
+        localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
+  
+        // Manually notify the /movies page (optional: you can use a shared service or event emitter here)
+        window.dispatchEvent(new Event('favoritesUpdated'));
       },
       error: (err) => this.handleError(err),
     });
   }
+  
+  
 
   /**
    * Updates the user's profile with new data.
