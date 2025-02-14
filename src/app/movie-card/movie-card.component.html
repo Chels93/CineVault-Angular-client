@@ -3,15 +3,16 @@
 
 <!-- Search Bar -->
 <div class="search-container">
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="fill" class="search-bar">
     <input
       matInput
       type="text"
       [(ngModel)]="searchQuery"
       (input)="filterMovies()"
       placeholder="Find a movie..."
+      aria-label="Search for movies"
     />
-    <mat-icon matSuffix>search</mat-icon>
+    <mat-icon matSuffix class="search-icon">search</mat-icon>
   </mat-form-field>
 </div>
 
