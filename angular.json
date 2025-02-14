@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/CineVault-Angular-client",
+            "outputPath": "docs",
             "baseHref": "/CineVault-Angular-client/",
             "index": "src/index.html",
             "main": "src/main.ts",
