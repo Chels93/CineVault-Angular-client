@@ -1,6 +1,20 @@
 <!-- Page Title/Header -->
 <h1 class="page-header">Movie Library</h1>
 
+<!-- Search Bar -->
+<div class="search-container">
+  <mat-form-field appearance="outline">
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="searchQuery"
+      (input)="filterMovies()"
+      placeholder="Find a movie..."
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+</div>
+
 <!-- Conditional rendering: Only display content if not loading and no errors are present -->
 <div *ngIf="!loading && !error">
   <!-- Container for all movie cards -->

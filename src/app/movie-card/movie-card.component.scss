@@ -21,6 +21,18 @@ $movie-title-font-size: 18px;
   text-transform: uppercase;
 }
 
+/* Search bar styling */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  mat-form-field {
+    width: 50%;
+  }
+  
+
 /* Container for all movie cards */
 .movie-cards-container {
   display: grid;

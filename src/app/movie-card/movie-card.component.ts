@@ -9,6 +9,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { User } from '../fetch-api-data.service';
 
@@ -28,6 +29,7 @@ import { User } from '../fetch-api-data.service';
     CommonModule,
     RouterModule,
     MatSnackBarModule,
+    FormsModule,
   ],
 })
 export class MovieCardComponent implements OnInit {
@@ -56,6 +58,16 @@ export class MovieCardComponent implements OnInit {
    * List of all movies.
    */
   movies: Movie[] = [];
+
+  /**
+   * Filtered list of movies based on the search query.
+   */
+  filteredMovies: Movie[] = [];
+
+  /**
+   * The search query entered by the user.
+   */
+  searchQuery: string = '';
 
   /**
    * Indicates whether the component is loading data.
@@ -152,10 +164,11 @@ export class MovieCardComponent implements OnInit {
     this.fetchApiData.getAllMovies().subscribe({
       next: (movies: Movie[]) => {
         this.movies = movies;
+        this.filteredMovies = movies; // Initialize filteredMovies with all movies
         this.updateMovieFavorites(); // Sync favorites after loading movies
         this.loading = false;
       },
-      error: (err: HttpErrorResponse) => {
+      error: (err) => {
         this.error = 'Failed to load movies. Please try again later.';
         console.error('Error fetching movies:', err);
         this.loading = false;
@@ -285,5 +298,16 @@ export class MovieCardComponent implements OnInit {
   private handleError(error: HttpErrorResponse): void {
     this.error = error.message || 'An unknown error occurred.';
     console.error('Error:', error);
+  }
+
+  /**
+   * Filters the list of movies based on the search query.
+   * Called on every input change.
+   */
+  filterMovies(): void {
+    const query = this.searchQuery.toLowerCase();
+    this.filteredMovies = this.movies.filter((movie) =>
+      movie.title.toLowerCase().includes(query)
+    );
   }
 }
