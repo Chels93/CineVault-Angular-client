@@ -98,11 +98,11 @@
               <p><strong>Bio:</strong> {{ movie.director.bio }}</p>
               <p>
                 <strong>Birth Year:</strong>
-                {{ movie.director.birthYear }}
+                {{ movie.director.birthYear || "N/A" }}
               </p>
               <p>
                 <strong>Death Year:</strong>
-                {{ movie.director.deathYear }}
+                {{ movie.director.deathYear || "N/A" }}
               </p>
             </div>
           </div>

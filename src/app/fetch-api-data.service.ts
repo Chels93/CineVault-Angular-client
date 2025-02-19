@@ -28,7 +28,7 @@ export interface Movie {
     name: string;
     bio: string;
     birthYear: number;
-    deathYear: number ;
+    deathYear?: number | null;
   };
   synopsis: string;
   imagePath: string;
