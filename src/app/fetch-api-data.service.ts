@@ -23,18 +23,23 @@ import { catchError, tap } from 'rxjs/operators';
 export interface Movie {
   _id: string;
   title: string;
-  genre: { name: string; description: string };
+  imagePath: string;
+  synopsis: string;
+  genre: {
+    name: string;
+    description?: string;
+  };
   director: {
     name: string;
-    bio: string;
-    birthYear: number;
+    bio?: string;
+    birthYear?: number;
     deathYear?: number;
   };
-  synopsis: string;
-  imagePath: string;
-  releaseDate: Date;
-  areDetailsVisible?: boolean;
   isFavorite?: boolean;
+  areDetailsVisible?: boolean;
+  showSynopsis: boolean;
+  showGenreDetails: boolean; 
+  showDirectorDetails: boolean; 
 }
 
 /**

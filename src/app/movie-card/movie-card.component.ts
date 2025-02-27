@@ -1,4 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  HostListener,
+} from '@angular/core';
 import { FetchApiDataService, Movie, User } from '../fetch-api-data.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,6 +18,9 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { ChangeDetectorRef } from '@angular/core';
+import { MatInputModule } from '@angular/material/input';
+
 
 /**
  * The MovieCardComponent displays a list of movies and manages user interactions like toggling favorites.
@@ -30,7 +39,8 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
     RouterModule,
     MatSnackBarModule,
     FormsModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatInputModule
   ],
 })
 export class MovieCardComponent implements OnInit {
@@ -89,7 +99,8 @@ export class MovieCardComponent implements OnInit {
   constructor(
     private fetchApiData: FetchApiDataService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdRef: ChangeDetectorRef
   ) {
     // Subscribe to navigation events to refresh data on /movies navigation
     this.router.events.subscribe((event) => {
@@ -162,21 +173,35 @@ export class MovieCardComponent implements OnInit {
   /**
    * Fetches all movies from the API and updates their favorite status.
    */
-  getAllMovies(): void {
-    this.fetchApiData.getAllMovies().subscribe({
-      next: (movies: Movie[]) => {
-        this.movies = movies;
-        this.filteredMovies = movies; // Initialize filteredMovies with all movies
-        this.updateMovieFavorites(); // Sync favorites after loading movies
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load movies. Please try again later.';
-        console.error('Error fetching movies:', err);
-        this.loading = false;
-      },
-    });
-  }
+ getAllMovies(): void {
+  this.fetchApiData.getAllMovies().subscribe({
+    next: (movies: Movie[]) => {
+      // Initialize movies with the fetched data and set default values for show details flags
+      this.movies = movies.map((movie) => ({
+        ...movie,
+        showSynopsis: false,
+        showGenreDetails: false,
+        showDirectorDetails: false,
+        originalImagePath: movie.imagePath, // Store the original image path
+      }));
+
+      // Initialize filteredMovies with all movies
+      this.filteredMovies = this.movies;
+
+      // Sync favorites after loading movies
+      this.updateMovieFavorites();
+
+      // Set loading to false once data is fetched
+      this.loading = false;
+    },
+    error: (err) => {
+      this.error = 'Failed to load movies. Please try again later.';
+      console.error('Error fetching movies:', err);
+      this.loading = false;
+    },
+  });
+}
+
 
   /**
    * Loads the user's favorite movies from localStorage.
@@ -204,30 +229,99 @@ export class MovieCardComponent implements OnInit {
     const request = isFavorite
       ? this.fetchApiData.removeFromFavorites(movie._id)
       : this.fetchApiData.addToFavorites(movie._id);
-  
+
     request.subscribe({
       next: () => {
         if (isFavorite) {
           // Remove from favorites
-          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+          this.favoriteMovies = this.favoriteMovies.filter(
+            (m) => m._id !== movie._id
+          );
           movie.isFavorite = false;
-          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+          this.snackBar.open('Removed from favorites!', 'Close', {
+            duration: 2000,
+          });
         } else {
           // Add to favorites
           this.favoriteMovies.push(movie);
           movie.isFavorite = true;
-          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+          this.snackBar.open('Added to favorites!', 'Close', {
+            duration: 2000,
+          });
         }
-  
+
         // Save favorite movies list in localStorage
-        localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
+        localStorage.setItem(
+          'favoriteMovies',
+          JSON.stringify(this.favoriteMovies)
+        );
       },
       error: (err) => this.handleError(err),
     });
   }
-  
-  
 
+  /**
+   * Toggles the visibility of a specific movie detail section while ensuring only one section is open at a time.
+   *
+   * @param {Movie} movie - The movie object whose details are being toggled.
+   * @param {string} section - The section to toggle ('synopsis', 'genre' or 'director').
+   */
+  toggleContent(
+    movie: Movie,
+    section: 'synopsis' | 'genre' | 'director'
+  ): void {
+    // Define section keys to map to the correct properties in the movie object
+    const sectionKeys: Record<'synopsis' | 'genre' | 'director', keyof Movie> = {
+      synopsis: 'showSynopsis',
+      genre: 'showGenreDetails',
+      director: 'showDirectorDetails',
+    };
+  
+    // First, close all sections by setting them to false
+    for (const key in sectionKeys) {
+      if (sectionKeys.hasOwnProperty(key)) {
+        const sectionKey = sectionKeys[key as 'synopsis' | 'genre' | 'director'];
+        (movie as any)[sectionKey] = false; // Set all sections to false
+      }
+    }
+  
+    // Then, open the selected section
+    const selectedSection = sectionKeys[section];
+    const isSectionOpen = !(movie as any)[selectedSection]; // Get the current state of the section
+    (movie as any)[selectedSection] = isSectionOpen;
+  
+    // If the 'synopsis' section is being opened, hide the movie image
+    if (section === 'synopsis') {
+      if (isSectionOpen) {
+        movie.imagePath = 'assets/placeholder-image.jpg'; // Replace image with placeholder when synopsis is open
+      } else {
+        movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if synopsis is closed
+      }
+    }
+  
+    // If the 'genre' section is being opened, hide the movie image
+    if (section === 'genre') {
+      if (isSectionOpen) {
+        movie.imagePath = 'assets/placeholder-image.jpg'; // Replace image with placeholder when genre is open
+      } else {
+        movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if genre is closed
+      }
+    }
+  
+    // If the 'director' section is being opened, hide the movie image
+    if (section === 'director') {
+      if (isSectionOpen) {
+        movie.imagePath = 'assets/placeholder-image.jpg'; // Replace image with placeholder when director is open
+      } else {
+        movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if director is closed
+      }
+    }
+  
+    // Manually trigger change detection after toggling content
+    this.cdRef.detectChanges(); // Add this line to ensure the UI updates correctly
+  }
+  
+  
   /**
    * Handles image loading errors by replacing the source with a placeholder.
    * @param event The image error event.
@@ -235,46 +329,6 @@ export class MovieCardComponent implements OnInit {
   onImageError(event: Event): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';
-  }
-
-  /**
-   * Toggles the visibility of movie details.
-   * @param movie The movie to toggle details for.
-   */
-  toggleAllDetails(movie: Movie): void {
-    if (movie.areDetailsVisible === undefined) {
-      movie.areDetailsVisible = false;
-    }
-    movie.areDetailsVisible = !movie.areDetailsVisible;
-  }
-
-  /**
-   * Creates authorization headers for API calls.
-   * @returns The HTTP headers with the authorization token.
-   */
-  createAuthHeaders(): HttpHeaders {
-    const token = this.getToken();
-    if (!token) {
-      throw new Error('No token found. Please log in.');
-    }
-    return new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  }
-
-  /**
-   * Retrieves the authentication token from localStorage.
-   * @returns The authentication token, or null if not found.
-   */
-  getToken(): string | null {
-    return localStorage.getItem('authToken');
-  }
-
-  /**
-   * Handles errors from API calls.
-   * @param error The error response from the API.
-   */
-  private handleError(error: HttpErrorResponse): void {
-    this.error = error.message || 'An unknown error occurred.';
-    console.error('Error:', error);
   }
 
   /**
@@ -286,5 +340,14 @@ export class MovieCardComponent implements OnInit {
     this.filteredMovies = this.movies.filter((movie) =>
       movie.title.toLowerCase().includes(query)
     );
+  }
+
+  /**
+   * Handles errors from API calls.
+   * @param error The error response from the API.
+   */
+  private handleError(error: HttpErrorResponse): void {
+    this.error = error.message || 'An unknown error occurred.';
+    console.error('Error:', error);
   }
 }

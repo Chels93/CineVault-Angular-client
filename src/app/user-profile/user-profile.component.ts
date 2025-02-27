@@ -166,14 +166,22 @@ export class UserProfileComponent implements OnInit {
       });
   }
   
+/**
+   * Toggles the visibility of genre details.
+   * @param movie The movie object.
+   */
+toggleGenreDetails(movie: Movie): void {
+    movie.showGenreDetails = !movie.showGenreDetails;
+  }
 
   /**
-   * Toggles the visibility of details for a specific movie.
-   * @param movie The movie to toggle details for.
+   * Toggles the visibility of director details.
+   * @param movie The movie object.
    */
-  toggleAllDetails(movie: Movie): void {
-    movie.areDetailsVisible = !movie.areDetailsVisible;
+  toggleDirectorDetails(movie: Movie): void {
+    movie.showDirectorDetails = !movie.showDirectorDetails;
   }
+
 
   /**
    * Adds or removes a movie from the user's favorites.
