@@ -26,6 +26,24 @@
         >
           Username is required
         </mat-error>
+
+        <mat-error
+          *ngIf="
+            registrationForm.get('username')?.hasError('minlength') &&
+            registrationForm.get('username')?.touched
+          "
+        >
+          Username must be at least 5 characters long
+        </mat-error>
+
+        <mat-error
+          *ngIf="
+            registrationForm.get('username')?.hasError('pattern') &&
+            registrationForm.get('username')?.touched
+          "
+        >
+          Username must only contain letters and numbers
+        </mat-error>
       </mat-form-field>
 
       <!-- Password Field -->
