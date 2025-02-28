@@ -21,7 +21,6 @@ import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 
-
 /**
  * The MovieCardComponent displays a list of movies and manages user interactions like toggling favorites.
  */
@@ -40,7 +39,7 @@ import { MatInputModule } from '@angular/material/input';
     MatSnackBarModule,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
   ],
 })
 export class MovieCardComponent implements OnInit {
@@ -173,35 +172,46 @@ export class MovieCardComponent implements OnInit {
   /**
    * Fetches all movies from the API and updates their favorite status.
    */
- getAllMovies(): void {
-  this.fetchApiData.getAllMovies().subscribe({
-    next: (movies: Movie[]) => {
-      // Initialize movies with the fetched data and set default values for show details flags
-      this.movies = movies.map((movie) => ({
-        ...movie,
-        showSynopsis: false,
-        showGenreDetails: false,
-        showDirectorDetails: false,
-        originalImagePath: movie.imagePath, // Store the original image path
-      }));
+  getAllMovies(): void {
+    this.fetchApiData.getAllMovies().subscribe({
+      next: (movies: Movie[]) => {
+        console.log('Movies from API:', movies); // Check the API response
+        this.movies = movies.map((movie) => ({
+          ...movie,
+          showSynopsis: false,
+          showGenreDetails: false,
+          showDirectorDetails: false,
+          originalImagePath: movie.imagePath,
+          director: {
+            ...movie.director,
+            deathYear: this.isValidDeathYear(movie.director.deathYear)
+              ? movie.director.deathYear
+              : undefined, // Ensure invalid values are undefined
+          },
+        }));
 
-      // Initialize filteredMovies with all movies
-      this.filteredMovies = this.movies;
+        this.filteredMovies = this.movies;
+        this.updateMovieFavorites();
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load movies. Please try again later.';
+        console.error('Error fetching movies:', err);
+        this.loading = false;
+      },
+    });
+  }
 
-      // Sync favorites after loading movies
-      this.updateMovieFavorites();
-
-      // Set loading to false once data is fetched
-      this.loading = false;
-    },
-    error: (err) => {
-      this.error = 'Failed to load movies. Please try again later.';
-      console.error('Error fetching movies:', err);
-      this.loading = false;
-    },
-  });
-}
-
+  /**
+   * Validates the `deathYear` value.
+   * Ensures that `deathYear` is a number before including it in the movie data.
+   *
+   * @param deathYear - The death year of a director, which can be of any type.
+   * @returns `true` if `deathYear` is a valid number, otherwise `false`.
+   */
+  isValidDeathYear(deathYear: any): boolean {
+    return !isNaN(deathYear) && deathYear !== null && deathYear !== undefined;
+  }
 
   /**
    * Loads the user's favorite movies from localStorage.
@@ -271,25 +281,27 @@ export class MovieCardComponent implements OnInit {
     section: 'synopsis' | 'genre' | 'director'
   ): void {
     // Define section keys to map to the correct properties in the movie object
-    const sectionKeys: Record<'synopsis' | 'genre' | 'director', keyof Movie> = {
-      synopsis: 'showSynopsis',
-      genre: 'showGenreDetails',
-      director: 'showDirectorDetails',
-    };
-  
+    const sectionKeys: Record<'synopsis' | 'genre' | 'director', keyof Movie> =
+      {
+        synopsis: 'showSynopsis',
+        genre: 'showGenreDetails',
+        director: 'showDirectorDetails',
+      };
+
     // First, close all sections by setting them to false
     for (const key in sectionKeys) {
       if (sectionKeys.hasOwnProperty(key)) {
-        const sectionKey = sectionKeys[key as 'synopsis' | 'genre' | 'director'];
+        const sectionKey =
+          sectionKeys[key as 'synopsis' | 'genre' | 'director'];
         (movie as any)[sectionKey] = false; // Set all sections to false
       }
     }
-  
+
     // Then, open the selected section
     const selectedSection = sectionKeys[section];
     const isSectionOpen = !(movie as any)[selectedSection]; // Get the current state of the section
     (movie as any)[selectedSection] = isSectionOpen;
-  
+
     // If the 'synopsis' section is being opened, hide the movie image
     if (section === 'synopsis') {
       if (isSectionOpen) {
@@ -298,7 +310,7 @@ export class MovieCardComponent implements OnInit {
         movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if synopsis is closed
       }
     }
-  
+
     // If the 'genre' section is being opened, hide the movie image
     if (section === 'genre') {
       if (isSectionOpen) {
@@ -307,7 +319,7 @@ export class MovieCardComponent implements OnInit {
         movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if genre is closed
       }
     }
-  
+
     // If the 'director' section is being opened, hide the movie image
     if (section === 'director') {
       if (isSectionOpen) {
@@ -316,12 +328,11 @@ export class MovieCardComponent implements OnInit {
         movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if director is closed
       }
     }
-  
+
     // Manually trigger change detection after toggling content
     this.cdRef.detectChanges(); // Add this line to ensure the UI updates correctly
   }
-  
-  
+
   /**
    * Handles image loading errors by replacing the source with a placeholder.
    * @param event The image error event.
