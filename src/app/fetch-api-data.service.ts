@@ -40,6 +40,7 @@ export interface Movie {
   showSynopsis: boolean;
   showGenreDetails: boolean; 
   showDirectorDetails: boolean; 
+  [key: string]: any;
 }
 
 /**

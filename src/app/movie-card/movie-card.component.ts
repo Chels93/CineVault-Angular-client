@@ -120,6 +120,18 @@ export class MovieCardComponent implements OnInit {
   }
 
   /**
+   * Checks if the user is authenticated. Redirects to the login page if not authenticated.
+   */
+  private checkAuthentication(): void {
+    if (!this.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      this.snackBar.open('Please log in to access your profile.', 'Close', {
+        duration: 3000,
+      });
+    }
+  }
+
+  /**
    * Checks if the user is authenticated based on the token in localStorage.
    * @returns True if authenticated, false otherwise.
    */
@@ -130,6 +142,15 @@ export class MovieCardComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  /**
+   * Handles errors from API calls.
+   * @param error The error response from the API.
+   */
+  private handleError(error: HttpErrorResponse): void {
+    this.error = error.message || 'An unknown error occurred.';
+    console.error('Error:', error);
   }
 
   /**
@@ -351,14 +372,5 @@ export class MovieCardComponent implements OnInit {
     this.filteredMovies = this.movies.filter((movie) =>
       movie.title.toLowerCase().includes(query)
     );
-  }
-
-  /**
-   * Handles errors from API calls.
-   * @param error The error response from the API.
-   */
-  private handleError(error: HttpErrorResponse): void {
-    this.error = error.message || 'An unknown error occurred.';
-    console.error('Error:', error);
   }
 }

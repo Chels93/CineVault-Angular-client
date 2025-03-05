@@ -16,6 +16,8 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { finalize } from 'rxjs/operators';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 @Component({
   selector: 'app-user-profile',
@@ -57,6 +59,21 @@ export class UserProfileComponent implements OnInit {
   error: string | null = null;
   currentRoute = '';
 
+   /**
+   * The search query entered by the user.
+   */
+   searchQuery: string = '';
+
+     /**
+   * Filtered list of movies based on the search query.
+   */
+  filteredMovies: Movie[] = [];
+
+  /**
+   * List of all movies.
+   */
+  movies: Movie[] = [];
+
   /**
    * Initializes the `UserProfileComponent`.
    * @param fetchApiData Service for API operations.
@@ -66,7 +83,8 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private fetchApiData: FetchApiDataService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   /**
@@ -182,6 +200,68 @@ toggleGenreDetails(movie: Movie): void {
     movie.showDirectorDetails = !movie.showDirectorDetails;
   }
 
+  /**
+   * Toggles the visibility of a specific movie detail section while ensuring only one section is open at a time.
+   *
+   * @param {Movie} movie - The movie object whose details are being toggled.
+   * @param {string} section - The section to toggle ('synopsis', 'genre' or 'director').
+   */
+  toggleContent(
+    movie: Movie,
+    section: 'synopsis' | 'genre' | 'director'
+  ): void {
+    // Define section keys to map to the correct properties in the movie object
+    const sectionKeys: Record<'synopsis' | 'genre' | 'director', keyof Movie> =
+      {
+        synopsis: 'showSynopsis',
+        genre: 'showGenreDetails',
+        director: 'showDirectorDetails',
+      };
+
+    // First, close all sections by setting them to false
+    for (const key in sectionKeys) {
+      if (sectionKeys.hasOwnProperty(key)) {
+        const sectionKey =
+          sectionKeys[key as 'synopsis' | 'genre' | 'director'];
+        (movie as any)[sectionKey] = false; // Set all sections to false
+      }
+    }
+
+    // Then, open the selected section
+    const selectedSection = sectionKeys[section];
+    const isSectionOpen = !(movie as any)[selectedSection]; // Get the current state of the section
+    (movie as any)[selectedSection] = isSectionOpen;
+
+    // If the 'synopsis' section is being opened, hide the movie image
+    if (section === 'synopsis') {
+      if (isSectionOpen) {
+        movie.imagePath = 'assets/placeholder-image.jpg'; // Replace image with placeholder when synopsis is open
+      } else {
+        movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if synopsis is closed
+      }
+    }
+
+    // If the 'genre' section is being opened, hide the movie image
+    if (section === 'genre') {
+      if (isSectionOpen) {
+        movie.imagePath = 'assets/placeholder-image.jpg'; // Replace image with placeholder when genre is open
+      } else {
+        movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if genre is closed
+      }
+    }
+
+    // If the 'director' section is being opened, hide the movie image
+    if (section === 'director') {
+      if (isSectionOpen) {
+        movie.imagePath = 'assets/placeholder-image.jpg'; // Replace image with placeholder when director is open
+      } else {
+        movie.imagePath = movie.imagePath || movie.imagePath; // Restore original image if director is closed
+      }
+    }
+
+    // Manually trigger change detection after toggling content
+    this.cdRef.detectChanges(); // Add this line to ensure the UI updates correctly
+  }
 
   /**
    * Adds or removes a movie from the user's favorites.
@@ -267,4 +347,18 @@ toggleGenreDetails(movie: Movie): void {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/placeholder-image.jpg';
   }
+
+  /**
+ * Filters the movies based on the search query.
+ */
+filterMovies(): void {
+    if (this.searchQuery) {
+      this.filteredMovies = this.favoriteMovies.filter(movie =>
+        movie.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    } else {
+      this.filteredMovies = [...this.favoriteMovies]; // Reset to all movies when no search query
+    }
+  }
+  
 }

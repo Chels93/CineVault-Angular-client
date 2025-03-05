@@ -1,494 +1,354 @@
-/* Common Variables */
-$primary-color: #118ab2;
-$secondary-color: #ffd166;
+// Variables for common styles
+$primary-color: #118ab2;   // Main color (Brand color)
+$secondary-color: #ffd166; // Accent color
+$background-color: #f4f4f4; // Background color for the page
 $text-color: #333;
+$input-border-color: #ddd; // Border color for inputs
+$heading-font-family: 'Roboto', sans-serif;
+$body-font-family: 'Arial', sans-serif;
 $header-font: "Poppins", sans-serif;
-$movie-title-font-size: 18px;
+$border-radius: 8px;
+$spacing: 12px;  // Reduced spacing for margins/paddings
+$input-padding: 12px;
 
-/* Header Styling */
+// Base styles
+body {
+  font-family: $body-font-family;
+  background-color: $background-color;
+  margin: 0;
+  padding: 0;
+}
+
 .page-header {
-  font-family: "Poppins", sans-serif;
-  font-size: 32px;
-  font-weight: bold;
+  font-family: $heading-font-family;
+  font-size: 2.5rem;
   text-align: center;
-  color: #118ab2;
-  text-transform: lowercase;
-  letter-spacing: 2px;
-  margin-bottom: 4px;
+  color: $primary-color;
+  margin: 2rem 0;
+  text-transform: capitalize;
 }
 
-/* Capitalize the first letter of the header */
-.page-header::first-letter {
-  text-transform: uppercase;
-}
-
-/* Styling for selectively capitalizing second word in headers */
 .capitalize-second-word {
-  text-transform: capitalize; /* Reset to lowercase */
-
-  &::first-letter {
-    text-transform: uppercase;
-  }
+  text-transform: capitalize;
 }
 
-/* Loading Spinner */
 .loading-spinner {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  height: 100px;
 }
 
-/* User Profile Container */
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 $spacing;
+}
+
+.search-bar {
+  width: 100%;
+}
+
+.search-icon {
+  color: $primary-color;
+}
+
+// User Profile Section
 .user-profile-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  padding: 20px;
-  border-radius: 8px;
-
-  /* Adjust layout for smaller screens */
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-
-  /* Shared styles for child components in profile section */
-  .user-profile,
-  .update-profile-container,
-  .favorite-movies-container {
-    background: #fff;
-    border: 2px solid $secondary-color;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Header styling for sections within the user profile */
-    h2 {
-      font-family: $header-font;
-      font-size: 24px;
-      color: $primary-color;
-      margin-bottom: 10px;
-      text-align: center;
-      text-transform: capitalize;
-    }
-
-    /* Paragraph styling for description text in the profile */
-    p {
-      color: $text-color;
-      font-size: 20px;
-      line-height: 1.6;
-      margin: 8px 0;
-
-      strong {
-        font-weight: bold;
-        color: $primary-color;
-      }
-    }
-  }
-}
-
-/* Styling for the birthdate input field */
-.update-profile-container form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  /* Shared input styling */
-  input,
-  mat-form-field {
-    font-family: $header-font;
-    font-size: 14px;
-    border-radius: 4px;
-    padding: 8px;
-    border: 1px solid $primary-color;
-    outline: none;
-
-    &:focus {
-      border-color: $secondary-color;
-      box-shadow: 0 0 4px $secondary-color;
-    }
-  }
-
-  /* Additional styling for date picker */
-  mat-form-field {
-    width: 100%;
-    border: 1px solid $primary-color;
-    border-radius: 4px;
-    padding: 0;
-
-    /* Specific styling for the datepicker toggle button */
-    .mat-datepicker-toggle {
-      outline: none;
-      box-shadow: none;
-
-      button {
-        outline: none;
-        box-shadow: none;
-      }
-
-      &:focus,
-      &:active {
-        outline: none;
-        box-shadow: none;
-      }
-    }
-  }
-
-  /* Styling for matInput fields (including mat-datepicker) */
-  .birthdate-input {
-    font-family: $header-font;
-    font-size: 14px;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    outline: none;
-    width: 100%;
-
-    /* Apply styles to the container if needed */
-    .mat-form-field-wrapper {
-      padding: 0;
-    }
-
-    &:focus {
-      border-color: $secondary-color;
-      box-shadow: 0 0 4px $secondary-color;
-    }
-
-    /* Target datepicker input specific styles */
-    .mat-input-element {
-      font-size: 14px;
-    }
-  }
-
-  /* Add a blue border around the birthdate section, including the calendar icon/button */
-  mat-form-field {
-    border: 1px solid $primary-color;
-    border-radius: 4px;
-    padding: 0;
-
-    /* Make sure the mat-datepicker-toggle button is inside the border */
-    .mat-datepicker-toggle {
-      border-left: 2px solid $primary-color;
-      height: 100%;
-    }
-  }
-
-  /* Primary button styles with hover and disabled states */
-  button {
     display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    font-size: 16px;
-    border-radius: 24px;
-    border: 2px solid $primary-color;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: $spacing;
+    padding: 1.5rem;  // Increased padding for more space
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.left-section {
+    flex: 1 1 48%;
+    min-width: 280px;  // Reduced the min-width slightly for better responsiveness
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing;
+  
+}
+
+.user-profile {
+  border-radius: $border-radius;
+  h2 {
+    font-size: 1.5rem; /* Make the favorite movies header larger */
+      margin-bottom: 1rem;
+      color: $primary-color;
+  }
+  p {
+    .strong {
+      color: $text-color;
+    }
+    font-size: 1rem;
+    margin: 0.3rem 0;
     color: $primary-color;
+  }
+  
+}
+
+.update-profile-container {
+  background-color: #fff;
+  padding-top: 1rem;
+  h2 {
+    font-size: 1.5rem; /* Make the favorite movies header larger */
+    margin-bottom: 1rem;
+    color: $primary-color;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Reduced gap between form inputs */
+  }
+
+  /* Smaller input fields */
+  input,
+  .birthdate-field input {
+    padding: 8px; /* Reduced padding */
+    font-size: 0.9rem; /* Smaller text */
+    border-radius: $border-radius;
+    border: 1px solid $input-border-color;
+  }
+
+  /* Date picker */
+  .birthdate-field {
+    width: 100%;
+  }
+
+  button {
+    background-color: $primary-color;
+    color: #fff;
+    font-size: 1rem;
+    padding: 10px 20px; /* Adjust padding */
+    border: none;
+    border-radius: $border-radius;
     cursor: pointer;
-    background-color: white;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    height: 44px;
-    width: 216px;
-    max-width: 216%;
-    box-sizing: border-box;
-    overflow: visible;
+    transition: background-color 0.3s ease;
+    width: auto; /* Button should not stretch */
 
-    /* On hover, change background, text color, and icon color */
     &:hover {
-      background-color: $primary-color;
-      color: white;
-      transform: translateY(-5px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      background-color: darken($primary-color, 10%);
+    }
 
-      /* Change the icon color to yellow on hover */
-      mat-icon {
-        color: #ffd166;
-      }
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
   }
 }
 
-/* Container for all movie cards */
+// Right section (Favorite Movies)
+.right-section {
+  flex: 1;
+  max-width: 800px; /* Limit the right section's width */
+  .favorite-movies-container {
+    h2 {
+      font-size: 1.5rem; /* Make the favorite movies header larger */
+      margin-bottom: 1rem;
+      color: $primary-color;
+    }
+    .movie-cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  }
+}
+
+// Movie Cards Container
 .movie-cards-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Default to 4 columns */
-  grid-gap: 16px;
-  padding: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 24px;
+  padding: 24px;
 
-  /* On medium screens (1200px and smaller), use 3 columns */
   @media (max-width: 1200px) {
     grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
     grid-gap: 12px;
   }
 
-  /* On smaller screens (768px and smaller), use 2 columns */
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 8px;
-  }
-
-  /* On extra-small screens (480px and smaller), use 1 column */
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    grid-gap: 6px;
+    grid-gap: 8px;
   }
 }
 
-/* Header styling for the Favorite Movies section */
-.favorite-movies-container h2 {
-  font-family: $header-font;
-  font-size: 24px;
-  color: $primary-color;
-  margin: 16px;
-  margin-bottom: 10px;
-  text-align: left;
-  text-transform: capitalize;
-}
-
-/* Styling for individual movie cards */
+// Movie Card
 .movie-card {
   border-radius: 12px;
   overflow: hidden;
-  padding: 16px;
+  padding: 8px;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
-  max-width: 340px;
-  height: 500px;
-  min-height: 500px;
+  max-width: 280px; // Adjusted width
+  min-height: 300px;
   position: relative;
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  height: auto;
+  box-sizing: border-box;
+  padding-bottom: 60px;
 
   &:hover {
     transform: translateY(-8px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
 
-  .movie-image-container,
-  .movie-title {
-    transition: opacity 0.3s ease;
+  @media (max-width: 1200px) {
+    max-width: 260px; // Slightly smaller on medium screens
   }
 
-  &.show-details {
-    height: auto;
-    opacity: 0;
-    pointer-events: none;
+  @media (max-width: 768px) {
+    max-width: 220px; // More compact on small screens
   }
 
-  /* Movie Details */
-  flex-grow: 1;
-  overflow-y: auto;
-  margin-top: 16px;
-  padding: 16px;
-  max-height: calc(100% - 32px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background-color: #f9f9f9;
-
-  p {
-    white-space: normal;
-    overflow-wrap: break-word;
-    line-height: 1.5;
-    font-size: 14px;
-  }
-
-  strong {
-    font-weight: 600;
-    color: $primary-color;
+  @media (max-width: 480px) {
+    max-width: 100%; // Full width on very small screens
   }
 }
 
-/* Movie title inside the header */
+// Movie Title
 .movie-card-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 20px;
-  padding: 10px;
+  padding: 4px 8px;
+
+  .movie-title {
+    font-size: 20px;
+    font-weight: normal;
+    color: $primary-color;
+    text-align: center;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    font-family: $header-font;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
 }
 
-.movie-card-header .movie-title {
-  font-size: 20px;
-  font-weight: normal;
-  color: #118ab2;
-  text-align: center;
-  text-transform: capitalize;
-  letter-spacing: 1px;
-  background-clip: text;
-  font-family: $header-font;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  word-break: break-word;
-  display: block;
-  padding-bottom: 5px;
-}
-
-/* Styling for the movie image container */
+// Movie Image Container
 .movie-image-container {
   width: 100%;
-  height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  height: 320px;
+  margin: 0;
 
-  @media (max-width: 768px) {
-    height: 300px; /* Adjust image height on smaller screens */
-  }
-
-  @media (max-width: 480px) {
-    height: 200px; /* Further adjust image height on extra-small screens */
+  .movie-image {
+    width: auto;
+    max-height: 320px;
+    object-fit: cover;
   }
 }
 
-/* Movie Image Styling */
-.movie-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
+// Genre and Director Details
+.synopsis,
+.genre-details,
+.director-details {
+  display: block;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow-y: auto;
 
-/* Buttons container */
-.buttons-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-overflow: ellipsis;
-  flex-direction: row;
-  flex-wrap: wrap;
-  object-fit: cover;
-  gap: 4px;
-  margin-top: auto;
-  max-width: 100%;
-  padding: 16px;
-  position: relative;
-
-  /* Adjust for smaller screens */
-  @media (max-width: 1024px) {
-    font-size: 14px;
-    flex-direction: row;
-    justify-content: space-evenly;
-    gap: 10px;
-    flex-wrap: wrap;
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: #f5f5f5;
   }
 
-  /* For even smaller screens */
-  @media (max-width: 768px) {
-    font-size: 16px;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 12px;
-    height: auto;
-    min-width: 100%;
-    padding: 12px;
-  }
-
-  /* For extra small screens */
-  @media (max-width: 480px) {
-    font-size: 18px;
-    justify-content: space-evenly;
-    align-items: center;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 100px;
-    padding: 8px;
+  &::-webkit-scrollbar-thumb {
+    background-color: $primary-color;
+    border-radius: 4px;
   }
 }
 
-/* Button styles */
-.favorite-container,
-.button-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+// Genre and Director Text
+.synopsis,
+.genre-text,
+.genre-description,
+.director-name,
+.director-bio,
+.director-birth-year,
+.director-death-year {
   font-size: 16px;
-  border-radius: 24px;
-  border: 2px solid $primary-color;
+  color: $primary-color;
+  font-weight: normal;
+  line-height: 1.4;
+  padding: 4px;
+}
+
+// Action Buttons with Favorite Icon
+.action-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  width: 100%;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  box-sizing: border-box;
+}
+
+// Favorite Icon Styling
+.favorite-icon {
+  font-size: 24px;
   color: $primary-color;
   cursor: pointer;
-  background-color: white;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  height: 44px;
-  max-width: 216px;
-  width: 100%;
-  box-sizing: border-box;
-  overflow: visible;
-  padding: 0 8px;
+  transition: color 0.3s ease;
 
-  .text-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: center;
-    gap: 4px;
+  &:hover {
+    color: $secondary-color;
   }
+}
 
-  /* On hover, change background, text color, and icon color */
+.favorite-selected {
+  color: $primary-color;
+}
+
+// Action Buttons
+.action-buttons button {
+  flex: 0;
+  color: $primary-color;
+  background-color: transparent;
+  padding: 4px 6px;
+  font-size: 14px;
+  text-transform: none;
+  font-weight: normal;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  min-width: 16px;
+  border: 2px solid transparent;
+
   &:hover {
     background-color: $primary-color;
     color: white;
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-
-    /* Ensure the icon color changes on hover */
-    mat-icon {
-      color: #ffd166;
-    }
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 6px 24px;
   }
 
-  &.favorite {
-    background-color: $secondary-color;
-    color: $secondary-color;
-  }
-
-  /* Target the favorite icon for 'Add to Favorites' */
-  .favorite-container mat-icon {
-    color: #ffd166;
-    font-size: 28px;
-
-    display: inline-block;
-    width: auto;
-    height: auto;
-    line-height: 1;
-    box-sizing: content-box;
-    white-space: nowrap;
-  }
-
-  /* Target show details icon */
-  .button-container mat-icon {
-    color: darken($secondary-color, 20%);
-    font-size: 20px;
-  }
-}
-
-/* Details section */
-.movie-details {
-  margin-top: 16px;
-  color: $text-color;
-
-  p {
-    margin: 8px 0;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  strong {
-    font-weight: 600;
-    color: #118ab2;
+  &:active {
+    transform: translateY(1px);
   }
 }
