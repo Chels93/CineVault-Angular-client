@@ -59,7 +59,7 @@ body {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: $spacing;
+    gap: 60px;
     padding: 1.5rem;  // Increased padding for more space
     max-width: 1200px;
     margin: 0 auto;
@@ -67,13 +67,20 @@ body {
 
 .left-section {
     flex: 1 1 48%;
-    min-width: 280px;  // Reduced the min-width slightly for better responsiveness
+    min-width: 280px; 
     max-width: 400px;
     display: flex;
     flex-direction: column;
     gap: $spacing;
   
 }
+
+.right-section {
+    flex: 1;
+    max-width: 800px; /* Limit the right section's width */
+    padding-left: 40px; /* Add more padding to push the right section more to the right */
+    border-left: 2px solid #e0e0e0; /* Optional: add a visual divider */
+  }
 
 .user-profile {
   border-radius: $border-radius;
@@ -88,7 +95,7 @@ body {
     }
     font-size: 1rem;
     margin: 0.3rem 0;
-    color: $primary-color;
+    color: #000; /* Set text color to black */
   }
   
 }
