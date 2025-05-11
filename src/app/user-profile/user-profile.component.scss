@@ -1,93 +1,153 @@
 // Variables for common styles
-$primary-color: #118ab2;   // Main color (Brand color)
+$primary-color: #118ab2; // Main color (Brand color)
 $secondary-color: #ffd166; // Accent color
 $background-color: #f4f4f4; // Background color for the page
 $text-color: #333;
 $input-border-color: #ddd; // Border color for inputs
-$heading-font-family: 'Roboto', sans-serif;
-$body-font-family: 'Arial', sans-serif;
+$heading-font-family: "Roboto", sans-serif;
+$body-font-family: "Arial", sans-serif;
 $header-font: "Poppins", sans-serif;
 $border-radius: 8px;
-$spacing: 12px;  // Reduced spacing for margins/paddings
+$spacing: 12px; // Reduced spacing for margins/paddings
 $input-padding: 12px;
 
-// Base styles
-body {
-  font-family: $body-font-family;
-  background-color: $background-color;
+.page-header {
+    font-family: $header-font;
+    font-size: 32px;
+    font-weight: normal;
+    text-align: center;
+    color: $primary-color;
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+/* Search Container */
+.search-bar {
+    width: 50%;
+    background: white;
+    border-radius: 30px;
+    margin: 0 auto 2rem;
+    display: flex;
+    justify-content: center;
+    
+    .mat-form-field-wrapper {
+      padding: 0 !important;
+    }
+  
+    .mat-form-field-flex {
+      align-items: center;
+      border-radius: 30px;
+    }
+  
+    .mat-form-field-outline {
+      border-radius: 30px;
+    }
+  
+    .search-icon {
+      margin-left: 1rem;
+      color: $primary-color;
+    }
+  
+    input {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: $header-font;
+      border-radius: 30px;
+      color: $text-color;
+  
+      &::placeholder {
+        color: #aaa;
+      }
+    }
+  
+    mat-spinner {
+      margin-right: 1rem;
+    }
+  }
+
+.dropdown-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+  max-height: 250px;
+  overflow-y: auto;
   margin: 0;
   padding: 0;
+  list-style: none;
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    mat-icon {
+      margin-right: 0.5rem;
+      color: #3f51b5;
+    }
+
+    &:hover {
+      background-color: #eef2f7;
+    }
+  }
 }
 
-.page-header {
-  font-family: $heading-font-family;
-  font-size: 2.5rem;
-  text-align: center;
-  color: $primary-color;
-  margin: 2rem 0;
-  text-transform: capitalize;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-bar {
+    max-width: 100%;
+    margin-bottom: 20px;
 
-.capitalize-second-word {
-  text-transform: capitalize;
-}
-
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-}
-
-.search-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 0 $spacing;
-}
-
-.search-bar {
-  width: 100%;
-}
-
-.search-icon {
-  color: $primary-color;
+    mat-form-field {
+      padding: 0 12px;
+    }
+  }
 }
 
 // User Profile Section
 .user-profile-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 60px;
-    padding: 1.5rem;  // Increased padding for more space
-    max-width: 1200px;
-    margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 60px;
+  padding: 1.5rem; // Increased padding for more space
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .left-section {
-    flex: 1 1 48%;
-    min-width: 280px; 
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: $spacing;
-  
+  flex: 1 1 48%;
+  min-width: 280px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing;
 }
 
 .right-section {
-    flex: 1;
-    max-width: 800px; /* Limit the right section's width */
-    padding-left: 40px; /* Add more padding to push the right section more to the right */
-    border-left: 2px solid #e0e0e0; /* Optional: add a visual divider */
-  }
+  flex: 1;
+  max-width: 800px; /* Limit the right section's width */
+  padding-left: 40px; /* Add more padding to push the right section more to the right */
+  border-left: 2px solid #e0e0e0; /* Optional: add a visual divider */
+}
 
 .user-profile {
   border-radius: $border-radius;
   h2 {
     font-size: 1.5rem; /* Make the favorite movies header larger */
-      margin-bottom: 1rem;
-      color: $primary-color;
+    margin-bottom: 1rem;
+    color: $primary-color;
   }
   p {
     .strong {
@@ -97,7 +157,6 @@ body {
     margin: 0.3rem 0;
     color: #000; /* Set text color to black */
   }
-  
 }
 
 .update-profile-container {
@@ -199,7 +258,9 @@ body {
   padding: 8px;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   max-width: 280px; // Adjusted width

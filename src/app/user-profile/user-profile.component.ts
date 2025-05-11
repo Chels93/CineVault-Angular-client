@@ -18,7 +18,6 @@ import { NavigationComponent } from '../navigation/navigation.component';
 import { finalize } from 'rxjs/operators';
 import { ChangeDetectorRef } from '@angular/core';
 
-
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -59,15 +58,17 @@ export class UserProfileComponent implements OnInit {
   error: string | null = null;
   currentRoute = '';
 
-   /**
+  /**
    * The search query entered by the user.
    */
-   searchQuery: string = '';
+  searchQuery: string = '';
 
-     /**
+  /**
    * Filtered list of movies based on the search query.
    */
   filteredMovies: Movie[] = [];
+
+  showDropdown: boolean = false;
 
   /**
    * List of all movies.
@@ -84,7 +85,7 @@ export class UserProfileComponent implements OnInit {
     private fetchApiData: FetchApiDataService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   /**
@@ -137,7 +138,7 @@ export class UserProfileComponent implements OnInit {
         ? 'User or favorite movies not found.'
         : 'An error occurred. Please try again later.',
       'Close',
-      { duration: 3000 }
+      { duration: 3000 },
     );
     this.error = error.message;
     this.loading = false;
@@ -183,12 +184,12 @@ export class UserProfileComponent implements OnInit {
         error: (err) => this.handleError(err),
       });
   }
-  
-/**
+
+  /**
    * Toggles the visibility of genre details.
    * @param movie The movie object.
    */
-toggleGenreDetails(movie: Movie): void {
+  toggleGenreDetails(movie: Movie): void {
     movie.showGenreDetails = !movie.showGenreDetails;
   }
 
@@ -208,7 +209,7 @@ toggleGenreDetails(movie: Movie): void {
    */
   toggleContent(
     movie: Movie,
-    section: 'synopsis' | 'genre' | 'director'
+    section: 'synopsis' | 'genre' | 'director',
   ): void {
     // Define section keys to map to the correct properties in the movie object
     const sectionKeys: Record<'synopsis' | 'genre' | 'director', keyof Movie> =
@@ -272,32 +273,39 @@ toggleGenreDetails(movie: Movie): void {
     const request = isFavorite
       ? this.fetchApiData.removeFromFavorites(movie._id)
       : this.fetchApiData.addToFavorites(movie._id);
-  
+
     request.subscribe({
       next: () => {
         if (isFavorite) {
           // Remove from favorites
-          this.favoriteMovies = this.favoriteMovies.filter((m) => m._id !== movie._id);
+          this.favoriteMovies = this.favoriteMovies.filter(
+            (m) => m._id !== movie._id,
+          );
           movie.isFavorite = false;
-          this.snackBar.open('Removed from favorites!', 'Close', { duration: 2000 });
+          this.snackBar.open('Removed from favorites!', 'Close', {
+            duration: 2000,
+          });
         } else {
           // Add to favorites
           this.favoriteMovies.push(movie);
           movie.isFavorite = true;
-          this.snackBar.open('Added to favorites!', 'Close', { duration: 2000 });
+          this.snackBar.open('Added to favorites!', 'Close', {
+            duration: 2000,
+          });
         }
-  
+
         // Update favoriteMovies in localStorage
-        localStorage.setItem('favoriteMovies', JSON.stringify(this.favoriteMovies));
-  
+        localStorage.setItem(
+          'favoriteMovies',
+          JSON.stringify(this.favoriteMovies),
+        );
+
         // Manually notify the /movies page (optional: you can use a shared service or event emitter here)
         window.dispatchEvent(new Event('favoritesUpdated'));
       },
       error: (err) => this.handleError(err),
     });
   }
-  
-  
 
   /**
    * Updates the user's profile with new data.
@@ -330,6 +338,25 @@ toggleGenreDetails(movie: Movie): void {
       });
   }
 
+  onSearchInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchQuery = inputElement.value;
+
+    if (this.searchQuery.trim() === '') {
+      this.showDropdown = false;
+    } else {
+      this.filterMovies();
+      this.showDropdown = this.filteredMovies.length > 0;
+    }
+  }
+
+  // 🔵 WHEN USER CLICKS A MOVIE IN THE DROPDOWN
+  selectMovie(movie: Movie): void {
+    this.searchQuery = movie.title;
+    this.showDropdown = false;
+    // You could add more behavior here (like opening the movie details)
+  }
+
   /**
    * Logs the user out by clearing their authentication token.
    */
@@ -349,16 +376,16 @@ toggleGenreDetails(movie: Movie): void {
   }
 
   /**
- * Filters the movies based on the search query.
- */
-filterMovies(): void {
+   * Filters the movies based on the search query.
+   */
+  // You can call `filterMovies` here to reset when needed
+  filterMovies(): void {
     if (this.searchQuery) {
-      this.filteredMovies = this.favoriteMovies.filter(movie =>
-        movie.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      this.filteredMovies = this.favoriteMovies.filter((movie) =>
+        movie.title.toLowerCase().includes(this.searchQuery.toLowerCase()),
       );
     } else {
       this.filteredMovies = [...this.favoriteMovies]; // Reset to all movies when no search query
     }
   }
-  
 }
