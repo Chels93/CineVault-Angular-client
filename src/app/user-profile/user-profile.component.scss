@@ -115,6 +115,67 @@ $input-padding: 12px;
   }
 }
 
+/* Movie Cards Container */
+.movie-cards-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 24px;
+  padding: 24px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    grid-gap: 8px;
+  }
+}
+
+/* Movie Card */
+.movie-card {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  max-width: 280px; // Adjusted width
+  min-height: 300px;
+  position: relative;
+  justify-content: space-between;
+  height: auto;
+  box-sizing: border-box;
+  padding-bottom: 60px;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 1200px) {
+    max-width: 260px; // Slightly smaller on medium screens
+  }
+
+  @media (max-width: 768px) {
+    max-width: 220px; // More compact on small screens
+  }
+
+  @media (max-width: 480px) {
+    max-width: 100%; // Full width on very small screens
+  }
+}
+
 // User Profile Section
 .user-profile-container {
   display: flex;
