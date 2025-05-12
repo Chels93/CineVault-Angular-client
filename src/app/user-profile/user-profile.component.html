@@ -1,36 +1,6 @@
 <!-- Page Title/Header -->
 <h1 class="page-header">User Profile</h1>
 
-<div class="search-container">
-    <mat-form-field appearance="outline" class="search-bar">
-      <mat-icon matPrefix class="search-icon">search</mat-icon>
-      <input
-        matInput
-        type="text"
-        (input)="onSearchInput($event)"
-        [value]="searchQuery"
-        placeholder="Find a movie..."
-        aria-label="Search for movies"
-      />
-      <mat-spinner *ngIf="loading" matSuffix diameter="20"></mat-spinner>
-    </mat-form-field>
-  
-    <!-- Dropdown -->
-    <ul
-      *ngIf="showDropdown && filteredMovies.length > 0"
-      class="dropdown-results"
-    >
-      <li
-        class="dropdown-item"
-        *ngFor="let movie of filteredMovies"
-        (mousedown)="selectMovie(movie)"
-      >
-        <mat-icon>movie</mat-icon>
-        <span>{{ movie.title }}</span>
-      </li>
-    </ul>
-  </div>
-
   <!-- Loading Spinner: Displays a loading spinner while content is being loaded -->
 <div *ngIf="loading" class="loading-spinner">
     <mat-spinner diameter="50"></mat-spinner>
