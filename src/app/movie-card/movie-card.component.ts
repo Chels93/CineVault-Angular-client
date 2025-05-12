@@ -335,14 +335,20 @@ toggleContent(
     target.src = 'assets/placeholder-image.jpg';
   }
 
-  /**
-   * Filters the list of movies based on the search query.
-   * Called on every input change.
-   */
-  filterMovies(): void {
+/**
+ * Filters the list of movies based on the search query.
+ * Called on every input change.
+ */
+filterMovies(): void {
     const query = this.searchQuery.toLowerCase();
-    this.filteredMovies = this.movies.filter((movie) =>
-      movie.title.toLowerCase().includes(query)
-    );
-  }
+  
+    this.filteredMovies = this.movies.filter((movie) => {
+      const titleMatches = movie.title.toLowerCase().includes(query);
+      const directorMatches = movie.director.name.toLowerCase().includes(query); // Check if director's name matches
+      const genreMatches = movie.genre.name.toLowerCase().includes(query); // Check if genre name matches
+  
+      // Return true if any of the conditions match
+      return titleMatches || directorMatches || genreMatches;
+    });
+  }  
 }
