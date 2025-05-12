@@ -99,12 +99,11 @@ $input-padding: 12px;
 }
 
 .left-section {
-  flex: 1 1 48%;
-  min-width: 280px;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing;
+    display: flex;
+    flex-direction: column; /* Align items vertically */
+    align-items: flex-start; /* Align to the left */
+    gap: 20px; /* Space between the headings */
+    padding: 20px; /* Adjust as needed */
 }
 
 .right-section {
@@ -115,21 +114,33 @@ $input-padding: 12px;
 }
 
 .user-profile {
-  border-radius: $border-radius;
-  h2 {
-    font-size: 1.5rem; /* Make the favorite movies header larger */
-    margin-bottom: 1rem;
-    color: $primary-color;
-  }
-  p {
-    .strong {
-      color: $text-color;
+    border-radius: $border-radius;
+    background-color: #fff;
+    transition: all 0.3s ease;
+  
+    h2 {
+        font-size: 1.5rem; /* Make the favorite movies header larger */
+        margin-bottom: 1rem;
+        color: $primary-color;// Same font weight as "Update Profile"
     }
-    font-size: 1rem;
-    margin: 0.3rem 0;
-    color: #000; /* Set text color to black */
-  }
-}
+  
+    p {
+      font-size: 1rem;
+      color: $primary-color; // Text color is blue
+      margin-bottom: 0.5rem;
+  
+      .strong {
+        font-weight: bold;
+      }
+    }
+  
+    .user-info {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing;
+    }
+  }       
 
 .update-profile-container {
   background-color: #fff;
