@@ -73,10 +73,6 @@
       <div *ngIf="!loading && !error">
         <div class="movie-cards-container">
           <div *ngFor="let movie of favoriteMovies" class="movie-card">
-            <div class="movie-card-header">
-              <h3 class="movie-title">{{ movie.title }}</h3>
-            </div>
-
             <div
               class="movie-image-container"
               *ngIf="
