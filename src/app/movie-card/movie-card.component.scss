@@ -3,6 +3,7 @@ $primary-color: #118ab2;
 $secondary-color: #ffd166;
 $text-color: #333;
 $header-font: "Poppins", sans-serif;
+$movie-title-font-size: 18px;
 
 /* Movie Library Header Styling */
 .page-header {
@@ -153,7 +154,7 @@ $header-font: "Poppins", sans-serif;
   position: relative;
   justify-content: flex-start;
   box-sizing: border-box;
-  padding-bottom: 50px;
+  padding-bottom: 60px;
 
   .movie-content {
     flex-grow: 1;
@@ -184,6 +185,17 @@ $header-font: "Poppins", sans-serif;
     }
   }
 
+  .action-buttons {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 100%;
+    padding: 8px;
+    display: flex;
+    justify-content: space-evenly;
+    background: white;
+  }
+
   &:hover {
     transform: translateY(-8px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -204,24 +216,45 @@ $header-font: "Poppins", sans-serif;
   }
 }
 
+/* Movie Title */
+.movie-card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 8px;
+
+  .movie-title {
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: $primary-color;
+    text-align: center;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    font-family: $header-font;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+}
+
 /* Movie Image Container */
 .movie-image-container {
-    width: 100%;
-    display: flex; // <-- FIX: should be 'flex', not 'contain'
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    height: 320px;
-    margin: 0.25rem;
-  
-    .movie-image {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain; // ensures the entire image fits
-      display: block;
-    }
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 320px;
+  margin: 0;
+
+  .movie-image {
+    width: auto;
+    max-height: 320px;
+    object-fit: cover;
   }
-  
+}
 
 /* Synopsis and Director Details */
 .synopsis,
@@ -274,17 +307,17 @@ $header-font: "Poppins", sans-serif;
 
 /* Action Buttons with Favorite Icon */
 .action-buttons {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 12px;
-    padding: 8px;
-    width: 100%;
-    position: absolute;
-    bottom: 8px;
-    left: 0;
-    box-sizing: border-box;
-  }
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  width: 100%;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  box-sizing: border-box;
+}
 
 /* Favorite Icon Styling */
 .favorite-icon {

@@ -12,17 +12,78 @@ $spacing: 12px; // Reduced spacing for margins/paddings
 $input-padding: 12px;
 
 .page-header {
-  font-family: $header-font;
-  font-size: 32px;
-  font-weight: normal;
-  text-align: center;
-  color: $primary-color;
-  text-transform: capitalize;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
+    font-family: $header-font;
+    font-size: 32px;
+    font-weight: normal;
+    text-align: center;
+    color: $primary-color;
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
 
-  &::first-letter {
-    text-transform: uppercase;
+/* Movie Cards Container */
+.movie-cards-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 24px;
+  padding: 24px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    grid-gap: 8px;
+  }
+}
+
+/* Movie Card */
+.movie-card {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  max-width: 280px; // Adjusted width
+  min-height: 300px;
+  position: relative;
+  justify-content: space-between;
+  height: auto;
+  box-sizing: border-box;
+  padding-bottom: 60px;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 1200px) {
+    max-width: 260px; // Slightly smaller on medium screens
+  }
+
+  @media (max-width: 768px) {
+    max-width: 220px; // More compact on small screens
+  }
+
+  @media (max-width: 480px) {
+    max-width: 100%; // Full width on very small screens
   }
 }
 
@@ -38,41 +99,48 @@ $input-padding: 12px;
 }
 
 .left-section {
-  display: flex;
-  flex-direction: column; /* Align items vertically */
-  align-items: flex-start; /* Align to the left */
-  gap: 20px; /* Space between the headings */
-  padding: 20px; /* Adjust as needed */
+    display: flex;
+    flex-direction: column; /* Align items vertically */
+    align-items: flex-start; /* Align to the left */
+    gap: 20px; /* Space between the headings */
+    padding: 20px; /* Adjust as needed */
+}
+
+.right-section {
+  flex: 1;
+  max-width: 800px; /* Limit the right section's width */
+  padding-left: 40px; /* Add more padding to push the right section more to the right */
+  border-left: 2px solid #e0e0e0; /* Optional: add a visual divider */
 }
 
 .user-profile {
-  border-radius: $border-radius;
-  background-color: #fff;
-  transition: all 0.3s ease;
-
-  h2 {
-    font-size: 1.5rem; /* Make the favorite movies header larger */
-    margin-bottom: 1rem;
-    color: $primary-color; // Same font weight as "Update Profile"
-  }
-
-  p {
-    font-size: 1rem;
-    color: $primary-color; // Text color is blue
-    margin-bottom: 0.5rem;
-
-    .strong {
-      font-weight: bold;
+    border-radius: $border-radius;
+    background-color: #fff;
+    transition: all 0.3s ease;
+  
+    h2 {
+        font-size: 1.5rem; /* Make the favorite movies header larger */
+        margin-bottom: 1rem;
+        color: $primary-color;// Same font weight as "Update Profile"
     }
-  }
-
-  .user-info {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: $spacing;
-  }
-}
+  
+    p {
+      font-size: 1rem;
+      color: $primary-color; // Text color is blue
+      margin-bottom: 0.5rem;
+  
+      .strong {
+        font-weight: bold;
+      }
+    }
+  
+    .user-info {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing;
+    }
+  }       
 
 .update-profile-container {
   background-color: #fff;
@@ -129,231 +197,209 @@ $input-padding: 12px;
 .right-section {
   flex: 1;
   max-width: 800px; /* Limit the right section's width */
-  padding-left: 40px; /* Add more padding to push the right section more to the right */
-  border-left: 2px solid #e0e0e0; /* Optional: add a visual divider */
   .favorite-movies-container {
     h2 {
-      padding-top: 16px;
       font-size: 1.5rem; /* Make the favorite movies header larger */
       margin-bottom: 1rem;
       color: $primary-color;
     }
-    /* Movie Cards Container */
     .movie-cards-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-gap: 2rem;
-      padding: 2rem;
-      box-sizing: border-box;
-
-      /* Minimum 2 columns on small screens */
-      @media (max-width: 1200px) {
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 1.5rem;
-      }
-
-      @media (max-width: 992px) {
-        grid-template-columns: repeat(2, 1fr);
-        grid-gap: 1rem;
-      }
-
-      @media (max-width: 768px) {
-        grid-template-columns: repeat(
-          2,
-          1fr
-        ); /* Ensure two columns on smaller devices */
-        grid-gap: 1rem;
-        padding: 1rem;
-      }
-
-      @media (max-width: 480px) {
-        grid-template-columns: repeat(
-          2,
-          1fr
-        ); /* Keep two columns even on small screens */
-        grid-gap: 1rem;
-        padding: 0.5rem;
-      }
-    }
-
-    /* Movie Card */
-    .movie-card {
-      border-radius: 12px;
-      overflow: hidden;
-      padding: 8px;
-      background-color: #fff;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
       display: flex;
-      flex-direction: column;
-      max-width: 280px;
-      min-height: 420px;
-      max-height: 420px;
-      position: relative;
-      justify-content: flex-start;
-      box-sizing: border-box;
-      padding-bottom: 50px;
-
-      .movie-content {
-        flex-grow: 1;
-        overflow: auto;
-        display: flex;
-        flex-direction: column;
-        padding-top: 10px;
-        justify-content: flex-start;
-      }
-
-      .scrollable-content {
-        overflow-y: auto;
-        flex-grow: 1;
-        height: 400px;
-        max-height: 400px;
-        padding-right: 0.5rem;
-
-        scrollbar-width: thin;
-        scrollbar-color: #888 transparent;
-
-        &::-webkit-scrollbar {
-          width: 4px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: #888;
-          border-radius: 3px;
-        }
-      }
-
-      &:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      }
-
-      @media (max-width: 1200px) {
-        max-width: 260px; // Slightly smaller on medium screens
-      }
-
-      @media (max-width: 768px) {
-        max-width: 220px; // More compact on small screens
-      }
-
-      @media (max-width: 480px) {
-        max-width: 100%; // Full width on very small screens
-      }
+      flex-wrap: wrap;
+      gap: 1rem;
     }
+  }
+}
 
-    // Movie Image Container
-    .movie-image-container {
-      width: 100%;
-      display: flex; // <-- FIX: should be 'flex', not 'contain'
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      height: 400px;
-      margin-bottom: 0.25rem;
+// Movie Cards Container
+.movie-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 24px;
+  padding: 24px;
 
-      .movie-image {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain; // ensures the entire image fits
-        display: block;
-      }
-    }
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+  }
 
-    // Genre and Director Details
-    .synopsis,
-    .genre-details,
-    .director-details {
-      display: block;
-      padding: 8px;
-      background-color: #fff;
-      border-radius: 8px;
-      overflow-y: auto;
-      max-height: 300px;
-      margin-left: 0;
-      text-align: left;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 12px;
+  }
 
-      &::-webkit-scrollbar {
-        width: 4px;
-        background-color: #f5f5f5;
-      }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    grid-gap: 8px;
+  }
+}
 
-      &::-webkit-scrollbar-thumb {
-        background-color: $primary-color;
-        border-radius: 4px;
-      }
-    }
+// Movie Card
+.movie-card {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  max-width: 280px; // Adjusted width
+  min-height: 300px;
+  position: relative;
+  justify-content: space-between;
+  height: auto;
+  box-sizing: border-box;
+  padding-bottom: 60px;
 
-    // Genre and Director Text
-    .synopsis,
-    .genre-text,
-    .genre-description,
-    .director-name,
-    .director-bio,
-    .director-birth-year,
-    .director-death-year {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 8px;
-      text-align: left;
-      max-height: 300px;
-      overflow-y: auto;
-      box-sizing: border-box;
-      font-size: 1rem;
-      color: $primary-color;
-      line-height: 1.4;
-      font-weight: normal;
-      margin-left: 10px;
-    }
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
 
-    /* Action Buttons with Favorite Icon */
-    .action-buttons {
-      display: flex;
-      justify-content: space-evenly;
-      align-items: center;
-      gap: 12px;
-      padding: 8px;
-      width: 100%;
-      position: absolute;
-      bottom: 8px;
-      left: 0;
-      box-sizing: border-box;
-    }
+  @media (max-width: 1200px) {
+    max-width: 260px; // Slightly smaller on medium screens
+  }
 
-    /* Favorite Icon Styling */
-    .favorite-icon {
-      font-size: 1.5rem;
-      color: $primary-color;
-      cursor: pointer;
-      transition: color 0.3s ease;
+  @media (max-width: 768px) {
+    max-width: 220px; // More compact on small screens
+  }
 
-      &:hover {
-        color: $secondary-color;
-      }
-    }
+  @media (max-width: 480px) {
+    max-width: 100%; // Full width on very small screens
+  }
+}
 
-    .favorite-selected {
-      color: $primary-color;
-    }
+// Movie Title
+.movie-card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 8px;
 
-    .action-buttons button {
-      flex: 0;
-      color: $primary-color;
-      background-color: transparent;
-    }
+  .movie-title {
+    font-size: 20px;
+    font-weight: normal;
+    color: $primary-color;
+    text-align: center;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    font-family: $header-font;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+}
 
-    @media (max-width: 480px) {
-      .action-buttons {
-        padding: 12px 8px;
-      }
+// Movie Image Container
+.movie-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 320px;
+  margin: 0;
 
-      .favorite-icon {
-        font-size: 1.75rem;
-      }
-    }
+  .movie-image {
+    width: auto;
+    max-height: 320px;
+    object-fit: cover;
+  }
+}
+
+// Genre and Director Details
+.synopsis,
+.genre-details,
+.director-details {
+  display: block;
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $primary-color;
+    border-radius: 4px;
+  }
+}
+
+// Genre and Director Text
+.synopsis,
+.genre-text,
+.genre-description,
+.director-name,
+.director-bio,
+.director-birth-year,
+.director-death-year {
+  font-size: 16px;
+  color: $primary-color;
+  font-weight: normal;
+  line-height: 1.4;
+  padding: 4px;
+}
+
+// Action Buttons with Favorite Icon
+.action-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  width: 100%;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  box-sizing: border-box;
+}
+
+// Favorite Icon Styling
+.favorite-icon {
+  font-size: 24px;
+  color: $primary-color;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $secondary-color;
+  }
+}
+
+.favorite-selected {
+  color: $primary-color;
+}
+
+// Action Buttons
+.action-buttons button {
+  flex: 0;
+  color: $primary-color;
+  background-color: transparent;
+  padding: 4px 6px;
+  font-size: 14px;
+  text-transform: none;
+  font-weight: normal;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  min-width: 16px;
+  border: 2px solid transparent;
+
+  &:hover {
+    background-color: $primary-color;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 6px 24px;
+  }
+
+  &:active {
+    transform: translateY(1px);
   }
 }
