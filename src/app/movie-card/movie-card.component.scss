@@ -1,11 +1,35 @@
-/* Common Variables */
+/* =========================
+   Variables & Typography
+   ========================= */
 $primary-color: #118ab2;
 $secondary-color: #ffd166;
 $text-color: #333;
 $header-font: "Poppins", sans-serif;
-$movie-title-font-size: 18px;
 
-/* Movie Library Header Styling */
+$font-size-base: 1rem;
+$font-size-small: 0.875rem;
+$font-size-title: 1.25rem;
+$font-size-large-icon: 1.75rem;
+$movie-title-font-size: $font-size-title;
+
+/* =========================
+      Utility Classes
+      ========================= */
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* =========================
+      Page Header
+      ========================= */
 .page-header {
   font-family: $header-font;
   font-size: 2rem;
@@ -15,174 +39,138 @@ $movie-title-font-size: 18px;
   text-transform: capitalize;
   letter-spacing: 2px;
   margin-bottom: 1rem;
-}
 
-.page-header::first-letter {
-  text-transform: uppercase;
-}
-
-/* Search Container */
-.search-bar {
-  width: 50%;
-  background: white;
-  border-radius: 30px;
-  margin: 0 auto 2rem;
-  display: flex;
-  justify-content: center;
-
-  .mat-form-field-wrapper {
-    padding: 0 !important;
-  }
-
-  .mat-form-field-flex {
-    align-items: center;
-    border-radius: 30px;
-  }
-
-  .mat-form-field-outline {
-    border-radius: 30px;
-  }
-
-  .search-icon {
-    margin-left: 1rem;
-    color: $primary-color;
-  }
-
-  input {
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    font-family: $header-font;
-    border-radius: 30px;
-    color: $text-color;
-
-    &::placeholder {
-      color: #aaa;
-    }
-  }
-
-  mat-spinner {
-    margin-right: 1rem;
+  &::first-letter {
+    text-transform: uppercase;
   }
 
   @media (max-width: 768px) {
-    width: 70%;
+    font-size: 1.75rem;
+    letter-spacing: 1.5px;
   }
 
   @media (max-width: 480px) {
-    width: 90%;
+    font-size: 1.5rem;
   }
 }
 
-.dropdown-results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: white;
-  border-radius: 0 0 10px 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  z-index: 5;
-  max-height: 250px;
-  overflow-y: auto;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+/* =========================
+      Search Bar
+      ========================= */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
 
-  .dropdown-item {
+  .search-bar {
+    width: 50%;
+    background: white;
+    border-radius: 30px;
     display: flex;
     align-items: center;
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
 
-    mat-icon {
-      margin-right: 0.5rem;
-      color: #3f51b5;
+    .mat-form-field-wrapper {
+      padding: 0 !important;
     }
 
-    &:hover {
-      background-color: #eef2f7;
+    .mat-form-field-flex,
+    .mat-form-field-outline {
+      border-radius: 30px;
+      align-items: center;
+    }
+
+    .search-icon {
+      margin-left: 1rem;
+      color: $primary-color;
+      font-size: 1.2rem;
+    }
+
+    input {
+      padding: 0.75rem 1rem;
+      font-size: $font-size-base;
+      font-family: $header-font;
+      border-radius: 30px;
+      color: $text-color;
+
+      &::placeholder {
+        color: #aaa;
+      }
+    }
+
+    mat-spinner {
+      margin-right: 1rem;
+    }
+
+    @media (max-width: 1024px) {
+      width: 65%;
+    }
+
+    @media (max-width: 768px) {
+      width: 75%;
+    }
+
+    @media (max-width: 480px) {
+      width: 90%;
+      input {
+        font-size: $font-size-small;
+      }
     }
   }
 }
 
-/* Movie Cards Container */
+/* =========================
+      Movie Cards Container
+      ========================= */
 .movie-cards-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 2rem;
+  gap: 2rem;
   padding: 2rem;
   box-sizing: border-box;
 
-  /* Minimum 2 columns on small screens */
-  @media (max-width: 1200px) {
+  @media (max-width: 1400px) {
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 1.5rem;
+    gap: 1.5rem;
   }
 
   @media (max-width: 992px) {
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 1rem;
+    gap: 1rem;
   }
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr); /* Ensure two columns on smaller devices */
-    grid-gap: 1rem;
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
     padding: 1rem;
   }
 
   @media (max-width: 480px) {
-    grid-template-columns: repeat(2, 1fr); /* Keep two columns even on small screens */
-    grid-gap: 1rem;
     padding: 0.5rem;
   }
 }
 
-/* Movie Card */
+/* =========================
+      Movie Card
+      ========================= */
 .movie-card {
   border-radius: 12px;
-  overflow: hidden;
-  padding: 8px;
   background-color: #fff;
+  padding: 8px 8px 60px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   max-width: 280px;
-  min-height: 420px;
-  max-height: 420px;
+  height: 100%;
+  max-height: 400px;
   position: relative;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  padding-bottom: 60px;
+  overflow-y: auto;
 
-  .movie-content {
-    flex-grow: 1;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    padding-top: 10px;
-    justify-content: flex-start;
-  }
-
-  .scrollable-content {
-    overflow-y: auto;
-    flex-grow: 1;
-    height: 400px;
-    max-height: 400px;
-    padding-right: 0.5rem;
-
-    scrollbar-width: thin;
-    scrollbar-color: #888 transparent;
-
-    &::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 3px;
-    }
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
 
   .action-buttons {
@@ -190,33 +178,84 @@ $movie-title-font-size: 18px;
     bottom: 8px;
     left: 0;
     width: 100%;
-    padding: 8px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 10px;
     background: white;
+    color: $primary-color;
+    overflow: hidden;
+
+    .favorite-icon {
+      width: 30px;
+      height: 30px;
+      font-size: 1.5rem;
+      line-height: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: $secondary-color;
+      }
+
+      &.favorite-selected {
+        color: $primary-color;
+      }
+    }
+
+    .action-button {
+      font-weight: bold;
+      color: $primary-color;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      .chevron-icon {
+        vertical-align: middle;
+        margin-left: 4px;
+      }
+    }
   }
 
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-
-  @media (max-width: 1200px) {
+  @media (max-width: 1400px) {
     max-width: 260px;
+    min-height: 380px;
+    max-height: 380px;
+  }
+
+  @media (max-width: 992px) {
+    max-width: 220px;
+    min-height: 360px;
+    max-height: 360px;
   }
 
   @media (max-width: 768px) {
-    max-width: 220px;
+    max-width: 100%;
+    min-height: auto;
+    max-height: none;
     padding: 8px;
+
+    .action-buttons {
+      padding: 12px 8px;
+    }
+
+    .favorite-icon {
+      font-size: $font-size-large-icon;
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+    }
   }
 
   @media (max-width: 480px) {
-    max-width: 100%;
-    padding: 4px;
+    padding: 6px 6px 50px;
   }
 }
 
-/* Movie Title */
+/* =========================
+      Movie Card Header
+      ========================= */
 .movie-card-header {
   display: flex;
   justify-content: center;
@@ -224,129 +263,113 @@ $movie-title-font-size: 18px;
   padding: 2px 8px;
 
   .movie-title {
-    font-size: 1.25rem;
+    font-size: $movie-title-font-size;
     font-weight: normal;
     color: $primary-color;
     text-align: center;
     text-transform: capitalize;
     letter-spacing: 1px;
     font-family: $header-font;
-    white-space: normal;
-    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
+
+    @media (max-width: 768px) {
+      font-size: 1.1rem;
+      -webkit-line-clamp: 3;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1rem;
+    }
   }
 }
 
-/* Movie Image Container */
+/* =========================
+      Movie Image
+      ========================= */
 .movie-image-container {
   width: 100%;
+  height: 320px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  height: 320px;
-  margin: 0;
 
   .movie-image {
     width: auto;
     max-height: 320px;
     object-fit: cover;
   }
-}
 
-/* Synopsis and Director Details */
-.synopsis,
-.director-details,
-.genre-details {
-  display: block;
-  padding: 8px;
-  background-color: #fff;
-  border-radius: 8px;
-  overflow-y: auto;
-  max-height: 300px;
-  margin-left: 0;
-  text-align: left; /* Align content to the left for consistency */
+  @media (max-width: 992px) {
+    height: 280px;
 
-  &::-webkit-scrollbar {
-    width: 4px;
-    background-color: #f5f5f5;
+    .movie-image {
+      max-height: 280px;
+    }
   }
 
-  &::-webkit-scrollbar-thumb {
-    background-color: $primary-color;
-    border-radius: 4px;
+  @media (max-width: 480px) {
+    height: 220px;
+
+    .movie-image {
+      max-height: 220px;
+    }
   }
 }
 
-/* Genre and Director Text Styling */
-.synopsis,
-.genre-text,
-.genre-description,
-.director-name,
-.director-bio,
-.director-birth-year,
-.director-death-year {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 8px;
-    text-align: left;
-    max-height: 300px;
-    overflow-y: auto;
-    box-sizing: border-box;
-    font-size: 1rem;
-    color: $primary-color;
-    line-height: 1.4;
-    font-weight: normal;
-    margin-left: 10px;
-}
-
-/* Action Buttons with Favorite Icon */
-.action-buttons {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  width: 100%;
-  position: absolute;
-  bottom: 8px;
-  left: 0;
-  box-sizing: border-box;
-}
-
-/* Favorite Icon Styling */
-.favorite-icon {
-  font-size: 1.5rem;
-  color: $primary-color;
-  cursor: pointer;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: $secondary-color;
-  }
-}
-
-.favorite-selected {
-  color: $primary-color;
-}
-
-.action-buttons button {
-  flex: 0;
-  color: $primary-color;
-  background-color: transparent;
-}
-
-@media (max-width: 480px) {
-  .action-buttons {
-    padding: 12px 8px;
-  }
-
-  .favorite-icon {
-    font-size: 1.75rem;
-  }
-}
+/* =========================
+      Movie Card Details
+      ========================= */
+      .movie-card-details {
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding-right: 4px;
+      
+        .synopsis,
+        .genre-details,
+        .director-details {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          padding: 10px;
+          background-color: #fff;
+          border-radius: 8px;
+          max-height: 300px;
+          height: 300px;
+          overflow-y: auto;
+          box-sizing: border-box;
+          text-align: left;
+          font-size: $font-size-base;
+          line-height: 1.4;
+          font-weight: normal;
+          color: $primary-color;
+      
+          // Force all text inside to inherit the primary color
+          *, *::before, *::after {
+            color: $primary-color !important;
+          }
+      
+          p {
+            margin: 0;
+            padding: 0;
+          }
+      
+          &::-webkit-scrollbar {
+            width: 4px;
+          }
+      
+          &::-webkit-scrollbar-thumb {
+            background-color: $primary-color;
+            border-radius: 4px;
+          }
+        }
+      
+        @media (max-width: 480px) {
+          margin-left: 0 !important;
+        }
+      }
+      
