@@ -167,6 +167,7 @@ $movie-title-font-size: $font-size-title;
   max-height: 400px;
   position: relative;
   overflow-y: auto;
+  overflow-x: hidden;
 
   &:hover {
     transform: translateY(-8px);
