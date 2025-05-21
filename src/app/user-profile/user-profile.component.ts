@@ -176,9 +176,13 @@ export class UserProfileComponent implements OnInit {
       .subscribe({
         next: (movies: Movie[]) => {
           this.favoriteMovies = movies;
+
+          // ✅ Initialize filteredMovies so the UI can render them
+          this.filteredMovies = [...movies];
+
           // Set the favorite status for each movie
           this.favoriteMovies.forEach((movie) => {
-            movie.isFavorite = true; // Make sure the movie is marked as favorite
+            movie.isFavorite = true;
           });
         },
         error: (err) => this.handleError(err),
@@ -202,12 +206,12 @@ export class UserProfileComponent implements OnInit {
   }
 
   /**
- * Toggles the visibility of a specific movie detail section while ensuring only one section is open at a time.
- *
- * @param {Movie} movie - The movie object whose details are being toggled.
- * @param {string} section - The section to toggle ('synopsis', 'genre' or 'director').
- */
-toggleContent(
+   * Toggles the visibility of a specific movie detail section while ensuring only one section is open at a time.
+   *
+   * @param {Movie} movie - The movie object whose details are being toggled.
+   * @param {string} section - The section to toggle ('synopsis', 'genre' or 'director').
+   */
+  toggleContent(
     movie: Movie,
     section: 'synopsis' | 'genre' | 'director'
   ): void {
@@ -216,22 +220,22 @@ toggleContent(
       genre: 'showGenreDetails',
       director: 'showDirectorDetails',
     };
-  
+
     const selectedSection = sectionKeys[section];
     const isSectionOpen = !(movie as any)[selectedSection]; // Get current state
-  
+
     // Close all other sections
     for (const key of ['synopsis', 'genre', 'director']) {
       const sectionKey = sectionKeys[key as keyof typeof sectionKeys];
       (movie as any)[sectionKey] = false;
     }
-  
+
     // Toggle selected section
     (movie as any)[selectedSection] = isSectionOpen;
-  
+
     // Set hideImage flag for UI logic instead of changing the image path
     movie.hideImage = isSectionOpen;
-  
+
     // Trigger change detection
     this.cdRef.detectChanges();
   }
@@ -350,7 +354,6 @@ toggleContent(
   /**
    * Filters the movies based on the search query.
    */
-  // You can call `filterMovies` here to reset when needed
   filterMovies(): void {
     if (this.searchQuery) {
       this.filteredMovies = this.favoriteMovies.filter((movie) =>
@@ -360,4 +363,21 @@ toggleContent(
       this.filteredMovies = [...this.favoriteMovies]; // Reset to all movies when no search query
     }
   }
+
+  /**
+   * Helper method to check for valid death year values.
+   * Returns false if deathYear is null, undefined, empty string, or the literal string "null".
+   * Useful when deathYear can come as a string "null" from some APIs.
+   */
+  isValidDeathYear(deathYear: any): boolean {
+    return (
+      deathYear !== null &&
+      deathYear !== undefined &&
+      deathYear !== '' &&
+      deathYear !== 'null' &&
+      !isNaN(Number(deathYear)) &&
+      Number(deathYear) > 0
+    );
+  }
+  
 }
