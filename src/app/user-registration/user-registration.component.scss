@@ -5,13 +5,13 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(120deg, #118ab2, #06d6a0); // Background gradient
+  background: linear-gradient(120deg, #118ab2, #06d6a0);
   padding: 2rem;
   text-align: center;
 
   /* Styling for the welcome section */
   .welcome-page {
-    margin-bottom: 3rem; /* Space between heading and form */
+    margin-bottom: 3rem;
 
     h1 {
       font-size: 3.5rem;
@@ -22,14 +22,14 @@
       text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
       text-align: center;
       padding: 0;
-      margin-top: 0; /* Remove the top margin */
+      margin-top: 0;
       position: relative;
-      z-index: 1; /* Ensure it's above the background */
+      z-index: 1;
     }
 
     /* Styling for the brand name */
     .brand {
-      color: #ffd166; /* Brand color for CineVault */
+      color: #ffd166;
       font-weight: bolder;
       text-transform: uppercase;
       font-size: 3.7rem;
@@ -109,7 +109,7 @@
       /* Focus state for the button */
       &:focus {
         outline: none;
-        border: 2px solid #118ab2; // Highlight border on focus
+        border: 2px solid #118ab2;
       }
 
       /* Disabled button styling */

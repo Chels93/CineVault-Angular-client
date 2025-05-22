@@ -38,8 +38,8 @@ export interface Movie {
   isFavorite?: boolean;
   areDetailsVisible?: boolean;
   showSynopsis: boolean;
-  showGenreDetails: boolean; 
-  showDirectorDetails: boolean; 
+  showGenreDetails: boolean;
+  showDirectorDetails: boolean;
   hideImage?: boolean;
   [key: string]: any;
 }
@@ -117,7 +117,7 @@ export class FetchApiDataService {
       console.error('Unauthorized access - Invalid or expired token.');
     }
     return throwError(
-      () => new Error(error.message || 'An unknown error occurred.')
+      () => new Error(error.message || 'An unknown error occurred.'),
     );
   }
 
@@ -150,7 +150,7 @@ export class FetchApiDataService {
       })
       .pipe(
         catchError(this.handleError),
-        tap((user) => console.log('Fetched user data:', user)) // Debugging
+        tap((user) => console.log('Fetched user data:', user)), // Debugging
       );
   }
 
@@ -173,14 +173,14 @@ export class FetchApiDataService {
         catchError((error: HttpErrorResponse) => {
           if (error.status === 404) {
             return throwError(
-              () => new Error('No favorite movies found for this user.')
+              () => new Error('No favorite movies found for this user.'),
             );
           } else {
             return throwError(
-              () => new Error('Error fetching favorite movies.')
+              () => new Error('Error fetching favorite movies.'),
             );
           }
-        })
+        }),
       );
   }
 
@@ -199,7 +199,7 @@ export class FetchApiDataService {
       .post<any>(
         `${this.apiUrl}/users/${username}/movies/${movieId}`,
         {},
-        { headers: this.createAuthHeaders() }
+        { headers: this.createAuthHeaders() },
       )
       .pipe(catchError(this.handleError));
   }

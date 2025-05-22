@@ -13,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 // IMPORTANT:
-// Your app's Movie interface (imported above) includes these UI flags:
+// App's Movie interface (imported above) includes these UI flags:
 //   showSynopsis: boolean;
 //   showGenreDetails: boolean;
 //   showDirectorDetails: boolean;
@@ -113,7 +113,9 @@ describe('MovieCardComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(component.error).toBe('Failed to load movies. Please try again later.');
+    expect(component.error).toBe(
+      'Failed to load movies. Please try again later.',
+    );
     expect(component.movies).toEqual([]);
   });
 
@@ -139,7 +141,9 @@ describe('MovieCardComponent', () => {
 
     expect(fetchApiDataService.addToFavorites).toHaveBeenCalledWith(movie._id);
     expect(movie.isFavorite).toBeTrue();
-    expect(snackBar.open).toHaveBeenCalledWith('Added to favorites!', 'Close', { duration: 2000 });
+    expect(snackBar.open).toHaveBeenCalledWith('Added to favorites!', 'Close', {
+      duration: 2000,
+    });
   });
 
   it('should remove movie from favorites when toggleFavorite is called on a favorite movie', () => {
@@ -162,9 +166,15 @@ describe('MovieCardComponent', () => {
     component.favoriteMovies = [movie];
     component.toggleFavorite(movie);
 
-    expect(fetchApiDataService.removeFromFavorites).toHaveBeenCalledWith(movie._id);
+    expect(fetchApiDataService.removeFromFavorites).toHaveBeenCalledWith(
+      movie._id,
+    );
     expect(movie.isFavorite).toBeFalse();
-    expect(snackBar.open).toHaveBeenCalledWith('Removed from favorites!', 'Close', { duration: 2000 });
+    expect(snackBar.open).toHaveBeenCalledWith(
+      'Removed from favorites!',
+      'Close',
+      { duration: 2000 },
+    );
   });
 
   it('should handle image loading errors gracefully by setting fallback image source', () => {

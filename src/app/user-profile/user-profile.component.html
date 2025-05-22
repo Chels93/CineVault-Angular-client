@@ -1,16 +1,16 @@
 <!-- Page Title/Header -->
 <h1 class="page-header">User Profile</h1>
 
-<!-- Loading Spinner -->
+<!-- Loading Spinner: Shows while user data is loading -->
 <div *ngIf="loading" class="loading-spinner">
   <mat-spinner diameter="50"></mat-spinner>
 </div>
 
-<!-- Main Content Container -->
+<!-- Main Content Container: Visible when loading is false -->
 <div *ngIf="!loading" class="user-profile-container">
-  <!-- Left Column: User Info + Update Profile -->
+  <!-- Left Column: Contains user info and profile update form -->
   <div class="left-section">
-    <!-- User Info -->
+    <!-- User Info Section: Displays basic user information -->
     <div class="user-profile">
       <h2>User Info</h2>
       <p><strong>Username:</strong> {{ userData.username || "No Username" }}</p>
@@ -21,10 +21,13 @@
       </p>
     </div>
 
-    <!-- Update Profile Form -->
+    <!-- Update Profile Form Section -->
     <div class="update-profile-container">
       <h2>Update Profile</h2>
+
+      <!-- Form bound to updateUser() method on submit -->
       <form (submit)="updateUser()" #updateProfileForm="ngForm">
+        <!-- Input: New username -->
         <input
           type="text"
           name="username"
@@ -32,6 +35,8 @@
           placeholder="New Username"
           required
         />
+
+        <!-- Input: New email -->
         <input
           type="email"
           name="email"
@@ -39,6 +44,8 @@
           placeholder="New Email"
           required
         />
+
+        <!-- Datepicker: Birthdate input with Angular Material Datepicker -->
         <mat-form-field appearance="fill" class="birthdate-field">
           <mat-label>Birthdate</mat-label>
           <input
@@ -56,6 +63,8 @@
           ></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
+
+        <!-- Submit Button: Disabled if form invalid or loading -->
         <button type="submit" [disabled]="updateProfileForm.invalid || loading">
           Update Profile
         </button>
@@ -63,20 +72,24 @@
     </div>
   </div>
 
-  <!-- Right Column: Favorite Movies -->
+  <!-- Right Column: Displays the user's favorite movies -->
   <div class="right-section">
     <h2>Favorite Movies</h2>
+
+    <!-- Only show favorite movies if not loading and no errors -->
     <div *ngIf="!loading && !error">
+      <!-- Container for movie cards, rendered via *ngFor -->
       <div class="movie-cards-container">
+        <!-- Single Movie Card -->
         <mat-card *ngFor="let movie of favoriteMovies" class="movie-card">
-          <!-- Header -->
+          <!-- Movie Card Header: Displays movie title -->
           <mat-card-header class="movie-card-header">
             <mat-card-title class="movie-title">{{
               movie.title
             }}</mat-card-title>
           </mat-card-header>
 
-          <!-- Image (Hidden if any details are open) -->
+          <!-- Movie Image Container: Hidden if any details are open -->
           <div
             class="movie-image-container"
             *ngIf="
@@ -94,14 +107,14 @@
             />
           </div>
 
-          <!-- Movie Details -->
+          <!-- Movie Details Section: Contains synopsis, genre, and director details -->
           <div class="movie-card-details">
-            <!-- Synopsis -->
+            <!-- Synopsis: Shown if movie.showSynopsis is true -->
             <div *ngIf="movie.showSynopsis" class="synopsis">
               <span>{{ movie.synopsis }}</span>
             </div>
 
-            <!-- Genre Details -->
+            <!-- Genre Details: Shown if movie.showGenreDetails is true -->
             <div *ngIf="movie.showGenreDetails" class="genre-details">
               <span class="genre-text">
                 <strong>Genre:</strong> {{ movie.genre.name }}
@@ -113,17 +126,23 @@
               </div>
             </div>
 
-            <!-- Director Details -->
+            <!-- Director Details: Shown if movie.showDirectorDetails is true -->
             <div *ngIf="movie.showDirectorDetails" class="director-name">
               <span><strong>Name:</strong> {{ movie.director.name }}</span>
+
+              <!-- Director Bio -->
               <div class="director-bio">
                 <span><strong>Bio:</strong> {{ movie.director.bio }}</span>
               </div>
+
+              <!-- Director Birth Year (optional) -->
               <div *ngIf="movie.director.birthYear" class="director-birth-year">
                 <span
                   ><strong>Birth Year:</strong>
                   {{ movie.director.birthYear }}</span
                 >
+
+                <!-- Director Death Year (optional and validated) -->
                 <div
                   *ngIf="isValidDeathYear(movie.director.deathYear)"
                   class="director-death-year"
@@ -136,8 +155,9 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Action Buttons: Favorite icon + toggle buttons for details -->
             <div class="action-buttons">
+              <!-- Favorite Icon: Toggles favorite status on click -->
               <mat-icon
                 class="favorite-icon"
                 (click)="toggleFavorite(movie)"
@@ -147,6 +167,7 @@
                 }}</mat-icon
               >
 
+              <!-- Toggle Synopsis Button -->
               <button
                 mat-button
                 class="action-button"
@@ -164,6 +185,7 @@
                 </ng-template>
               </button>
 
+              <!-- Toggle Genre Details Button -->
               <button
                 mat-button
                 class="action-button"
@@ -181,22 +203,23 @@
                 </ng-template>
               </button>
 
+              <!-- Toggle Director Details Button -->
               <button
-              mat-button
-              class="action-button"
-              (click)="toggleContent(movie, 'director')"
-            >
-              {{ movie.showDirectorDetails ? "Director" : "Director" }}
-              <mat-icon
-                class="chevron-icon"
-                *ngIf="movie.showDirectorDetails; else expand"
+                mat-button
+                class="action-button"
+                (click)="toggleContent(movie, 'director')"
               >
-                expand_less
-              </mat-icon>
-              <ng-template #expand>
-                <mat-icon class="chevron-icon">expand_more</mat-icon>
-              </ng-template>
-            </button>
+                {{ movie.showDirectorDetails ? "Director" : "Director" }}
+                <mat-icon
+                  class="chevron-icon"
+                  *ngIf="movie.showDirectorDetails; else expand"
+                >
+                  expand_less
+                </mat-icon>
+                <ng-template #expand>
+                  <mat-icon class="chevron-icon">expand_more</mat-icon>
+                </ng-template>
+              </button>
             </div>
           </div>
         </mat-card>

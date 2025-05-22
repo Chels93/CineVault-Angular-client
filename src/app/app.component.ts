@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
     // Subscribe to router events to track when navigation ends
     this.router.events
       .pipe(
-        filter((event) => event instanceof NavigationEnd) // Only process NavigationEnd events
+        filter((event) => event instanceof NavigationEnd), // Only process NavigationEnd events
       )
       .subscribe((event) => {
         // Cast event to NavigationEnd type for strong typing

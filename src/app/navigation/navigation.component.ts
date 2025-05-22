@@ -26,7 +26,7 @@ export class NavigationComponent {
    */
   constructor(
     private router: Router,
-    private fetchApiData: FetchApiDataService
+    private fetchApiData: FetchApiDataService,
   ) {}
 
   /**

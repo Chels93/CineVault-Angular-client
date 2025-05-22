@@ -62,7 +62,7 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private fetchApiData: FetchApiDataService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -171,7 +171,7 @@ export class UserProfileComponent implements OnInit {
         if (isFavorite) {
           // Remove from favorites list
           this.favoriteMovies = this.favoriteMovies.filter(
-            (m) => m._id !== movie._id
+            (m) => m._id !== movie._id,
           );
           this.snackBar.open('Removed from favorites!', 'Close', {
             duration: 2000,

@@ -32,7 +32,7 @@ describe('AppComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement; // Access the native DOM element of the component
     // Check if the <h1> element contains the correct title text
     expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Welcome to CineVault!'
+      'Welcome to CineVault!',
     );
   });
 

@@ -8,38 +8,37 @@
 */
 
 {
-    "compileOnSave": false,
-    "compilerOptions": {
-      "outDir": "./dist/out-tsc",
-      "strict": true,
-      "noImplicitOverride": true,
-      "noPropertyAccessFromIndexSignature": true,
-      "noImplicitReturns": true,
-      "noFallthroughCasesInSwitch": true,
-      "skipLibCheck": true,
-      "isolatedModules": true,
-      "esModuleInterop": true,
-      "sourceMap": true,
-      "declaration": true, // Enable declarations for TypeDoc
-      "experimentalDecorators": true,
-      "moduleResolution": "bundler",
-      "importHelpers": true,
-      "target": "ES2022",
-      "module": "ES2022",
-      "lib": ["ES2022", "dom"],
-      "baseUrl": "./", // Add this to resolve module paths
-      "paths": {
-        "@app/*": ["src/app/*"], // Add this for alias resolution
-        "@env/*": ["src/environments/*"] // Example of environment alias
-      }
-    },
-    "angularCompilerOptions": {
-      "enableI18nLegacyMessageIdFormat": false,
-      "strictInjectionParameters": true,
-      "strictInputAccessModifiers": true,
-      "strictTemplates": true
-    },
-    "include": ["src/**/*.ts"], // Ensure TypeDoc can find all TypeScript files
-    "exclude": ["**/*.spec.ts", "node_modules", "dist"] // Exclude unnecessary files
-  }
-  
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true, // Enable declarations for TypeDoc
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "baseUrl": "./", // Add this to resolve module paths
+    "paths": {
+      "@app/*": ["src/app/*"], // Add this for alias resolution
+      "@env/*": ["src/environments/*"] // Example of environment alias
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "include": ["src/**/*.ts"], // Ensure TypeDoc can find all TypeScript files
+  "exclude": ["**/*.spec.ts", "node_modules", "dist"] // Exclude unnecessary files
+}

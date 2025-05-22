@@ -1,4 +1,4 @@
-// Variables
+/** Variables */
 $primary-color: #118ab2;
 $secondary-color: #ffd166;
 $background-color: #f4f4f4;
@@ -11,7 +11,7 @@ $border-radius: 12px;
 $spacing: 12px;
 $input-padding: 12px;
 
-// Page Header
+/** Page Header Styles */
 .page-header {
   font-family: $header-font;
   font-size: 2rem;
@@ -22,12 +22,13 @@ $input-padding: 12px;
   letter-spacing: 2px;
   margin-bottom: 1rem;
 
+  /** Capitalize only the first letter */
   &::first-letter {
     text-transform: uppercase;
   }
 }
 
-// User Profile Container
+/** User Profile Container */
 .user-profile-container {
   display: flex;
   justify-content: space-between;
@@ -37,12 +38,14 @@ $input-padding: 12px;
   max-width: 1200px;
   margin: 0 auto;
 
+  /** Left Section */
   .left-section {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: 20px;
 
+    /** User Profile & Update Profile Containers */
     .user-profile,
     .update-profile-container {
       border-radius: $border-radius;
@@ -50,6 +53,7 @@ $input-padding: 12px;
       padding: 1rem;
       transition: all 0.3s ease;
 
+      /** Section Titles */
       h2 {
         font-size: 1.5rem;
         margin-bottom: 1rem;
@@ -57,6 +61,7 @@ $input-padding: 12px;
       }
     }
 
+    /** User Info Text Styles */
     .user-profile {
       p {
         font-size: 1rem;
@@ -68,6 +73,7 @@ $input-padding: 12px;
         }
       }
 
+      /** Additional container for user info layout and spacing */
       .user-info {
         margin-top: 1.5rem;
         display: flex;
@@ -76,12 +82,14 @@ $input-padding: 12px;
       }
     }
 
+    /** Update Profile Form Styles */
     .update-profile-container {
       form {
         display: flex;
         flex-direction: column;
         gap: 1rem;
 
+        /** Inputs (text, email, birthdate) shared styling */
         input,
         .birthdate-field input {
           padding: $input-padding;
@@ -90,10 +98,12 @@ $input-padding: 12px;
           border: 1px solid $input-border-color;
         }
 
+        /** Birthdate field full width */
         .birthdate-field {
           width: 100%;
         }
 
+        /** Submit Button */
         button {
           background-color: $primary-color;
           color: #fff;
@@ -104,10 +114,12 @@ $input-padding: 12px;
           cursor: pointer;
           transition: background-color 0.3s ease;
 
+          /** Hover state for button */
           &:hover {
             background-color: darken($primary-color, 10%);
           }
 
+          /** Disabled state styling */
           &:disabled {
             background-color: #ccc;
             cursor: not-allowed;
@@ -117,18 +129,21 @@ $input-padding: 12px;
     }
   }
 
+  /** Right Section */
   .right-section {
     flex: 1;
     max-width: 800px;
     padding-left: 40px;
     border-left: 2px solid #e0e0e0;
 
+    /** Section Heading */
     h2 {
       font-size: 1.5rem;
       margin-bottom: 1rem;
       color: $primary-color;
     }
 
+    /** Movie Cards Container */
     .movie-cards-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -159,6 +174,7 @@ $input-padding: 12px;
       }
     }
 
+    /** Individual Movie Card*/
     .movie-card {
       border-radius: $border-radius;
       background-color: #fff;
@@ -177,11 +193,13 @@ $input-padding: 12px;
       padding: 8px;
       padding-bottom: 60px;
 
+      /** Hover effect to lift card and deepen shadow */
       &:hover {
         transform: translateY(-8px);
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
       }
 
+      /** Responsive max-width adjustments */
       @media (max-width: 1200px) {
         max-width: 260px;
       }
@@ -195,6 +213,7 @@ $input-padding: 12px;
         padding: 4px;
       }
 
+      /** Movie Card Header */
       .movie-card-header {
         display: flex;
         justify-content: center;
@@ -215,6 +234,7 @@ $input-padding: 12px;
         }
       }
 
+      /** Movie Image Container */
       .movie-image-container {
         width: 100%;
         display: flex;
@@ -230,6 +250,7 @@ $input-padding: 12px;
         }
       }
 
+      /** Movie Card Details */
       .movie-card-details {
         display: block;
         padding: 8px;
@@ -239,6 +260,7 @@ $input-padding: 12px;
         max-height: 300px;
         text-align: left;
 
+        /** Custom scrollbar styles */
         &::-webkit-scrollbar {
           width: 4px;
           background-color: #f5f5f5;
@@ -249,21 +271,23 @@ $input-padding: 12px;
           border-radius: 4px;
         }
 
+        /** Strong text highlights */
         strong {
           font-weight: 700;
           color: $primary-color;
         }
 
+        /** Description text strong highlights */
         .description-text strong {
           font-weight: 700;
           color: $primary-color;
         }
       }
 
+      /** Shared Styles for Genre, Synopsis, and Genre Description */
       .genre-details,
       .synopsis,
       .genre-description {
-        // Shared styles for genre/synopsis containers
         background-color: #fff;
         border-radius: 8px;
         text-align: left;
@@ -272,21 +296,24 @@ $input-padding: 12px;
         line-height: 1.4;
         padding: 0;
         margin: 0;
-      
+
+        /** Genre text spacing */
         .genre-text {
           margin-bottom: 0.5rem;
           display: block;
         }
-      
+
+        /** Description text block */
         .description-text {
           display: block;
         }
       }
-      
+
+      /** Director Details Section */
       .director-name {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;  // spacing between director child elements
+        gap: 0.5rem;
         background-color: #fff;
         border-radius: 8px;
         text-align: left;
@@ -295,8 +322,8 @@ $input-padding: 12px;
         line-height: 1.4;
         padding: 0;
         margin: 0;
-      
-        // Remove bottom margins on these children if using gap on flex container
+
+        /** Remove bottom margin on child elements to rely on flex gap */
         .director-bio,
         .director-birth-year,
         .director-death-year {
@@ -304,14 +331,13 @@ $input-padding: 12px;
           margin: 0;
         }
       }
-      
 
-      /* Action Buttons with Favorite Icon */
+      /** Action Buttons Container */
       .action-buttons {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        gap: 0; // remove gap to rely on button margin instead
+        gap: 0;
         padding: 8px;
         width: 100%;
         position: absolute;
@@ -320,7 +346,7 @@ $input-padding: 12px;
         box-sizing: border-box;
       }
 
-      /* Favorite Icon Styling */
+      /** Favorite Icon Styling */
       .favorite-icon {
         font-size: 1.5rem;
         color: $primary-color;
@@ -329,20 +355,22 @@ $input-padding: 12px;
         flex-shrink: 0;
         margin-right: 8px;
 
+        /** Hover color change */
         &:hover {
           color: $secondary-color;
         }
       }
 
+      /** Favorite icon selected state */
       .favorite-selected {
         color: $primary-color;
       }
 
-      /* Revised styles for Synopsis, Genre, Director buttons */
+      /** Action Buttons (Synopsis, Genre, Director) */
       .action-buttons button.action-button {
         position: relative;
-        padding-left: 24px; // reduce from 28px to 24px to make buttons narrower
-        padding-right: 8px; // reduce right padding too
+        padding-left: 24px;
+        padding-right: 8px;
         color: $primary-color;
         background-color: transparent;
         min-width: 70px;
@@ -350,9 +378,10 @@ $input-padding: 12px;
         text-transform: none;
         margin-right: -2px;
 
+        /** Chevron icon positioning inside buttons */
         .chevron-icon {
           position: absolute;
-          left: 4px; // Chevron icon on left, small gap from edge
+          left: 4px;
           top: 50%;
           transform: translateY(-50%);
           font-size: 1.2rem;
@@ -360,6 +389,7 @@ $input-padding: 12px;
         }
       }
 
+      /** Responsive adjustments for action buttons and favorite icon on small screens */
       @media (max-width: 480px) {
         .action-buttons {
           padding: 12px 8px;

@@ -213,13 +213,14 @@ export class UserProfileComponent implements OnInit {
    */
   toggleContent(
     movie: Movie,
-    section: 'synopsis' | 'genre' | 'director'
+    section: 'synopsis' | 'genre' | 'director',
   ): void {
-    const sectionKeys: Record<'synopsis' | 'genre' | 'director', keyof Movie> = {
-      synopsis: 'showSynopsis',
-      genre: 'showGenreDetails',
-      director: 'showDirectorDetails',
-    };
+    const sectionKeys: Record<'synopsis' | 'genre' | 'director', keyof Movie> =
+      {
+        synopsis: 'showSynopsis',
+        genre: 'showGenreDetails',
+        director: 'showDirectorDetails',
+      };
 
     const selectedSection = sectionKeys[section];
     const isSectionOpen = !(movie as any)[selectedSection]; // Get current state
@@ -379,5 +380,4 @@ export class UserProfileComponent implements OnInit {
       Number(deathYear) > 0
     );
   }
-  
 }

@@ -75,6 +75,6 @@ const routes: Routes = [
   providers: [
     // Optional services can be added here
   ],
-  bootstrap: [AppComponent], 
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

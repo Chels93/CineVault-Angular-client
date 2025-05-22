@@ -55,7 +55,7 @@ export class UserLoginComponent implements OnInit {
     private snackBar: MatSnackBar,
     private router: Router,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     /**
      * Initializes the login form with fields for `username` and `password`,

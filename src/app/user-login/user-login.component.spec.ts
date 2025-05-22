@@ -113,7 +113,7 @@ describe('UserLoginComponent', () => {
     fetchApiDataService.userLogin.and.returnValue(
       of({
         error: 'Invalid credentials',
-      })
+      }),
     );
 
     // Call the login function
@@ -123,7 +123,7 @@ describe('UserLoginComponent', () => {
     expect(snackBar.open).toHaveBeenCalledWith(
       'Login failed. Please try again.',
       'Close',
-      { duration: 3000 }
+      { duration: 3000 },
     );
   });
 

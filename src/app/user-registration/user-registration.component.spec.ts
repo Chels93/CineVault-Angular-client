@@ -45,7 +45,7 @@ describe('UserRegistrationComponent', () => {
     fixture = TestBed.createComponent(UserRegistrationComponent);
     component = fixture.componentInstance;
     fetchApiDataService = TestBed.inject(
-      FetchApiDataService
+      FetchApiDataService,
     ) as jasmine.SpyObj<FetchApiDataService>;
     dialogRef = TestBed.inject(MatDialogRef) as jasmine.SpyObj<
       MatDialogRef<UserRegistrationComponent>
@@ -76,7 +76,7 @@ describe('UserRegistrationComponent', () => {
     expect(snackBar.open).toHaveBeenCalledWith(
       'Please fill in all required fields correctly', // Verify if the correct error message is shown
       'OK',
-      { duration: 3000 }
+      { duration: 3000 },
     );
   });
 
@@ -92,7 +92,7 @@ describe('UserRegistrationComponent', () => {
 
     component.registerUser(); // Call the registerUser method
     expect(fetchApiDataService.userRegistration).toHaveBeenCalledWith(
-      component.registrationForm.value
+      component.registrationForm.value,
     ); // Verify API call with correct data
   });
 
@@ -110,7 +110,7 @@ describe('UserRegistrationComponent', () => {
     expect(snackBar.open).toHaveBeenCalledWith(
       'User registration successful',
       'OK',
-      { duration: 2000 }
+      { duration: 2000 },
     ); // Verify success message is shown
     expect(dialogRef.close).toHaveBeenCalled(); // Verify dialog close action
   });
@@ -124,14 +124,14 @@ describe('UserRegistrationComponent', () => {
       birthdate: '',
     });
     fetchApiDataService.userRegistration.and.returnValue(
-      throwError({ error: 'Registration failed' })
+      throwError({ error: 'Registration failed' }),
     ); // Mock error response
 
     component.registerUser(); // Call the registerUser method
     expect(snackBar.open).toHaveBeenCalledWith(
       'User registration failed: Registration failed',
       'OK',
-      { duration: 3000 }
+      { duration: 3000 },
     ); // Verify error message is shown
   });
 });

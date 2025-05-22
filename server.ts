@@ -23,7 +23,7 @@ export function app(): express.Express {
     'html',
     ngExpressEngine({
       bootstrap: AppServerModule,
-    })
+    }),
   );
 
   server.set('view engine', 'html');
@@ -35,7 +35,7 @@ export function app(): express.Express {
     express.static(browserDistFolder, {
       maxAge: '1y', // Cache static assets for a year
       index: 'index.html', // Use index.html as the default page
-    })
+    }),
   );
 
   server.get('**', (req, res, next) => {
@@ -53,7 +53,7 @@ export function app(): express.Express {
           return next(err);
         }
         res.send(html);
-      }
+      },
     );
   });
 

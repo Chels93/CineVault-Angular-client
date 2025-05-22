@@ -63,7 +63,7 @@ export class UserRegistrationComponent implements OnInit {
     @Optional()
     public dialogRef: MatDialogRef<UserRegistrationComponent> | null = null,
     public snackBar: MatSnackBar,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.registrationForm = this.fb.group({
       username: [
@@ -109,9 +109,9 @@ export class UserRegistrationComponent implements OnInit {
           this.snackBar.open(
             `User registration failed: ${errorMessage}`,
             'OK',
-            { duration: 3000 }
+            { duration: 3000 },
           );
-        }
+        },
       );
     }
   }
