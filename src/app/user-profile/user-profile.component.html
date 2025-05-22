@@ -124,10 +124,15 @@
                   ><strong>Birth Year:</strong>
                   {{ movie.director.birthYear }}</span
                 >
-                <div *ngIf="isValidDeathYear(movie.director.deathYear)" class="director-death-year">
-                    <span><strong>Death Year:</strong> {{ movie.director.deathYear }}</span>
-                  </div>
-                  
+                <div
+                  *ngIf="isValidDeathYear(movie.director.deathYear)"
+                  class="director-death-year"
+                >
+                  <span
+                    ><strong>Death Year:</strong>
+                    {{ movie.director.deathYear }}</span
+                  >
+                </div>
               </div>
             </div>
 
@@ -143,32 +148,55 @@
               >
 
               <button
-                (click)="
-                  movie.showSynopsis = !movie.showSynopsis;
-                  movie.showGenreDetails = false;
-                  movie.showDirectorDetails = false
-                "
+                mat-button
+                class="action-button"
+                (click)="toggleContent(movie, 'synopsis')"
               >
-                Synopsis
+                {{ movie.showSynopsis ? "Synopsis" : "Synopsis" }}
+                <mat-icon
+                  class="chevron-icon"
+                  *ngIf="movie.showSynopsis; else expand"
+                >
+                  expand_less
+                </mat-icon>
+                <ng-template #expand>
+                  <mat-icon class="chevron-icon">expand_more</mat-icon>
+                </ng-template>
               </button>
+
               <button
-                (click)="
-                  movie.showGenreDetails = !movie.showGenreDetails;
-                  movie.showSynopsis = false;
-                  movie.showDirectorDetails = false
-                "
+                mat-button
+                class="action-button"
+                (click)="toggleContent(movie, 'genre')"
               >
-                Genre
+                {{ movie.showGenreDetails ? "Genre" : "Genre" }}
+                <mat-icon
+                  class="chevron-icon"
+                  *ngIf="movie.showGenreDetails; else expand"
+                >
+                  expand_less
+                </mat-icon>
+                <ng-template #expand>
+                  <mat-icon class="chevron-icon">expand_more</mat-icon>
+                </ng-template>
               </button>
+
               <button
-                (click)="
-                  movie.showDirectorDetails = !movie.showDirectorDetails;
-                  movie.showSynopsis = false;
-                  movie.showGenreDetails = false
-                "
+              mat-button
+              class="action-button"
+              (click)="toggleContent(movie, 'director')"
+            >
+              {{ movie.showDirectorDetails ? "Director" : "Director" }}
+              <mat-icon
+                class="chevron-icon"
+                *ngIf="movie.showDirectorDetails; else expand"
               >
-                Director
-              </button>
+                expand_less
+              </mat-icon>
+              <ng-template #expand>
+                <mat-icon class="chevron-icon">expand_more</mat-icon>
+              </ng-template>
+            </button>
             </div>
           </div>
         </mat-card>

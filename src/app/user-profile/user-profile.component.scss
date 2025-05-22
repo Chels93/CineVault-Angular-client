@@ -262,77 +262,123 @@ $input-padding: 12px;
 
       .genre-details,
       .synopsis,
-      .genre-description,
-      .director-name,
-      .director-bio,
-      .director-birth-year,
-      .director-death-year {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        padding: 0;
+      .genre-description {
+        // Shared styles for genre/synopsis containers
         background-color: #fff;
         border-radius: 8px;
         text-align: left;
-        max-height: none;
-        overflow: visible;
         font-size: 1rem;
         color: $primary-color;
         line-height: 1.4;
+        padding: 0;
         margin: 0;
+      
+        .genre-text {
+          margin-bottom: 0.5rem;
+          display: block;
+        }
+      
+        .description-text {
+          display: block;
+        }
       }
+      
+      .director-name {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;  // spacing between director child elements
+        background-color: #fff;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 1rem;
+        color: $primary-color;
+        line-height: 1.4;
+        padding: 0;
+        margin: 0;
+      
+        // Remove bottom margins on these children if using gap on flex container
+        .director-bio,
+        .director-birth-year,
+        .director-death-year {
+          display: block;
+          margin: 0;
+        }
+      }
+      
 
+      /* Action Buttons with Favorite Icon */
       .action-buttons {
         display: flex;
-        justify-content: space-evenly;
+        justify-content: flex-start;
         align-items: center;
-        gap: 2px;
+        gap: 0; // remove gap to rely on button margin instead
         padding: 8px;
         width: 100%;
         position: absolute;
         bottom: 8px;
         left: 0;
         box-sizing: border-box;
+      }
 
-        button {
-          flex: 0;
+      /* Favorite Icon Styling */
+      .favorite-icon {
+        font-size: 1.5rem;
+        color: $primary-color;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        flex-shrink: 0;
+        margin-right: 8px;
+
+        &:hover {
+          color: $secondary-color;
+        }
+      }
+
+      .favorite-selected {
+        color: $primary-color;
+      }
+
+      /* Revised styles for Synopsis, Genre, Director buttons */
+      .action-buttons button.action-button {
+        position: relative;
+        padding-left: 24px; // reduce from 28px to 24px to make buttons narrower
+        padding-right: 8px; // reduce right padding too
+        color: $primary-color;
+        background-color: transparent;
+        min-width: 70px;
+        flex-shrink: 0;
+        text-transform: none;
+        margin-right: -2px;
+
+        .chevron-icon {
+          position: absolute;
+          left: 4px; // Chevron icon on left, small gap from edge
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 1.2rem;
           color: $primary-color;
-          background: none;
-          border: none;
-          padding: 6px 10px;
-          font-size: 1rem;
-          cursor: pointer;
-          transition: color 0.3s ease;
+        }
+      }
 
-          &:hover {
-            color: $secondary-color;
-          }
-
-          &:focus {
-            outline: none;
-          }
+      @media (max-width: 480px) {
+        .action-buttons {
+          padding: 12px 8px;
         }
 
         .favorite-icon {
-          font-size: 1.5rem;
-          color: $primary-color;
-          cursor: pointer;
-          transition: color 0.3s ease;
-
-          &:hover {
-            color: $secondary-color;
-          }
-
-          &.favorite-selected {
-            color: $primary-color;
-          }
+          font-size: 1.75rem;
+          margin-right: 6px;
         }
 
-        @media (max-width: 480px) {
-          padding: 12px 8px;
+        .action-buttons button.action-button {
+          min-width: 70px;
+          padding-left: 20px;
+          padding-right: 6px;
+          margin-right: 2px;
 
-          .favorite-icon {
-            font-size: 1.75rem;
+          .chevron-icon {
+            left: 4px;
+            font-size: 1.1rem;
           }
         }
       }
