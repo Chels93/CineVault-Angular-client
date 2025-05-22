@@ -118,12 +118,12 @@
 
         <!-- Toggle Genre Details -->
         <div *ngIf="movie.showGenreDetails">
-          <div class="genre-details">
-            <span class="genre-text">Genre: {{ movie.genre.name }}</span>
+          <div class="genre-name">
+            <span><strong>Genre: </strong>{{ movie.genre.name }}</span>
           </div>
           <div class="genre-description">
-            <span class="description-text"
-              >Description: {{ movie.genre.description }}</span
+            <span
+              ><strong>Description: </strong>{{ movie.genre.description }}</span
             >
           </div>
         </div>

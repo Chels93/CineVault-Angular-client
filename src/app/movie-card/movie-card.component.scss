@@ -246,18 +246,32 @@ $input-padding: 12px;
       line-height: 1.4;
     }
 
-    .movie-card-details .genre-details .genre-text {
-      margin-left: 0;
-      color: $primary-color;
-      line-height: 1.4;
+    .genre-name,
+    .genre-description {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 8px;
+      text-align: left;
+      max-height: none;
+      overflow: visible;
+      box-sizing: border-box;
       font-size: 1rem;
-      font-weight: 400; /* normal weight */
+      line-height: 1.4;
+      color: $primary-color; // ensure blue text for whole block
+    
+      span {
+        color: $primary-color; // value text blue
+      }
+    
+      strong {
+        font-weight: 700;
+        color: $primary-color; // label text blue
+      }
     }
-
-    .movie-card-details .description-text strong {
-      font-weight: 700;
-      color: $primary-color;
-    }
+    
 
     /* Action Buttons with Favorite Icon */
     .action-buttons {
