@@ -229,14 +229,13 @@ export class FetchApiDataService {
    * @param credentials - The username and password for login.
    * @returns An Observable containing the login result.
    */
-  public userLogin(credentials: {
-    username: string;
-    password: string;
-  }): Observable<any> {
+  public userLogin(credentials: { username: string; password: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.httpClient
-      .post(`${this.apiUrl}/login`, credentials)
+      .post(`${this.apiUrl}/login`, credentials, { headers })
       .pipe(catchError(this.handleError));
   }
+  
 
   /**
    * Handles user registration.

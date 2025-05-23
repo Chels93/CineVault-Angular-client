@@ -300,16 +300,11 @@ export class UserProfileComponent implements OnInit {
         birthdate: this.updatedBirthdate,
       })
       .subscribe({
-        next: (updatedUserData: User) => {
-          this.userData = updatedUserData;
-          this.updatedUsername = updatedUserData.username;
-          this.updatedEmail = updatedUserData.email;
-          this.updatedBirthdate = updatedUserData.birthdate
-            ? updatedUserData.birthdate.toString()
-            : '';
-          this.snackBar.open('Profile updated successfully!', 'Close', {
+        next: () => {
+          this.snackBar.open('Profile updated! Please log in again.', 'Close', {
             duration: 3000,
           });
+          this.logout(); // 🔁 Immediately logout after update
         },
         error: (err) => this.handleError(err),
       });
@@ -339,8 +334,8 @@ export class UserProfileComponent implements OnInit {
    */
   logout(): void {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
     this.router.navigate(['/login']);
-    this.snackBar.open('Logged out successfully!', 'Close', { duration: 3000 });
   }
 
   /**
