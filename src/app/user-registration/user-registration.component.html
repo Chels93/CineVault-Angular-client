@@ -14,10 +14,8 @@
       <!-- Username Field -->
       <mat-form-field class="form-field" appearance="fill">
         <mat-label>Username</mat-label>
-        <!-- Username input field connected to formControlName -->
         <input matInput formControlName="username" />
 
-        <!-- Error message for Username Field: Displayed if field is empty or touched but not filled -->
         <mat-error
           *ngIf="
             registrationForm.get('username')?.hasError('required') &&
@@ -26,7 +24,6 @@
         >
           Username is required
         </mat-error>
-
         <mat-error
           *ngIf="
             registrationForm.get('username')?.hasError('minlength') &&
@@ -35,7 +32,6 @@
         >
           Username must be at least 5 characters long
         </mat-error>
-
         <mat-error
           *ngIf="
             registrationForm.get('username')?.hasError('pattern') &&
@@ -49,14 +45,12 @@
       <!-- Password Field -->
       <mat-form-field class="form-field" appearance="fill">
         <mat-label>Password</mat-label>
-        <!-- Password input field with type 'password' for masking text -->
         <input matInput type="password" formControlName="password" />
 
-        <!-- Error message for Password Field: Displayed if password is missing or doesn't meet the minimum length -->
         <mat-error
           *ngIf="
             registrationForm.get('password')?.hasError('required') &&
-            registrationForm.get('password')?.touched
+            (registrationForm.get('password')?.touched || registrationAttempted)
           "
         >
           Password is required
@@ -64,7 +58,7 @@
         <mat-error
           *ngIf="
             registrationForm.get('password')?.hasError('minlength') &&
-            registrationForm.get('password')?.touched
+            (registrationForm.get('password')?.touched || registrationAttempted)
           "
         >
           Password must be at least 6 characters long
@@ -74,14 +68,12 @@
       <!-- Email Field -->
       <mat-form-field class="form-field" appearance="fill">
         <mat-label>Email</mat-label>
-        <!-- Email input field with type 'email' to validate the email format -->
-        <input matInput type="email" formControlName="email" />
+        <input matInput formControlName="email" type="email" />
 
-        <!-- Error messages for Email Field -->
         <mat-error
           *ngIf="
             registrationForm.get('email')?.hasError('required') &&
-            registrationForm.get('email')?.touched
+            (registrationForm.get('email')?.touched || registrationAttempted)
           "
         >
           Email is required
@@ -89,7 +81,7 @@
         <mat-error
           *ngIf="
             registrationForm.get('email')?.hasError('email') &&
-            registrationForm.get('email')?.touched
+            (registrationForm.get('email')?.touched || registrationAttempted)
           "
         >
           Please enter a valid email address
@@ -99,12 +91,8 @@
       <!-- Birthdate Field -->
       <mat-form-field class="form-field" appearance="fill">
         <mat-label>Birthdate</mat-label>
-        <!-- Birthdate input field with Angular Material Datepicker -->
         <input matInput [matDatepicker]="picker" formControlName="birthdate" />
-
-        <!-- Datepicker toggle for selecting the birthdate -->
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <!-- Datepicker UI Component -->
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
 
@@ -122,10 +110,9 @@
       <!-- Link to Login page for existing users -->
       <div class="login-link">
         <span>Already have an account? </span>
-        <!-- Navigation to the login page using Angular router -->
-        <a mat-raised-button color="primary" [routerLink]="['/login']"
-          >Login here.</a
-        >
+        <a mat-raised-button color="primary" [routerLink]="['/login']">
+          Login here.
+        </a>
       </div>
     </mat-card>
   </form>

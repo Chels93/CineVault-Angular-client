@@ -92,8 +92,13 @@ export class UserRegistrationComponent implements OnInit {
   /**
    * Handles user registration by validating the form and sending a request to the API.
    * Displays notifications and navigates to the login page on success.
+   * Ensures validation errors are shown even for untouched fields after submit attempt.
    */
+  registrationAttempted = false;
+
   registerUser(): void {
+    this.registrationAttempted = true;
+
     if (this.registrationForm.valid) {
       this.fetchApiData.userRegistration(this.registrationForm.value).subscribe(
         (result: any) => {
@@ -113,6 +118,9 @@ export class UserRegistrationComponent implements OnInit {
           );
         },
       );
+    } else {
+      // Mark all fields as touched so their errors appear
+      this.registrationForm.markAllAsTouched();
     }
   }
 
