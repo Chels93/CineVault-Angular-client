@@ -44,7 +44,7 @@ CineVaultAngularClient is a single-page, responsive movie application built usin
 - **Build:**
     - Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-##TESTING:
+## TESTING:
 - **Running Unit Tests:**
     - Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io)
 - **Running End-to-End Tests:**
