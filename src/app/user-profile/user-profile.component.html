@@ -76,11 +76,16 @@
   <div class="right-section">
     <h2>Favorite Movies</h2>
 
-    <!-- Only show favorite movies if not loading and no errors -->
+    <!-- Only show favorite movies section if not loading and no errors -->
     <div *ngIf="!loading && !error">
-      <!-- Container for movie cards, rendered via *ngFor -->
+      <!-- No Favorite Movies Message -->
+      <div *ngIf="favoriteMovies.length === 0" class="no-favorites-message">
+        Add some movies to your Favorites by visiting the Movie Library!
+      </div>
+
+      <!-- Container for movie cards -->
       <div class="movie-cards-container">
-        <!-- Single Movie Card -->
+        <!-- Render each movie card only if there are favorites -->
         <mat-card *ngFor="let movie of favoriteMovies" class="movie-card">
           <!-- Movie Card Header: Displays movie title -->
           <mat-card-header class="movie-card-header">
@@ -89,7 +94,7 @@
             }}</mat-card-title>
           </mat-card-header>
 
-          <!-- Movie Image Container: Hidden if any details are open -->
+          <!-- Movie Image Container: Hidden if any details re open -->
           <div
             class="movie-image-container"
             *ngIf="
