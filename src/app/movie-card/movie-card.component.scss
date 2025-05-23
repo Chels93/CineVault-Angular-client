@@ -281,7 +281,7 @@ $input-padding: 12px;
     overflow: visible;
     box-sizing: border-box;
     font-size: 1rem;
-    color: $primary-color;
+    color: $text-color;
     line-height: 1.4;
 
     span {
@@ -298,6 +298,7 @@ $input-padding: 12px;
   /** Genre Name & Description Styling **/
   .genre-name,
   .genre-description {
+    margin-bottom: 0.25rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -310,27 +311,21 @@ $input-padding: 12px;
     box-sizing: border-box;
     font-size: 1rem;
     line-height: 1.4;
-    color: $primary-color;
 
     span {
-      color: $primary-color;
-      margin-bottom: 0;
-      display: block;
-    }
-
-    strong {
-      font-weight: 700;
-      color: $primary-color;
-    }
+        margin-bottom: 0;
+        display: block;
+      }
+  
+      strong {
+        font-weight: 700;
+        color: $primary-color;
+      }
 
     @media (max-width: 480px) {
-      font-size: 0.9rem;
-      padding: 0.25rem 0.4rem;
-    }
-  }
-
-  .genre-name {
-    margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+        padding: 0.25rem 0.4rem;
+      }
   }
 
   .genre-description {
@@ -354,7 +349,7 @@ $input-padding: 12px;
     box-sizing: border-box;
     font-size: 1rem;
     line-height: 1.4;
-    color: $primary-color;
+    color: $text-color;
     margin-bottom: 0.25rem;
 
     span {
